@@ -5,7 +5,7 @@
 class SoundManager{
     private:
         static SoundManager* instance;
-        float global= 75;
+        float global= 75.0;
         float effects= 70.0;
         float music= 50.0;
         Music currentMusic, lobbyMusic, survivalMusic, duelMusic;
@@ -20,6 +20,22 @@ class SoundManager{
         void setGlobal(float);
         void setSFX(float);
         void setMusic(float);
+
+        void incrementGlobalVolume();
+        void incrementMusicVolume();
+        void incrementSfxVolume();
+
+        void decrementGlobalVolume();
+        void decrementMusicVolume();
+        void decrementSfxVolume();
+
+        void resetVolume();
+
+        float getGlobalLvl();
+        float getMusicLvl();
+        float getSfxLvl();
+
+        void playCurrent();
 };
 
 #endif

@@ -24,7 +24,7 @@ class System {
         static System* getInstance();
         ~System();
 
-        std::pair<int,int> getScreenSize();
+        std::pair<int,int> getScreenSizeWH();
 
 
 };

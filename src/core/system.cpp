@@ -10,8 +10,8 @@ System* System::getInstance(){
     return instance;
 }
 
-std::pair<int, int> System::getScreenSize(){
+std::pair<int, int> System::getScreenSizeWH(){
     this->screenHeight= GetScreenHeight();
     this->screenWidth= GetScreenWidth();
-    return std::make_pair(screenHeight,screenWidth);
+    return std::make_pair(screenWidth,screenHeight);
 }

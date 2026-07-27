@@ -2,11 +2,11 @@
 #include <raylib.h>
 #include <vector>
 
-typedef enum {
+enum class TypeEnemy {
   CIAMBELLA,
   CIAMBELLACHAD,
   CIAMBELLAKING
-} TypeEnemy;
+};
 
 typedef struct {
   float x, y;
