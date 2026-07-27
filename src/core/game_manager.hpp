@@ -8,6 +8,7 @@
 
 class GameManager {
     private:
+        static GameManager* instance;
         Camera2D camera1, camera2;
         const short int playerSpeed = 250, enemySpeed = 250, kunaiSpeed = 500, kunaiDamage = 40;
         const short int offsetMappe = 50, frameAnimazioneCamminata = 8, fpsAnimazioneCamminata = 8;

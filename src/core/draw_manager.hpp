@@ -7,6 +7,7 @@
 
 class DrawManager {
     private:
+        static DrawManager* instance;
         DrawManager();
     public:
         ~DrawManager();

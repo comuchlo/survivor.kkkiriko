@@ -6,6 +6,7 @@
 
 class System {
     private:
+        static System* instance;
         SoundManager soundManager;
         bool pause;
         int setting;

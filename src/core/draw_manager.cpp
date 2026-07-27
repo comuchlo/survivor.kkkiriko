@@ -3,6 +3,13 @@
 #include "draw_manager.hpp"
 
 
+	DrawManager* DrawManager::getInstance(){
+    if (instance == nullptr){
+            instance = new DrawManager();
+    }
+    return instance;
+}
+
     void DrawManager::drawTextSF(const char *text, int x, int y, int font, Color col1, Color col2, Color col3) {
         auto [screenHeight,screenWidth]= this->sys->getScreenSize();
 
