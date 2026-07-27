@@ -3,7 +3,7 @@
 #include <vector>
 
 enum class TypeEnemy {
-  CIAMBELLA,
+  CIAMBELLA = 1,
   CIAMBELLACHAD,
   CIAMBELLAKING
 };
