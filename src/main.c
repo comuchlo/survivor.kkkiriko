@@ -8,7 +8,6 @@ int main() {
   InitWindow(0, 0, "Kiriko and the donuts");//FullScreen
   screenWidth = GetScreenWidth();//get FullScreen width
   screenHeight = GetScreenHeight();//get FullScreen height
-  ToggleFullscreen();
   InitAudioDevice();
   HideCursor();
 

@@ -7,12 +7,13 @@
 class System {
     private:
         static System* instance;
-        SoundManager soundManager;
+        SoundManager* soundManager= SoundManager::getInstance();
         bool pause;
         int setting;
-        int screenWidth, screenHeight;
+        int screenWidth=-1, screenHeight=-1;
         Vector2 mousePos;
         Font font;
+        Image icon = LoadImage("./textures/temp donut.png");
 
         System();
     public:

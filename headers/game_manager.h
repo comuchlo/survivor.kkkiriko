@@ -1941,7 +1941,7 @@ void DrawEndDuel() {
 void DrawEndScore(unsigned long long totalTime) {
 	DrawRectangle(0,0,screenWidth,screenHeight,GetColor(0x5e5e5e5f));//darken bg
 	//lost/win message
-  const char *result;
+    const char *result;
 
 	if (/*score > sys.highscore &&*/ totalTime > bestSurvivedTime) result = "New Record!";
 	/*else if (score > sys.highscore || totalTime > bestSurvivedTime) result = (score>sys.highscore) ? "New High Score!" : "New Best Time!";*/
@@ -2012,7 +2012,7 @@ void DrawCredits() {
 		DrawTextSF("Credits", (screenWidth * 0.5) - (MeasureText("Credits", TitleFont) / 2), 50, TitleFont, RED, BLACK, BLACK);
 		DrawTextSF("Programmers", (screenWidth / 2) - (MeasureText("Programmers", buttonFont) / 2), 200, buttonFont, RED, BLACK, BLACK);
 		DrawTextSF("Bardin Gabriele", (screenWidth / 2) - (MeasureText("Bardin Gabriele", buttonFont) / 2), 260, buttonFont, BLACK, BLACK, RED);
-		DrawTextSF("Tomas Maceira", (screenWidth / 2) - (MeasureText("Cassandra Maceira", buttonFont) / 2), 310, buttonFont, BLACK, BLACK, RED);
+		DrawTextSF("Cassandra Maceira", (screenWidth / 2) - (MeasureText("Cassandra Maceira", buttonFont) / 2), 310, buttonFont, BLACK, BLACK, RED);
 
 		DrawTextSF("Graphic Designer", (screenWidth / 2) - (MeasureText("Graphic Designer", buttonFont) / 2), 410, buttonFont, RED, BLACK, BLACK);
 		DrawTextSF("Textures", (screenWidth / 2) - (MeasureText("Textures", buttonFont) / 2), 460, buttonFont, RED, BLACK, BLACK);

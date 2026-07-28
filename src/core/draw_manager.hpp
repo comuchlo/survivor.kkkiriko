@@ -19,7 +19,6 @@ class DrawManager {
 
         void drawRangeBar(int progress, int height);
         void drawTextSF(const char *text, int x, int y, int font, Color col1, Color col2, Color col3);
-        void drawLobby();
         void drawArrowSF(float x, float y, float width, float height, float thick, bool verse, Color col1, Color col2, Color col3);
 };
 
