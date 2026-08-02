@@ -6,25 +6,26 @@
 #ifndef PLAYER_HPP
 #define PLAYER_HPP
 
-typedef enum {
-  IDLE,
+enum class PlayerActions {
+  IDLE= 1,
   RUNNING_RIGHT,
   RUNNING_LEFT,
   THROWING_KUNAI
-} PlayerActions;
+};
 
-typedef struct {
+class Player {
   float x, y;
   int width, height, vita;
   double xVel, yVel;
   bool hitten;
   unsigned short int hittenFrame, runningFrame, throwingFrame;
+  short int speed = 250;
   unsigned long long score;
   PlayerActions action;
-  //Rectangle oldRec;
   Texture2D texture, attackTexture, kunaiTexture;
+  short int frameAnimazioneCamminata = 8, fpsAnimazioneCamminata = 8;
   std::vector<Kunai> Kunais;
-} Player;
+};
 
 
 #endif

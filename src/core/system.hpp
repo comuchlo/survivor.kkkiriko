@@ -1,8 +1,11 @@
 #include <raylib.h>
-#include<utility>
+#include <utility>
+#include <random>
 #include "sound_manager.hpp"
 #ifndef SYSTEM_HPP
 #define SYSTEM_HPP
+
+typedef std::ranlux24_base RNG;
 
 class System {
     private:
@@ -17,6 +20,7 @@ class System {
 
         System();
     public:
+        RNG rng;
         int titlefontSize=90, subTitleFontSize=60, buttonFontSize=40, textFontSize=30;
         int choice;
 

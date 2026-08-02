@@ -1,5 +1,7 @@
 #include "system.hpp"
 #include<utility>
+#include <random>
+#include <chrono>
 #include <raylib.h>
 
 
@@ -19,6 +21,10 @@ std::pair<int, int> System::getScreenSizeWH(){
 }
 
 System::System(){
+    auto now = std::chrono::system_clock::now();
+    auto duration = now.time_since_epoch();
+    auto milliseconds= std::chrono::duration_cast<std::chrono::milliseconds>(duration).count();
+    this->rng.seed(milliseconds);
     this->getScreenSizeWH();
     SetConfigFlags(FLAG_VSYNC_HINT);
     SetConfigFlags(FLAG_FULLSCREEN_MODE);

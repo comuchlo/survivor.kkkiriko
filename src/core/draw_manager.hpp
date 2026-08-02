@@ -8,6 +8,7 @@
 class DrawManager {
     private:
         static DrawManager* instance;
+        RenderTexture2D idealScreen;
         DrawManager();
     public:
         ~DrawManager();

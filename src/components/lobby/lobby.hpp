@@ -21,6 +21,7 @@ class Lobby{
         MenuSelection choice= MenuSelection::TRAINING;
         System* sys= System::getInstance();
         DrawManager* drawer= DrawManager::getInstance();
+        Texture2D lobbyBg;
     public:
         void drawLobby();
         bool shouldExit();
