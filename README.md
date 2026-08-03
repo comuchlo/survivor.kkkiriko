@@ -1,6 +1,29 @@
 # Kiriko and the Donuts (parte 2/kkk)
 Si parte due perchè parte 1 era per showoff / teaser ma magari anche la parte 2 sarà simile.
 
+## How to: compile & run
+Compilare il progetto con:
+```
+make
+```
+Per ricompilazione completa:
+```
+make -B
+```
+Per ripulire progetto da file generati compile-time (non funzia bene vabe si farà dopo):
+```
+make clean
+```
+(basta togliere cartella `obj` e l'eseguibile `main`)
+
+### Avvertenza
+NON compilare con make se non si è sulla cartella del progetto perchè non verranno caricate correttamente le texture e gli audio ad esempio usando:
+```
+make -C ...
+```
+grazie a tutti
+
+
 ## Features generali
 (forza kiriko team)
 
@@ -202,4 +225,3 @@ attivabili in Training, Survival, Duel. Ogni ULT ha una sua cinematica
 - **portafortua Suzu**: rende immune a qualsiasi attacco per 1 secondo, aumenta istantaneamente la vita di una certa quantità
 - **attacco della Kitsune**: provoca una certa quantità di danno istantaneamente a tutti i nemici in un certo raggio di azione 
 - **Ofuda**: rigenera una certa quantità di salute entro un certo tempo (e rende immuni ad ogni eventuale debuff)
-

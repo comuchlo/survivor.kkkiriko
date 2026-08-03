@@ -106,13 +106,6 @@ ifeq ($(PLATFORM),PLATFORM_RPI)
     endif
 endif
 
-# create folder function
-ifeq ($(PLATFORM_OS),WINDOWS)
-    MKDIR = if not exist "$(1)" mkdir "$(1)"
-else
-    MKDIR = mkdir -p "$(1)"
-endif
-
 # RAYLIB_PATH adjustment for different platforms.
 # If using GNU make, we can get the full path to the top of the tree. Windows? BSD?
 # Required for ldconfig or other tools that do not perform path expansion.
@@ -366,14 +359,9 @@ SRC_DIR = src
 OBJ_DIR = obj
 
 # Define all object files from source files
-#
-# SRC = $(call rwildcard, *.cpp, *.hpp) # prev wrong?
-#
-# compile all .cpp (.hpp are asked to be included in the .cpp s so no need)
-SRC = $(call rwildcard,$(SRC_DIR)/,*.cpp)
+SRC = $(call rwildcard, *.cpp, *.hpp)
 #OBJS = $(SRC:$(SRC_DIR)/%.cpp=$(OBJ_DIR)/%.o)
-#OBJS ?= src/main.cpp
-OBJS = $(patsubst $(SRC_DIR)/%.cpp,$(OBJ_DIR)/%.o,$(SRC))
+OBJS ?= src/main.cpp
 
 # For Android platform we call a custom Makefile.Android
 ifeq ($(PLATFORM),PLATFORM_ANDROID)
@@ -397,10 +385,7 @@ $(PROJECT_NAME): $(OBJS)
 # NOTE: This pattern will compile every module defined on $(OBJS)
 #%.o: %.cpp
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
-	$(call MKDIR,$(dir $@))
 	$(CC) -c $< -o $@ $(CFLAGS) $(INCLUDE_PATHS) -D$(PLATFORM)
-
--include $(OBJS:.o=.d)
 
 # Clean everything
 clean:

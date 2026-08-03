@@ -11,7 +11,6 @@ MenuSelection& operator++(MenuSelection& val){
     return val;
 }
 
-
 MenuSelection operator++(MenuSelection& val, int)
 {
   MenuSelection oldVal = val;
@@ -35,6 +34,18 @@ MenuSelection operator--(MenuSelection& val, int)
   MenuSelection oldVal = val;
   --val; //reuse the predecrement implementation
   return oldVal;
+}
+
+
+Lobby::Lobby(System *sys) {
+    this->choice = MenuSelection::TRAINING;
+    this->sys = sys;
+    this->drawer = DrawManager::getInstance();
+    this->backgroundImage = LoadTexture("./textures/kirikobg2.png");
+}
+
+Lobby::~Lobby() {
+    UnloadTexture(this->backgroundImage);
 }
 
 bool Lobby::shouldExit(){

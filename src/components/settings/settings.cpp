@@ -1,4 +1,3 @@
-#include <raylib.h>
 #include "settings.hpp"
 
 SettingSelection& operator++(SettingSelection& val){
@@ -35,6 +34,15 @@ SettingSelection operator--(SettingSelection& val, int)
   SettingSelection oldVal = val;
   --val; //reuse the predecrement implementation
   return oldVal;
+}
+
+Settings::Settings() {
+    this->sys = System::getInstance();
+    this->drawer = DrawManager::getInstance();
+}
+
+Settings::~Settings() {
+
 }
 
 bool Settings::shouldExit(){

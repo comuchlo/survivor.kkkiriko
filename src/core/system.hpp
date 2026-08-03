@@ -1,36 +1,56 @@
-#include <raylib.h>
-#include <utility>
-#include <random>
-#include "sound_manager.hpp"
 #ifndef SYSTEM_HPP
 #define SYSTEM_HPP
+
+// includes also <raylib.h>
+#include "sound_manager.hpp"
+#include "modality.hpp"
+
+#include <utility>
+#include <random>
+#include <raylib.h>
 
 typedef std::ranlux24_base RNG;
 
 class System {
     private:
+        static const int DEF_FPS = 60,
+            DEF_WIDTH = 960, DEF_HEIGHT = 540, // default res should be 16:9
+            MIN_WIDTH = 640, MIN_HEIGHT = 360,
+            RENDER_WIDTH = 1920, RENDER_HEIGHT = 1080; // for render
+
         static System* instance;
-        SoundManager* soundManager= SoundManager::getInstance();
+
         bool pause;
-        int setting;
-        int screenWidth=-1, screenHeight=-1;
+        int fps = 0, currMonitor, setting;
+        float screenWidth, screenHeight, monitorWidth, monitorHeight;
         Vector2 mousePos;
         Font font;
-        Image icon = LoadImage("./textures/temp donut.png");
+        Image icon;
 
         System();
     public:
         RNG rng;
-        int titlefontSize=90, subTitleFontSize=60, buttonFontSize=40, textFontSize=30;
+        SoundManager *soundManager; // only system should acquire soundManager
+
+        bool shutdown;
+        static const int titlefontSize=90, subTitleFontSize=60, buttonFontSize=40, textFontSize=30;
         int choice;
+        ModalityType modalityType;
+        RenderTexture2D render;
 
         System(const System&) = delete;
         System& operator=(const System&) = delete;
         static System* getInstance();
         ~System();
 
-        std::pair<int,int> getScreenSizeWH();
+        Vector2 getScreenSizeWH();
+        Vector2 getMonitorSizeWH();
+        Vector2 getRenderSizeWH();
+        int getCurrentMonitor();
 
+        int getFPS();
+
+        bool shouldExit();
 
 };
 

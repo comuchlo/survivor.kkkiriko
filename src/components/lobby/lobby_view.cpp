@@ -1,16 +1,20 @@
-#include <raylib.h>
 #include "lobby.hpp"
 
 
-void Lobby::drawLobby() { //: training , duel , survival , settings
-    auto [screenWidth, screenHeight]= this->sys->getScreenSizeWH();
-    int titleFont= this->sys->titlefontSize, buttonFont= this->sys->buttonFontSize, subTitleFont= this->sys->subTitleFontSize;
+void Lobby::drawModality() { //: training , duel , survival , settings
+    auto [renderWidth, renderHeight]= this->sys->getRenderSizeWH();
+    RenderTexture render = sys->render;
+    const int titleFont= this->sys->titlefontSize, buttonFont= this->sys->buttonFontSize, subTitleFont= this->sys->subTitleFontSize;
 
+    BeginTextureMode(render);
     ClearBackground(BLACK);
 
+    // background image
+    DrawTexture(this->backgroundImage, 0, 0, WHITE); // render is same res as image
+
     // title
-    this->drawer->drawTextSF("Kiriko", (screenWidth / 2) - (MeasureText("Kiriko", titleFont) / 2), 50, titleFont, RED, BLACK, BLACK);
-   	this->drawer->drawTextSF("and the donuts", (screenWidth / 2) - (MeasureText("and the donuts", subTitleFont) / 2) + 2, 142, subTitleFont, RED, BLACK, BLACK);
+    this->drawer->drawTextSF("Kiriko", (renderWidth / 2) - ((float)MeasureText("Kiriko", titleFont) / 2), 50, titleFont, RED, BLACK, BLACK);
+   	this->drawer->drawTextSF("and the donuts", (renderWidth / 2) - ((float)MeasureText("and the donuts", subTitleFont) / 2) + 2, 142, subTitleFont, RED, BLACK, BLACK);
 
    	//training
    	this->drawer->drawTextSF("Training", 12, 252, buttonFont, BLACK, BLACK, (this->choice == MenuSelection::TRAINING) ? RED : WHITE);
@@ -32,4 +36,16 @@ void Lobby::drawLobby() { //: training , duel , survival , settings
 
    	//exit game
    	this->drawer->drawTextSF("Exit game", 12, 552, buttonFont, BLACK, BLACK, (this->choice == MenuSelection::EXIT) ? RED : WHITE);
+
+    EndTextureMode();
+
+    //draw render (adapted to screen)
+    DrawTexturePro(
+        render.texture,
+        (const Rectangle){0.0f, 0.0f, renderWidth, -renderHeight}, //source
+        { 0.0f, 0.0f, sys->getScreenSizeWH().x, sys->getScreenSizeWH().y}, //dest
+        {0.0f, 0.0f}, //origin
+        0.0f, //rotation
+        WHITE
+    );
 }

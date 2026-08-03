@@ -1,9 +1,8 @@
-#include "../../core/system.hpp"
-#include "../../core/draw_manager.hpp"
-
 #ifndef LOBBY_HPP
 #define LOBBY_HPP
 
+// includes also "system.hpp" {"soundmanager.hpp" { <raylib.h> }, "modality.hpp"}
+#include "../../core/draw_manager.hpp"
 
 enum class MenuSelection{
     TRAINING = 1,
@@ -15,16 +14,29 @@ enum class MenuSelection{
     EXIT = 7,
 };
 
+MenuSelection& operator++(MenuSelection& val);
+MenuSelection  operator++(MenuSelection& val, int);
 
-class Lobby{
+MenuSelection& operator--(MenuSelection& val);
+MenuSelection  operator--(MenuSelection& val, int);
+
+
+class Lobby : public Modality {
     private:
-        MenuSelection choice= MenuSelection::TRAINING;
-        System* sys= System::getInstance();
-        DrawManager* drawer= DrawManager::getInstance();
-        Texture2D lobbyBg;
+        MenuSelection choice;
+        System* sys;
+        DrawManager* drawer;
+        Texture2D backgroundImage;
+
     public:
-        void drawLobby();
-        bool shouldExit();
+        Lobby(System *sys);
+        ~Lobby() override;
+
+        // inherited methods to override
+        void drawModality() override;
+        // void drawEndModality() override;
+        ControllerExitCode handleModality() override;
+        bool shouldExit() override;
 };
 
 #endif

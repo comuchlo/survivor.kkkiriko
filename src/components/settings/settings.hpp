@@ -1,9 +1,7 @@
-#include "../../core/draw_manager.hpp"
-#include "../../core/sound_manager.hpp"
-#include "../../core/system.hpp"
-
 #ifndef SETTINGS_HPP
 #define SETTINGS_HPP
+
+#include "../../core/draw_manager.hpp"
 
 enum class SettingSelection {
     MASTERVOLUME= 1,
@@ -21,11 +19,12 @@ SettingSelection  operator--(SettingSelection& val, int);
 
 class Settings{
     private:
-        System* sys= System::getInstance();
-        DrawManager* drawer= DrawManager::getInstance();
-        SoundManager* soundMan= SoundManager::getInstance();
+        System* sys;
+        DrawManager* drawer;
         SettingSelection choice;
     public:
+        Settings();
+        ~Settings();
         void drawSettings();
         void handleSettings();
         bool shouldExit();

@@ -1,3 +1,6 @@
+#ifndef ENEMY_HPP
+#define  ENEMY_HPP
+
 #include <raylib.h>
 #include "../core/system.hpp"
 
@@ -26,3 +29,5 @@ class Enemy{
 
     // ciambellaSize = 22, ciambellaChadWidth = 128, ciambellaChadHeight = 172, ciambellaKingSize = 128
 };
+
+#endif

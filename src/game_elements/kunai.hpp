@@ -10,5 +10,4 @@ class Kunai {
     short int damage= 40;
 };
 
-
 #endif

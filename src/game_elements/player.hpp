@@ -1,10 +1,9 @@
+#ifndef PLAYER_HPP
+#define PLAYER_HPP
+
 #include <raylib.h>
 #include <vector>
 #include "kunai.hpp"
-
-
-#ifndef PLAYER_HPP
-#define PLAYER_HPP
 
 enum class PlayerActions {
   IDLE= 1,

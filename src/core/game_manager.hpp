@@ -1,10 +1,10 @@
-#include <raylib.h>
-#include <vector>
-#include "../game_elements/player.hpp"
-#include "sound_manager.hpp"
+#ifndef GAME_MANAGER_HPP
+#define GAME_MANAGER_HPP
 
-#ifndef GAME_MANAGER_H
-#define GAME_MANAGER_H
+// includes also <raylib.h>, kunai.hpp
+#include "../game_elements/player.hpp"
+// // includes also <raylib.h>
+// #include "sound_manager.hpp"
 
 class GameManager {
     private:

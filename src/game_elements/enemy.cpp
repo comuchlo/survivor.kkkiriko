@@ -1,8 +1,9 @@
+#include "enemy.hpp"
+
 #include <cmath>
 #include <raylib.h>
 #include <cstdlib>
 #include <ctime>
-#include "enemy.hpp"
 
 Enemy::Enemy(TypeEnemy type){
     this->hitted=false;
