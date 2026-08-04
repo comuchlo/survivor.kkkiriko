@@ -29,7 +29,7 @@ class Lobby : public Modality {
         Texture2D backgroundImage;
 
     public:
-        Lobby(System *sys);
+        Lobby();
         ~Lobby() override;
 
         // inherited methods to override

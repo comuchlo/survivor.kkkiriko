@@ -37,9 +37,9 @@ MenuSelection operator--(MenuSelection& val, int)
 }
 
 
-Lobby::Lobby(System *sys) {
+Lobby::Lobby() {
     this->choice = MenuSelection::TRAINING;
-    this->sys = sys;
+    this->sys = System::getInstance();
     this->drawer = DrawManager::getInstance();
     this->backgroundImage = LoadTexture("./textures/kirikobg2.png");
 }

@@ -1,6 +1,7 @@
 #include "lobby.hpp"
 
 ControllerExitCode Lobby::handleModality() {
+
     if(IsKeyReleased(KEY_DOWN)) {
         this->choice++;
     }
@@ -8,25 +9,32 @@ ControllerExitCode Lobby::handleModality() {
         this->choice--;
     }
     if(IsKeyReleased(KEY_ENTER)) {// vigile in mutande
-        if(this->choice == MenuSelection::TRAINING) {
-            this->sys->modalityType = ModalityType::TRAINING;
-            return ControllerExitCode::EXITMODALITY;
+        switch (this->choice) {
+            case MenuSelection::TRAINING:
+                this->sys->modalityType = ModalityType::TRAINING;
+                break;
+            case MenuSelection::SURVIVAL:
+                this->sys->modalityType = ModalityType::SURVIVAL;
+                break;
+            case MenuSelection::DUEL:
+                this->sys->modalityType = ModalityType::DUEL;
+                break;
+            case MenuSelection::SETTINGS:
+                this->sys->modalityType = ModalityType::SETTINGS;
+                break;
+            case MenuSelection::HOWTOPLAY:
+                this->sys->modalityType = ModalityType::HOWTOPLAY;
+                break;
+            case MenuSelection::CREDITS:
+                this->sys->modalityType = ModalityType::CREDITS;
+                break;
+            case MenuSelection::EXIT:
+                this->sys->modalityType = ModalityType::NONE;
+                this->sys->shutdown = true;
+                break;
         }
-        if(this->choice == MenuSelection::SURVIVAL) {
-            this->sys->modalityType = ModalityType::SURVIVAL;
-            return ControllerExitCode::EXITMODALITY;
-        }
-        if(this->choice == MenuSelection::DUEL) {
-            this->sys->modalityType = ModalityType::DUEL;
-            return ControllerExitCode::EXITMODALITY;
-        }
-        if(this->shouldExit()) {
-            this->sys->modalityType = ModalityType::NONE;
-            this->sys->shutdown = true;
-            return ControllerExitCode::EXITMODALITY;
-        }
-
+        return ControllerExitCode::EXITMODALITY;
     }
 
-    return ControllerExitCode::NOP;
+    return ControllerExitCode::CONTINUE;
 }

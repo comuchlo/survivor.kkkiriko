@@ -6,5 +6,5 @@ ControllerExitCode WorkInProgress::handleModality() {
         return ControllerExitCode::EXITMODALITY;
     }
 
-    return ControllerExitCode::NOP;
+    return ControllerExitCode::CONTINUE;
 }

@@ -5,7 +5,6 @@
 #include "sound_manager.hpp"
 #include "modality.hpp"
 
-#include <utility>
 #include <random>
 #include <raylib.h>
 
@@ -36,6 +35,7 @@ class System {
         static const int titlefontSize=90, subTitleFontSize=60, buttonFontSize=40, textFontSize=30;
         int choice;
         ModalityType modalityType;
+        ControllerExitCode cec;
         RenderTexture2D render;
 
         System(const System&) = delete;

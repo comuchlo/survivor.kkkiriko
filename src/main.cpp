@@ -2,47 +2,56 @@
 #include "components/lobby/lobby.hpp"
 // includes also "system.hpp" {"soundmanager.hpp" { <raylib.h> }, "modality.hpp"}
 #include "components/workinprogress/workinprogress.hpp"
-
-#include <memory>
+#include "core/game_manager.hpp"
+#include "core/modality.hpp"
+#include <cstdio>
 
 int main() {
     System *sys = System::getInstance();
+    sys->cec=ControllerExitCode::CONTINUE;
+    sys->modalityType=ModalityType::LOBBY;
     // (init and) keep-alive current modality until explicitly needed
-    std::unique_ptr<Modality> mod = std::make_unique<Lobby>(sys);
+    GameManager *game_manager= GameManager::getInstance();
+    game_manager->mode= new Lobby();
+
+    printf("ok");
 
     while(!sys->shouldExit()) {
         //update audio
         sys->soundManager->updateAudio();
+        printf("hey");
 
         //controller
-        ControllerExitCode cec = mod->handleModality();
-        if(cec == ControllerExitCode::EXITMODALITY) {
+        if(sys->cec == ControllerExitCode::EXITMODALITY) { // resets mode and starts another
+            printf("sss");
             // explicitly delete (or else mod will delete at main() ends)
-            mod.get()->~Modality();
+            game_manager->mode->~Modality();
 
             switch (sys->modalityType) {
                 case ModalityType::LOBBY:
-                    mod = std::make_unique<Lobby>(sys);
+                    game_manager->mode = new Lobby();
                     break;
                 case ModalityType::TRAINING:
-                    mod = std::make_unique<WorkInProgress>(sys); // TODO
+                    game_manager->mode= new WorkInProgress(); // TODO
                     break;
                 case ModalityType::SURVIVAL:
-                    mod = std::make_unique<WorkInProgress>(sys); // TODO
+                    game_manager->mode= new WorkInProgress(); // TODO
                     break;
                 case ModalityType::DUEL:
-                    mod = std::make_unique<WorkInProgress>(sys); // TODO
+                    game_manager->mode= new WorkInProgress(); // TODO
                     break;
                 default:
+                    game_manager->mode = new Lobby();
                     // ModalityType::NONE -> do nothing
                     break;
             }
-
         }
+        sys->cec= ControllerExitCode::CONTINUE; // re-establishes the loop
 
+        sys->cec= game_manager->mode->handleModality();
         //draw
         BeginDrawing();
-        mod->drawModality();
+        game_manager->mode->drawModality();
         EndDrawing();
     }
 

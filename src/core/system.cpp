@@ -1,6 +1,6 @@
 // includes also "soundmanager.hpp" { <raylib.h> }, "modality.hpp"
 #include "system.hpp"
-#include <random>
+#include "modality.hpp"
 #include <chrono>
 
 System* System::instance = nullptr;
@@ -67,6 +67,9 @@ System::System(){
 
     this->getFPS();// update only
     this->soundManager = SoundManager::getInstance();
+
+    this->modalityType= ModalityType::LOBBY;
+    this->cec = ControllerExitCode::CONTINUE;
 }
 
 System::~System(){

@@ -7,10 +7,13 @@ enum class ModalityType {
     TRAINING = 2,
     DUEL = 3,
     SURVIVAL = 4,
+    SETTINGS = 5,
+    HOWTOPLAY = 6,
+    CREDITS = 6,
 };
 
 enum class ControllerExitCode {
-    NOP = 0,
+    CONTINUE = 0,
     EXITMODALITY = 1,
 };
 

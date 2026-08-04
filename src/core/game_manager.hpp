@@ -3,6 +3,7 @@
 
 // includes also <raylib.h>, kunai.hpp
 #include "../game_elements/player.hpp"
+#include "modality.hpp"
 // // includes also <raylib.h>
 // #include "sound_manager.hpp"
 
@@ -28,5 +29,6 @@ class GameManager {
         GameManager(const GameManager&) = delete;
         GameManager& operator=(const GameManager&) = delete;
         static GameManager* getInstance();
+        Modality *mode;
 };
 #endif

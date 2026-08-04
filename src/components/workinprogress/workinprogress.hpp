@@ -11,7 +11,7 @@ class WorkInProgress : public Modality {
         Texture2D backgroundImage;
 
     public:
-        WorkInProgress(System* sys);
+        WorkInProgress();
         ~WorkInProgress() override;
 
         // inherited methods to override
