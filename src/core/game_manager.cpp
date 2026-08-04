@@ -1,8 +1,12 @@
 #include "game_manager.hpp"
+#include "modality.hpp"
 
 GameManager* GameManager::instance = nullptr;
 
-GameManager::GameManager() {}
+GameManager::GameManager() {
+    this->mode= new Modality();
+
+}
 
 GameManager::~GameManager() {}
 

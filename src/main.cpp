@@ -14,16 +14,13 @@ int main() {
     GameManager *game_manager= GameManager::getInstance();
     game_manager->mode= new Lobby();
 
-    printf("ok");
 
     while(!sys->shouldExit()) {
         //update audio
         sys->soundManager->updateAudio();
-        printf("hey");
 
         //controller
         if(sys->cec == ControllerExitCode::EXITMODALITY) { // resets mode and starts another
-            printf("sss");
             // explicitly delete (or else mod will delete at main() ends)
             game_manager->mode->~Modality();
 

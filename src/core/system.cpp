@@ -68,7 +68,7 @@ System::System(){
     this->getFPS();// update only
     this->soundManager = SoundManager::getInstance();
 
-    this->modalityType= ModalityType::LOBBY;
+    this->modalityType= ModalityType::NONE;
     this->cec = ControllerExitCode::CONTINUE;
 }
 
