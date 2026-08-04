@@ -4,6 +4,7 @@
 // includes also <raylib.h>, kunai.hpp
 #include "../game_elements/player.hpp"
 #include "modality.hpp"
+#include <memory>
 // // includes also <raylib.h>
 // #include "sound_manager.hpp"
 
@@ -29,6 +30,6 @@ class GameManager {
         GameManager(const GameManager&) = delete;
         GameManager& operator=(const GameManager&) = delete;
         static GameManager* getInstance();
-        Modality *mode;
+        std::unique_ptr<Modality> mode;
 };
 #endif

@@ -5,6 +5,7 @@
 #include "core/game_manager.hpp"
 #include "core/modality.hpp"
 #include <cstdio>
+#include <memory>
 
 int main() {
     System *sys = System::getInstance();
@@ -12,7 +13,7 @@ int main() {
     sys->modalityType=ModalityType::LOBBY;
     // (init and) keep-alive current modality until explicitly needed
     GameManager *game_manager= GameManager::getInstance();
-    game_manager->mode= new Lobby();
+    game_manager->mode= std::make_unique<Lobby>();
 
 
     while(!sys->shouldExit()) {
@@ -28,35 +29,35 @@ int main() {
         //controller
         if(sys->cec == ControllerExitCode::EXITMODALITY) { // resets mode and starts another
             // explicitly delete (or else mod will delete at main() ends)
-            game_manager->mode->~Modality();
+            // game_manager->mode->~Modality(); // with raw * and manual new Class()
 
             switch (sys->modalityType) {
                 case ModalityType::LOBBY:
-                    game_manager->mode = new Lobby();
+                    game_manager->mode = std::make_unique<Lobby>();
                     break;
                 case ModalityType::TRAINING:
-                    game_manager->mode= new WorkInProgress(); // TODO
+                    game_manager->mode= std::make_unique<WorkInProgress>(); // TODO
                     break;
                 case ModalityType::DUEL:
-                    game_manager->mode= new WorkInProgress(); // TODO
+                    game_manager->mode= std::make_unique<WorkInProgress>(); // TODO
                     break;
                 case ModalityType::SURVIVAL:
-                    game_manager->mode= new WorkInProgress(); // TODO
+                    game_manager->mode= std::make_unique<WorkInProgress>(); // TODO
                     break;
                 case ModalityType::SETTINGS:
-                    game_manager->mode= new WorkInProgress(); // TODO
+                    game_manager->mode= std::make_unique<WorkInProgress>(); // TODO
                     break;
                 case ModalityType::HOWTOPLAY:
-                    game_manager->mode= new WorkInProgress(); // TODO
+                    game_manager->mode= std::make_unique<WorkInProgress>(); // TODO
                     break;
                 case ModalityType::CREDITS:
-                    game_manager->mode= new WorkInProgress(); // TODO
+                    game_manager->mode= std::make_unique<WorkInProgress>(); // TODO
                     break;
                 case ModalityType::EXIT:
                     sys->shutdown = true;
                     break;
                 default: //ModalityType::NONE
-                    game_manager->mode = new Lobby();
+                    game_manager->mode= std::make_unique<Lobby>();
                     break;
             }
         }
