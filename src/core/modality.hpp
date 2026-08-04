@@ -9,7 +9,8 @@ enum class ModalityType {
     SURVIVAL = 4,
     SETTINGS = 5,
     HOWTOPLAY = 6,
-    CREDITS = 6,
+    CREDITS = 7,
+    EXIT = 8,
 };
 
 enum class ControllerExitCode {

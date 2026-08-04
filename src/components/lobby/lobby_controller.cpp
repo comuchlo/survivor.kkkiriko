@@ -29,8 +29,7 @@ ControllerExitCode Lobby::handleModality() {
                 this->sys->modalityType = ModalityType::CREDITS;
                 break;
             case MenuSelection::EXIT:
-                this->sys->modalityType = ModalityType::NONE;
-                this->sys->shutdown = true;
+                this->sys->modalityType = ModalityType::EXIT;
                 break;
         }
         return ControllerExitCode::EXITMODALITY;
