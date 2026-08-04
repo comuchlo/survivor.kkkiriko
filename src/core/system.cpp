@@ -42,7 +42,7 @@ int System::getFPS() {
 }
 
 bool System::shouldExit() {
-    return this->shutdown || (IsKeyPressed(KEY_LEFT_ALT) && IsKeyPressed(KEY_F4));
+    return this->shutdown || WindowShouldClose();
 }
 
 System::System(){
@@ -56,7 +56,9 @@ System::System(){
     this->icon = LoadImage("./textures/temp donut.png");
 
     SetConfigFlags(FLAG_VSYNC_HINT);
+    SetConfigFlags(FLAG_WINDOW_RESIZABLE);
     InitWindow(DEF_WIDTH, DEF_HEIGHT, "Kiriko and the donuts");
+    SetExitKey(KEY_NULL);
     SetWindowIcon(icon);
 
     this->getCurrentMonitor();// update only
