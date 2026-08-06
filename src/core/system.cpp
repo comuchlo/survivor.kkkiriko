@@ -2,12 +2,13 @@
 #include "system.hpp"
 #include "modality.hpp"
 #include <chrono>
+#include <raylib.h>
 
 System* System::instance = nullptr;
 
 System* System::getInstance(){
     if (instance == nullptr){
-            instance = new System();
+        instance = new System();
     }
     return instance;
 }
@@ -41,8 +42,8 @@ int System::getFPS() {
     return fps;
 }
 
-bool System::shouldExit() {
-    return this->shutdown || WindowShouldClose();
+bool System::shouldExit() { // alt + Kirk -> shot program
+    return this->shutdown || (IsKeyDown(KEY_LEFT_ALT) && IsKeyDown(KEY_K));
 }
 
 System::System(){
@@ -56,9 +57,9 @@ System::System(){
     this->icon = LoadImage("./textures/temp donut.png");
 
     SetConfigFlags(FLAG_VSYNC_HINT);
-    SetConfigFlags(FLAG_WINDOW_RESIZABLE);
+    // SetConfigFlags(FLAG_WINDOW_RESIZABLE);
     InitWindow(DEF_WIDTH, DEF_HEIGHT, "Kiriko and the donuts");
-    SetExitKey(KEY_NULL);
+    // SetExitKey(KEY_NULL);
     SetWindowIcon(icon);
 
     this->getCurrentMonitor();// update only
@@ -71,10 +72,13 @@ System::System(){
     this->soundManager = SoundManager::getInstance();
 
     this->modalityType= ModalityType::NONE;
-    this->cec = ControllerExitCode::CONTINUE;
 }
 
 System::~System(){
     UnloadImage(this->icon);
     CloseWindow();
+}
+
+void System::shutDown() {
+    this->shutdown = true;
 }

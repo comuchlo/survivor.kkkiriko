@@ -1,9 +1,9 @@
 #include "workinprogress.hpp"
+#include <raylib.h>
 
 ControllerExitCode WorkInProgress::handleModality() {
-    if(IsKeyReleased(KEY_ENTER)) {
-        sys->modalityType = ModalityType::LOBBY;
-        return ControllerExitCode::EXITMODALITY;
+    if(IsKeyPressed(KEY_ENTER)) {
+        return ControllerExitCode::GOTO_LOBBY;
     }
 
     return ControllerExitCode::CONTINUE;

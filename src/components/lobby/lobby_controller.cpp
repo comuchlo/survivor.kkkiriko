@@ -1,38 +1,34 @@
 #include "lobby.hpp"
 
-ControllerExitCode Lobby::handleModality() {
+#include "components/lobbymenu/lobbymenu.hpp"
+#include "components/settings/settings.hpp"
+#include "components/howtoplay/howtoplay.hpp"
+#include "components/credits/credits.hpp"
 
-    if(IsKeyReleased(KEY_DOWN)) {
-        this->choice++;
-    }
-    if(IsKeyReleased(KEY_UP)) {
-        this->choice--;
-    }
-    if(IsKeyReleased(KEY_ENTER)) {// vigile in mutande
-        switch (this->choice) {
-            case MenuSelection::TRAINING:
-                this->sys->modalityType = ModalityType::TRAINING;
-                break;
-            case MenuSelection::SURVIVAL:
-                this->sys->modalityType = ModalityType::SURVIVAL;
-                break;
-            case MenuSelection::DUEL:
-                this->sys->modalityType = ModalityType::DUEL;
-                break;
-            case MenuSelection::SETTINGS:
-                this->sys->modalityType = ModalityType::SETTINGS;
-                break;
-            case MenuSelection::HOWTOPLAY:
-                this->sys->modalityType = ModalityType::HOWTOPLAY;
-                break;
-            case MenuSelection::CREDITS:
-                this->sys->modalityType = ModalityType::CREDITS;
-                break;
-            case MenuSelection::EXIT:
-                this->sys->modalityType = ModalityType::EXIT;
-                break;
-        }
-        return ControllerExitCode::EXITMODALITY;
+#include <memory>
+
+ControllerExitCode Lobby::handleModality() {
+    const ControllerExitCode cec = this->lobbyModality->handleModality();
+
+    switch (cec) {
+        case ControllerExitCode::GOTO_LOBBY:// this controller can handle request
+            this->lobbyModality.reset();
+            this->lobbyModality = std::make_unique<LobbyMenu>(&this->backgroundImage);
+            break;
+        case ControllerExitCode::GOTO_LOBBY_SETTINGS:
+            this->lobbyModality.reset();
+            this->lobbyModality = std::make_unique<Settings>(&this->backgroundImage);
+            break;
+        case ControllerExitCode::GOTO_LOBBY_HOWTOPLAY:
+            this->lobbyModality.reset();
+            this->lobbyModality = std::make_unique<HowToPlay>(&this->backgroundImage);
+            break;
+        case ControllerExitCode::GOTO_LOBBY_CREDITS:
+            this->lobbyModality.reset();
+            this->lobbyModality = std::make_unique<Credits>(&this->backgroundImage);
+            break;
+        default: // can't handle request: forward it
+            return cec;
     }
 
     return ControllerExitCode::CONTINUE;

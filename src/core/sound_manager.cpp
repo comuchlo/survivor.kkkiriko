@@ -1,4 +1,5 @@
 #include "sound_manager.hpp"
+#include <memory>
 #include <raylib.h>
 
 SoundManager* SoundManager::instance = nullptr;
@@ -37,7 +38,7 @@ SoundManager::~SoundManager(){
 
 SoundManager* SoundManager::getInstance(){
     if (instance == nullptr){
-            instance = new SoundManager();
+        instance = new SoundManager();
     }
     return instance;
 }

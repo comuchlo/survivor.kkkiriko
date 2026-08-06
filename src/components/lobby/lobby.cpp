@@ -1,53 +1,15 @@
 #include "lobby.hpp"
-
-MenuSelection& operator++(MenuSelection& val){
-    if (val == MenuSelection::EXIT){
-        val = MenuSelection::TRAINING;
-    }else{
-        val = static_cast<MenuSelection>(
-            static_cast<int>(val) + 1
-        );
-    }
-    return val;
-}
-
-MenuSelection operator++(MenuSelection& val, int)
-{
-  MenuSelection oldVal = val;
-  ++val; //reuse the preincrement implementation
-  return oldVal;
-}
-
-MenuSelection& operator--(MenuSelection& val){
-    if (val == MenuSelection::TRAINING){
-        val = MenuSelection::EXIT;
-    }else{
-        val = static_cast<MenuSelection>(
-            static_cast<int>(val) - 1
-        );
-    }
-    return val;
-}
-
-MenuSelection operator--(MenuSelection& val, int)
-{
-  MenuSelection oldVal = val;
-  --val; //reuse the predecrement implementation
-  return oldVal;
-}
-
+#include "components/lobbymenu/lobbymenu.hpp"
+#include <memory>
 
 Lobby::Lobby() {
-    this->choice = MenuSelection::TRAINING;
     this->sys = System::getInstance();
     this->drawer = DrawManager::getInstance();
     this->backgroundImage = LoadTexture("./textures/kirikobg2.png");
+    this->lobbyModality = std::make_unique<LobbyMenu>(&this->backgroundImage);
 }
 
 Lobby::~Lobby() {
+    // this->lobbyModality.~Modality(); // no heap resources actually
     UnloadTexture(this->backgroundImage);
-}
-
-bool Lobby::shouldExit(){
-    return (this->choice == MenuSelection::EXIT);
 }

@@ -19,7 +19,7 @@ class System {
 
         static System* instance;
 
-        bool pause;
+        bool shutdown, pause;
         int fps = 0, currMonitor, setting;
         float screenWidth, screenHeight, monitorWidth, monitorHeight;
         Vector2 mousePos;
@@ -29,13 +29,11 @@ class System {
         System();
     public:
         RNG rng;
-        SoundManager *soundManager; // only system should acquire soundManager
+        SoundManager* soundManager; // only system should acquire soundManager
 
-        bool shutdown;
         static const int titlefontSize=90, subTitleFontSize=60, buttonFontSize=40, textFontSize=30;
         int choice;
         ModalityType modalityType;
-        ControllerExitCode cec;
         RenderTexture2D render;
 
         System(const System&) = delete;
@@ -51,7 +49,7 @@ class System {
         int getFPS();
 
         bool shouldExit();
-
+        void shutDown();
 };
 
 #endif

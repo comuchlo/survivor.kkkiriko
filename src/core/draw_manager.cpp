@@ -1,9 +1,14 @@
 #include "draw_manager.hpp"
 
+
     DrawManager* DrawManager::instance = nullptr;
 
     DrawManager::DrawManager() {
         this->sys = System::getInstance();
+    }
+
+    DrawManager::~DrawManager() {
+
     }
 
 	DrawManager* DrawManager::getInstance(){

@@ -18,7 +18,6 @@ class WorkInProgress : public Modality {
         void drawModality() override;
         // void drawEndModality() override;
         ControllerExitCode handleModality() override;
-        bool shouldExit() override;
 };
 
 #endif

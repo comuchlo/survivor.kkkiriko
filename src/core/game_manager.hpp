@@ -11,7 +11,6 @@
 class GameManager {
     private:
         static GameManager* instance;
-        Camera2D camera1, camera2;
         //
         // da mettere nelle singole classi dei game elements
         //
@@ -23,6 +22,7 @@ class GameManager {
         unsigned long long bestSurvivedTime, bestScore;
         float eSpeedMultiplier = 1, pSpeedMultiplier = 1;
         std::vector<Player> players;
+        float deltaTime;
 
         GameManager();
     public:
@@ -31,5 +31,10 @@ class GameManager {
         GameManager& operator=(const GameManager&) = delete;
         static GameManager* getInstance();
         std::unique_ptr<Modality> mode;
+        Camera2D camera1, camera2;
+        void resetCamera1();
+        void resetCamera2();
+        float getDeltaTime();
+        void update();
 };
 #endif

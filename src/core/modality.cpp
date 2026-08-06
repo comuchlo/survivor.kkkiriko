@@ -8,7 +8,6 @@ Modality::~Modality() {
 };
 
 void Modality::drawModality() {
-
 }
 
 void Modality::drawEndModality() {
@@ -18,7 +17,3 @@ void Modality::drawEndModality() {
 ControllerExitCode Modality::handleModality() {
     return ControllerExitCode::CONTINUE;
 }
-
-bool Modality::shouldExit() {
-    return true;
-};

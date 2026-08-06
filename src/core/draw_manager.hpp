@@ -3,6 +3,7 @@
 
 // includes also "soundmanager.hpp" { <raylib.h> }, "modality.hpp"
 #include "system.hpp"
+#include <memory>
 
 class DrawManager {
     private:

@@ -9,7 +9,3 @@ WorkInProgress::WorkInProgress() {
 WorkInProgress::~WorkInProgress() {
     UnloadTexture(this->backgroundImage);
 }
-
-bool WorkInProgress::shouldExit(){
-    return true;
-}
