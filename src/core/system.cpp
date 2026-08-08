@@ -43,7 +43,7 @@ int System::getFPS() {
 }
 
 bool System::shouldExit() { // alt + Kirk -> shot program
-    return this->shutdown || (IsKeyDown(KEY_LEFT_ALT) && IsKeyDown(KEY_K));
+    return this->shutdown || (IsKeyDown(KEY_LEFT_ALT) && IsKeyDown(KEY_K) || WindowShouldClose());
 }
 
 System::System(){
@@ -57,9 +57,9 @@ System::System(){
     this->icon = LoadImage("./textures/temp donut.png");
 
     SetConfigFlags(FLAG_VSYNC_HINT);
-    // SetConfigFlags(FLAG_WINDOW_RESIZABLE);
+    SetConfigFlags(FLAG_WINDOW_RESIZABLE);
     InitWindow(DEF_WIDTH, DEF_HEIGHT, "Kiriko and the donuts");
-    // SetExitKey(KEY_NULL);
+    SetExitKey(KEY_NULL);
     SetWindowIcon(icon);
 
     this->getCurrentMonitor();// update only
