@@ -1,4 +1,5 @@
 #include "credits.hpp"
+#include <raylib.h>
 
 ControllerExitCode Credits::handleModality() {
     float* camera1y = &this->game_manager->camera1.offset.y;
@@ -19,7 +20,7 @@ ControllerExitCode Credits::handleModality() {
 
 
 
-    if (IsKeyPressed(KEY_ESCAPE)) {//goto lobby
+    if (IsKeyPressed(KEY_ESCAPE) || IsKeyPressed(KEY_ENTER) || IsKeyPressed(KEY_Z) || IsKeyPressed(KEY_X)) {//goto lobby
         return ControllerExitCode::GOTO_LOBBY;
     }
 

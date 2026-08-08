@@ -28,14 +28,15 @@ int main() {
         game_manager->mode->drawModality();
         EndDrawing();
 
+
         //controller
         if(cec != ControllerExitCode::CONTINUE) {
-            game_manager->mode.reset();
 
             if(cec < ControllerExitCode::GOTO_TRAINING) { // lobby modalities
                 game_manager->mode = std::make_unique<Lobby>();
 
             } else if(cec < ControllerExitCode::GOTO_SURVIVAL) { // training modalities
+                printf("const char *__restrict  _Nonnull format, ...\n\n");
                 game_manager->mode = std::make_unique<WorkInProgress>();
 
             } else if (cec < ControllerExitCode::GOTO_DUEL) { // survival modalities

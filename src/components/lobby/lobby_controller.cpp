@@ -12,19 +12,15 @@ ControllerExitCode Lobby::handleModality() {
 
     switch (cec) {
         case ControllerExitCode::GOTO_LOBBY:// this controller can handle request
-            this->lobbyModality.reset();
             this->lobbyModality = std::make_unique<LobbyMenu>(&this->backgroundImage);
             break;
         case ControllerExitCode::GOTO_LOBBY_SETTINGS:
-            this->lobbyModality.reset();
             this->lobbyModality = std::make_unique<Settings>(&this->backgroundImage);
             break;
         case ControllerExitCode::GOTO_LOBBY_HOWTOPLAY:
-            this->lobbyModality.reset();
             this->lobbyModality = std::make_unique<HowToPlay>(&this->backgroundImage);
             break;
         case ControllerExitCode::GOTO_LOBBY_CREDITS:
-            this->lobbyModality.reset();
             this->lobbyModality = std::make_unique<Credits>(&this->backgroundImage);
             break;
         default: // can't handle request: forward it

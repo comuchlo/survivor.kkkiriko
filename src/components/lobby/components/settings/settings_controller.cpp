@@ -1,4 +1,5 @@
 #include "settings.hpp"
+#include <raylib.h>
 
 ControllerExitCode Settings::handleModality() {
     //events
@@ -44,12 +45,16 @@ ControllerExitCode Settings::handleModality() {
         }
 	}
 
-	if (IsKeyPressed(KEY_ENTER)) {
+	if (IsKeyPressed(KEY_ENTER) || IsKeyPressed(KEY_Z)) {
 	    if(this->choice == SettingSelection::RESET)  {//enter
 	        this->sys->soundManager->resetVolume();
 		} else if (this->choice == SettingSelection::EXIT) {
 		    return ControllerExitCode::GOTO_LOBBY; // temp
 		}
+	}
+
+	if(IsKeyPressed(KEY_X)){
+	    return ControllerExitCode::GOTO_LOBBY;
 	}
 
 	return ControllerExitCode::CONTINUE;

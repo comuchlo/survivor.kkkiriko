@@ -1,5 +1,4 @@
 #include "sound_manager.hpp"
-#include <memory>
 #include <raylib.h>
 
 SoundManager* SoundManager::instance = nullptr;
@@ -95,7 +94,7 @@ void SoundManager::decrementSfxVolume(){
 }
 
 void SoundManager::resetVolume(){
-    this->global= 75.0f;
+    this->global= 50.0f;
     this->effects= 70.0f;
     this->music= 50.0f;
 

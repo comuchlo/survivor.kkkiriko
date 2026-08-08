@@ -9,7 +9,6 @@ GameManager::GameManager() {
 }
 
 GameManager::~GameManager() {
-    this->mode.reset();
 }
 
 GameManager* GameManager::getInstance(){
