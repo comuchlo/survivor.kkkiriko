@@ -8,24 +8,24 @@
 #include <memory>
 
 ControllerExitCode Lobby::handleModality() {
-    const ControllerExitCode cec = this->lobbyModality->handleModality();
+    const ControllerExitCode cec = lobbyModality->handleModality();
 
     switch (cec) {
-        case ControllerExitCode::GOTO_LOBBY:// this controller can handle request
-            this->lobbyModality.reset();
-            this->lobbyModality = std::make_unique<LobbyMenu>(&this->backgroundImage);
+        case ControllerExitCode::GOTO_LOBBY:// ontroller can handle request
+            // lobbyModality.reset();
+            lobbyModality = std::make_unique<LobbyMenu>(&backgroundImage);
             break;
         case ControllerExitCode::GOTO_LOBBY_SETTINGS:
-            this->lobbyModality.reset();
-            this->lobbyModality = std::make_unique<Settings>(&this->backgroundImage);
+            // lobbyModality.reset();
+            lobbyModality = std::make_unique<Settings>(&backgroundImage);
             break;
         case ControllerExitCode::GOTO_LOBBY_HOWTOPLAY:
-            this->lobbyModality.reset();
-            this->lobbyModality = std::make_unique<HowToPlay>(&this->backgroundImage);
+            // lobbyModality.reset();
+            lobbyModality = std::make_unique<HowToPlay>(&backgroundImage);
             break;
         case ControllerExitCode::GOTO_LOBBY_CREDITS:
-            this->lobbyModality.reset();
-            this->lobbyModality = std::make_unique<Credits>(&this->backgroundImage);
+            // lobbyModality.reset();
+            lobbyModality = std::make_unique<Credits>(&backgroundImage);
             break;
         default: // can't handle request: forward it
             return cec;

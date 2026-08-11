@@ -3,41 +3,79 @@
 ControllerExitCode Settings::handleModality() {
     //events
 	if (IsKeyPressed(KEY_UP) || IsKeyPressed(KEY_W)) {//up
-	    this->choice--;
-        this->sys->soundManager->playCurrent();
+	    choice--;
+        sys->soundManager->playCurrent();
 	}
 
 	if (IsKeyPressed(KEY_DOWN) || IsKeyPressed(KEY_S)) {//down
-	    this->choice++;
-        this->sys->soundManager->playCurrent();
+	    choice++;
+        sys->soundManager->playCurrent();
 	}
 
-	if  ((IsKeyPressed(KEY_RIGHT) || IsKeyPressed(KEY_D)) && this->choice <= SettingSelection::EFFECTSVOLUME) {//right
-        switch (this->choice) {
+	if  (IsKeyPressed(KEY_RIGHT) || IsKeyPressed(KEY_D)) {//right
+        switch (choice) {
             case SettingSelection::MASTERVOLUME:
-                this->sys->soundManager->incrementGlobalVolume();
+                sys->soundManager->incrementGlobalVolume();
                 break;
             case SettingSelection::MUSICVOLUME:
-                this->sys->soundManager->incrementMusicVolume();
+                sys->soundManager->incrementMusicVolume();
                 break;
             case SettingSelection::EFFECTSVOLUME:
-                this->sys->soundManager->incrementSfxVolume();
+                sys->soundManager->incrementSfxVolume();
+                break;
+            case SettingSelection::DISPLAYMODE:
+                switch (sys->getDisplayMode()) {
+                    case DisplayMode::BORDERLESS_WINDOW:
+                        sys->resetWindow();
+                        break;
+                    case DisplayMode::FULLSCREEN:
+                        sys->setBorderlessWindow();
+                        break;
+                    case DisplayMode::RESIZABLE_WINDOW:
+                        sys->setFullScreen();
+                        break;
+                }
+                break;
+            case SettingSelection::RESOLUTION:
+                if(sys->getDisplayMode() == DisplayMode::RESIZABLE_WINDOW) {
+                    const auto [screenW, screenH] = sys->getScreenSizeWH();
+                    sys->resizeWindowByWidth(screenW+10);
+                }
                 break;
             default:
                 break;
         }
 	}
 
-	if ((IsKeyPressed(KEY_LEFT) || IsKeyPressed(KEY_A)) && this->choice <= SettingSelection::EFFECTSVOLUME) {//left
-        switch (this->choice) {
+	if (IsKeyPressed(KEY_LEFT) || IsKeyPressed(KEY_A)) {//left
+        switch (choice) {
             case SettingSelection::MASTERVOLUME:
-                this->sys->soundManager->decrementGlobalVolume();
+                sys->soundManager->decrementGlobalVolume();
                 break;
             case SettingSelection::MUSICVOLUME:
-                this->sys->soundManager->decrementMusicVolume();
+                sys->soundManager->decrementMusicVolume();
                 break;
             case SettingSelection::EFFECTSVOLUME:
-                this->sys->soundManager->decrementSfxVolume();
+                sys->soundManager->decrementSfxVolume();
+                break;
+            case SettingSelection::DISPLAYMODE:
+                switch (sys->getDisplayMode()) {
+                    case DisplayMode::BORDERLESS_WINDOW:
+                        sys->setFullScreen();
+                        break;
+                    case DisplayMode::FULLSCREEN:
+                        sys->resetWindow();
+                        break;
+                    case DisplayMode::RESIZABLE_WINDOW:
+                        sys->setBorderlessWindow();
+                        break;
+                }
+                break;
+            case SettingSelection::RESOLUTION:
+                if(sys->getDisplayMode() == DisplayMode::RESIZABLE_WINDOW) {
+                    const auto [screenW, screenH] = sys->getScreenSizeWH();
+                    sys->resizeWindowByWidth(screenW-10);
+                }
                 break;
             default:
                 break;
@@ -45,11 +83,18 @@ ControllerExitCode Settings::handleModality() {
 	}
 
 	if (IsKeyPressed(KEY_ENTER)) {
-	    if(this->choice == SettingSelection::RESET)  {//enter
-	        this->sys->soundManager->resetVolume();
-		} else if (this->choice == SettingSelection::EXIT) {
-		    return ControllerExitCode::GOTO_LOBBY; // temp
-		}
+        switch (choice) {
+            case SettingSelection::RESETAUDIO:
+                sys->soundManager->resetVolume();
+                break;
+            case SettingSelection::RESETVIDEO:
+                sys->resetWindow();
+                break;
+            case SettingSelection::EXIT:
+                return ControllerExitCode::GOTO_LOBBY; // temp
+            default:
+                break;
+        }
 	}
 
 	return ControllerExitCode::CONTINUE;

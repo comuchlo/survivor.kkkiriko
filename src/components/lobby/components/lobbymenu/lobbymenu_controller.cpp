@@ -4,13 +4,13 @@
 ControllerExitCode LobbyMenu::handleModality() {
 
     if(IsKeyPressed(KEY_DOWN)) {
-        this->choice++;
+        choice++;
     }
     if(IsKeyPressed(KEY_UP)) {
-        this->choice--;
+        choice--;
     }
     if(IsKeyPressed(KEY_ENTER)) {// vigile in mutande
-        switch (this->choice) {
+        switch (choice) {
             case MenuSelection::TRAINING:
                 return ControllerExitCode::GOTO_TRAINING;
                 break;

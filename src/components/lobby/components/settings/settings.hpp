@@ -8,8 +8,11 @@ enum class SettingSelection {
     MASTERVOLUME= 1,
     MUSICVOLUME= 2,
     EFFECTSVOLUME= 3,
-    RESET= 4,
-    EXIT= 5,
+    RESETAUDIO= 4,
+    DISPLAYMODE = 5,
+    RESOLUTION = 6,
+    RESETVIDEO = 7,
+    EXIT= 8,
 };
 
 SettingSelection& operator++(SettingSelection& val);
@@ -17,6 +20,12 @@ SettingSelection  operator++(SettingSelection& val, int);
 
 SettingSelection& operator--(SettingSelection& val);
 SettingSelection  operator--(SettingSelection& val, int);
+
+DisplayMode& operator++(DisplayMode& val);
+DisplayMode  operator++(DisplayMode& val, int);
+
+DisplayMode& operator--(DisplayMode& val);
+DisplayMode  operator--(DisplayMode& val, int);
 
 class Settings : public Modality {
     private:

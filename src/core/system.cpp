@@ -1,7 +1,9 @@
 // includes also "soundmanager.hpp" { <raylib.h> }, "modality.hpp"
 #include "system.hpp"
 #include "modality.hpp"
+#include <algorithm>
 #include <chrono>
+#include <cstring>
 #include <raylib.h>
 
 System* System::instance = nullptr;
@@ -14,71 +16,181 @@ System* System::getInstance(){
 }
 
 Vector2 System::getScreenSizeWH(){ // return aligns with the raylib standard
-    this->screenHeight = GetScreenHeight();
-    this->screenWidth = GetScreenWidth();
-    return { this->screenWidth, this->screenHeight };
+    return { screenWidth, screenHeight };
+}
+
+void System::updateScreenSizeWH() {
+    screenHeight = GetScreenHeight();
+    screenWidth = GetScreenWidth();
 }
 
 Vector2 System::getMonitorSizeWH(){
-    this->monitorWidth = GetMonitorWidth(this->currMonitor);
-    this->monitorHeight = GetMonitorHeight(this->currMonitor);
-    return { this->monitorWidth, this->monitorHeight };
+    return { monitorWidth, monitorHeight };
+}
+
+void System::updateMonitorSizeWH() {
+    monitorWidth = GetMonitorWidth(currMonitor);
+    monitorHeight = GetMonitorHeight(currMonitor);
 }
 
 int System::getCurrentMonitor() {
-    this->currMonitor = GetCurrentMonitor();
-    return this->currMonitor;
+    return currMonitor;
 }
 
-Vector2 System::getRenderSizeWH() {
-    return { (float)this->render.texture.width, (float)this->render.texture.height };
+void System::updateCurrentMonitor() {
+    currMonitor = GetCurrentMonitor();
 }
+
+// Vector2 System::getRenderSizeWH() {
+//     return { RENDER_WIDTH, RENDER_HEIGHT };
+// }
 
 int System::getFPS() {
-    if(this->fps <= 0) {
-        this->fps = DEF_FPS;
-        SetTargetFPS(this->fps);
-    }
     return fps;
 }
 
 bool System::shouldExit() { // alt + Kirk -> shot program
-    return this->shutdown || (IsKeyDown(KEY_LEFT_ALT) && IsKeyDown(KEY_K));
+    return shutdown || (IsKeyDown(KEY_LEFT_ALT) && IsKeyDown(KEY_K));
 }
 
 System::System(){
-    this->shutdown = false;
+    shutdown = false;
 
     auto now = std::chrono::system_clock::now();
     auto duration = now.time_since_epoch();
     auto milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(duration).count();
-    this->rng.seed(milliseconds);
+    rng.seed(milliseconds);
 
-    this->icon = LoadImage("./textures/temp donut.png");
+    icon = LoadImage("./textures/temp donut.png");
 
-    SetConfigFlags(FLAG_VSYNC_HINT);
-    // SetConfigFlags(FLAG_WINDOW_RESIZABLE);
+    SetConfigFlags(FLAG_VSYNC_HINT | FLAG_WINDOW_RESIZABLE);
     InitWindow(DEF_WIDTH, DEF_HEIGHT, "Kiriko and the donuts");
     // SetExitKey(KEY_NULL);
     SetWindowIcon(icon);
 
-    this->getCurrentMonitor();// update only
-    this->getMonitorSizeWH();// update only
-    this->getScreenSizeWH();// update only
+    SetWindowMinSize(MIN_WIDTH, MIN_HEIGHT);
 
-    this->render = LoadRenderTexture(RENDER_WIDTH, RENDER_HEIGHT);
+    updateCurrentMonitor();// update only
+    updateMonitorSizeWH();// update only
+    updateScreenSizeWH();// update only
 
-    this->getFPS();// update only
-    this->soundManager = SoundManager::getInstance();
+    SetWindowPosition( // center
+        monitorWidth/2 - screenWidth/2,
+        monitorHeight/2 - screenHeight/2
+    );
 
-    this->modalityType= ModalityType::NONE;
+    borderlessWindow = false;
+
+    // render = LoadRenderTexture(RENDER_WIDTH, RENDER_HEIGHT);
+
+    fps = DEF_FPS;
+    SetTargetFPS(fps);
+
+    soundManager = SoundManager::getInstance();
+
+    modalityType= ModalityType::NONE; // useful?
 }
 
 System::~System(){
-    UnloadImage(this->icon);
+    UnloadImage(icon);
     CloseWindow();
 }
 
 void System::shutDown() {
-    this->shutdown = true;
+    shutdown = true;
 }
+
+void System::setFullScreen() {
+    if(IsWindowFullscreen()) return;
+
+    // important: make sure to not be on borderlessWindow when toggle fullscreen
+    if(borderlessWindow) {
+        ToggleBorderlessWindowed();
+        borderlessWindow = false;
+    }
+
+    ToggleFullscreen();
+
+    updateScreenSizeWH(); // update only
+}
+
+void System::setBorderlessWindow() {
+    if(borderlessWindow) return;
+
+    // important: make sure to not be on fullscreen when toggle borderless window
+    if(IsWindowFullscreen()) ToggleFullscreen();
+
+    ToggleBorderlessWindowed();
+    borderlessWindow = true;
+
+    updateScreenSizeWH(); // update only
+}
+
+void System::minimizeWindow() {
+    if(IsWindowFullscreen()) {
+        ToggleFullscreen();
+    }
+    if(borderlessWindow) {
+        ToggleBorderlessWindowed();
+        borderlessWindow = false;
+    }
+
+    SetWindowSize(MIN_WIDTH, MIN_HEIGHT);
+
+    updateScreenSizeWH(); // update only
+}
+
+void System::maximizeWindow() {
+    if(IsWindowFullscreen()) {
+        ToggleFullscreen();
+    }
+    if(borderlessWindow) {
+        ToggleBorderlessWindowed();
+        borderlessWindow = false;
+    }
+
+    SetWindowPosition(0, 0);
+    SetWindowSize(monitorWidth, monitorHeight);
+
+    updateScreenSizeWH(); // update only
+}
+
+void System::resetWindow() {
+    if(IsWindowFullscreen()) {
+        ToggleFullscreen();
+    }
+    if(borderlessWindow) {
+        ToggleBorderlessWindowed();
+        borderlessWindow = false;
+    }
+
+    SetWindowSize(DEF_WIDTH, DEF_HEIGHT);
+    SetWindowPosition( // center
+        monitorWidth/2 - (float)DEF_WIDTH/2,
+        monitorHeight/2 - (float)DEF_HEIGHT/2
+    );
+
+    updateScreenSizeWH(); // update only
+}
+
+ void System::resizeWindowByWidth(int width) {
+     float w = std::max( width, MIN_WIDTH);
+
+     SetWindowSize(
+         w,
+         (w*9)/16 // mantain aspect ratio 16:9
+     );
+
+     updateScreenSizeWH(); // update only
+ }
+
+ DisplayMode System::getDisplayMode() {
+     if(borderlessWindow) return DisplayMode::BORDERLESS_WINDOW;
+     if(IsWindowFullscreen()) return DisplayMode::FULLSCREEN;
+
+     return DisplayMode::RESIZABLE_WINDOW;
+ }
+
+ void System::update() {
+     updateScreenSizeWH(); // update only
+ }

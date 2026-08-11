@@ -2,14 +2,14 @@
 #include <raylib.h>
 
 Credits::Credits(Texture2D* backgroundImage) {
-    this->sys = System::getInstance();
-    this->drawer = DrawManager::getInstance();
-    this->game_manager = GameManager::getInstance();
+    sys = System::getInstance();
+    drawer = DrawManager::getInstance();
+    game_manager = GameManager::getInstance();
     this->backgroundImage = backgroundImage;
 
-    this->game_manager->resetCamera1();
-    this->shiftDown = 0;
-    this->endedAutoScrool = false;
+    game_manager->resetCamera1();
+    shiftDown = 0;
+    endedAutoScrool = false;
 }
 
 Credits::~Credits() {

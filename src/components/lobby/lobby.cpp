@@ -3,13 +3,13 @@
 #include <memory>
 
 Lobby::Lobby() {
-    this->sys = System::getInstance();
-    this->drawer = DrawManager::getInstance();
-    this->backgroundImage = LoadTexture("./textures/kirikobg2.png");
-    this->lobbyModality = std::make_unique<LobbyMenu>(&this->backgroundImage);
+    sys = System::getInstance();
+    drawer = DrawManager::getInstance();
+    backgroundImage = LoadTexture("./textures/kirikobg2.png");
+    lobbyModality = std::make_unique<LobbyMenu>(&backgroundImage);
 }
 
 Lobby::~Lobby() {
-    // this->lobbyModality.~Modality(); // no heap resources actually
-    UnloadTexture(this->backgroundImage);
+    // lobbyModality.~Modality(); // no heap resources actually
+    UnloadTexture(backgroundImage);
 }

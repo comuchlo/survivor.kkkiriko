@@ -1,7 +1,7 @@
 #include "modality.hpp"
 
 Modality::Modality() {
-    this->modalityType = ModalityType::NONE;
+    modalityType = ModalityType::NONE;
 }
 
 Modality::~Modality() {

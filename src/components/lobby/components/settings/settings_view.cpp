@@ -1,60 +1,89 @@
 #include "settings.hpp"
+#include <cstdio>
 
 
 void Settings::drawModality() { //: master volume , music volume , effects volume
-    auto [renderWidth, renderHeight]= this->sys->getRenderSizeWH();
-    RenderTexture render = sys->render;
-    const int titleFont= this->sys->titlefontSize, buttonFont= this->sys->buttonFontSize, subTitleFont= this->sys->subTitleFontSize;
+    char tempbuffer[60];
+    const DisplayMode dm = sys->getDisplayMode();
+    const auto [screenW, screenH] = sys->getScreenSizeWH();
+    const float renderWidth = drawer->RENDER_WIDTH, renderHeight = drawer->RENDER_HEIGHT;
+    const int titleFont= sys->titlefontSize, buttonFont= sys->buttonFontSize,
+        subTitleFont= sys->subTitleFontSize, textFont = sys->textFontSize;
 
-    BeginTextureMode(render);
-    ClearBackground(BLACK);
 
     // background image
-    DrawTexture(*this->backgroundImage, 0, 0, WHITE); // render is same res as image
+    DrawTexture(*backgroundImage, 0, 0, WHITE); // render is same res as image
 
     // title
-    this->drawer->drawTextSF("Settings", (renderWidth / 2) - ((float)MeasureText("Settings", this->sys->titlefontSize) / 2), 50, this->sys->titlefontSize, RED, BLACK, BLACK);
+    drawer->drawTextSF("Settings", (renderWidth / 2) - ((float)MeasureText("Settings", sys->titlefontSize) / 2), 50, sys->titlefontSize, RED, BLACK, BLACK);
 
     //Master Volume
-	this->drawer->drawTextSF("Master Volume", (renderWidth / 2) - ((float)MeasureText("Master Volume", this->sys->buttonFontSize) / 2), 250, this->sys->buttonFontSize, BLACK, BLACK, (this->choice == SettingSelection::MASTERVOLUME) ? RED : WHITE);
+	drawer->drawTextSF("Master Volume", (renderWidth / 2) - ((float)MeasureText("Master Volume", sys->buttonFontSize) / 2), 250, sys->buttonFontSize, BLACK, BLACK, (choice == SettingSelection::MASTERVOLUME) ? RED : WHITE);
 
 	int shiftDown = 0, volumeLevel;//shift down all below if smth is focussed & lvl in px of certain volume
 
-	if (this->choice == SettingSelection::MASTERVOLUME) {//Master Volume range bar if MasterVolume is focussed
+	if (choice == SettingSelection::MASTERVOLUME) {//Master Volume range bar if MasterVolume is focussed
 		shiftDown = 60;
-    this->drawer->drawRangeBar(this->sys->soundManager->getGlobalLvl(), 303);
+    drawer->drawRangeBar(sys->soundManager->getGlobalLvl(), 303);
 	}
 
 	//Music Volume
-	this->drawer->drawTextSF("Music Volume", (renderWidth / 2) - ((float)MeasureText("Music Volume", this->sys->buttonFontSize) / 2), 310 + shiftDown, this->sys->buttonFontSize, BLACK, BLACK, (this->choice == SettingSelection::MUSICVOLUME) ? RED : WHITE);
+	drawer->drawTextSF("Music Volume", (renderWidth / 2) - ((float)MeasureText("Music Volume", sys->buttonFontSize) / 2), 310 + shiftDown, sys->buttonFontSize, BLACK, BLACK, (choice == SettingSelection::MUSICVOLUME) ? RED : WHITE);
 
-	if (this->choice == SettingSelection::MUSICVOLUME) {//Music Volume range bar if MusicVolume is focussed
+	if (choice == SettingSelection::MUSICVOLUME) {//Music Volume range bar if MusicVolume is focussed
 		shiftDown = 60;
-		this->drawer->drawRangeBar(this->sys->soundManager->getMusicLvl(), 363);
+		drawer->drawRangeBar(sys->soundManager->getMusicLvl(), 363);
 	}
 
 	//Effects Volume
-	this->drawer->drawTextSF("Effects Volume", (renderWidth / 2) - ((float)MeasureText("Effects Volume", this->sys->buttonFontSize) / 2), 370 + shiftDown, this->sys->buttonFontSize, BLACK, BLACK, (this->choice == SettingSelection::EFFECTSVOLUME) ? RED : WHITE);
+	drawer->drawTextSF("Effects Volume", (renderWidth / 2) - ((float)MeasureText("Effects Volume", sys->buttonFontSize) / 2), 370 + shiftDown, sys->buttonFontSize, BLACK, BLACK, (choice == SettingSelection::EFFECTSVOLUME) ? RED : WHITE);
 
-	if (this->choice == SettingSelection::EFFECTSVOLUME) {//Effects Volume range bar if EffectsVolume is focussed
+	if (choice == SettingSelection::EFFECTSVOLUME) {//Effects Volume range bar if EffectsVolume is focussed
 		shiftDown = 60;
-		this->drawer->drawRangeBar(this->sys->soundManager->getSfxLvl(), 423);
+		drawer->drawRangeBar(sys->soundManager->getSfxLvl(), 423);
 	}
 
 	//reset the settings
-	this->drawer->drawTextSF("Reset the Settings", (renderWidth / 2) - ((float)MeasureText("Reset the Settings", this->sys->buttonFontSize) / 2), 430 + shiftDown, this->sys->buttonFontSize, BLACK, BLACK, (this->choice == SettingSelection::RESET) ? RED : WHITE);
+	drawer->drawTextSF("Reset audio Settings", (renderWidth / 2) - ((float)MeasureText("Reset audio Settings", sys->buttonFontSize) / 2), 430 + shiftDown, sys->buttonFontSize, BLACK, BLACK, (choice == SettingSelection::RESETAUDIO) ? RED : WHITE);
+
+	// display mode
+	drawer->drawTextSF("Display Mode", (renderWidth / 2) - ((float)MeasureText("Display Mode", buttonFont) / 2), 490 + shiftDown, buttonFont, BLACK, BLACK, (choice == SettingSelection::DISPLAYMODE) ? RED : WHITE);
+
+	if(choice == SettingSelection::DISPLAYMODE) {
+    shiftDown = 60;
+    	sprintf(
+    	    tempbuffer,
+    		"%s",
+    		(dm == DisplayMode::BORDERLESS_WINDOW) ?
+    		    "Borderless window" :
+    			((dm == DisplayMode::FULLSCREEN) ?
+    			    "Fullscreen" :
+    				"Resizable window"
+    			)
+    	);
+    	drawer->drawTextSF(tempbuffer, (renderWidth / 2) - ((float)MeasureText(tempbuffer, textFont) / 2), 543, textFont, BLACK, BLACK, (choice == SettingSelection::DISPLAYMODE) ? RED : WHITE);
+
+	    drawer->drawArrowSF((renderWidth / 2) - ((float)MeasureText(tempbuffer, textFont) / 2) - 15 - textFont, 543, textFont, textFont, 3.0f, true, BLACK, BLACK, RED);
+        drawer->drawArrowSF((renderWidth / 2) + ((float)MeasureText(tempbuffer, textFont) / 2) + 15, 543, textFont, textFont, 3.0f, false, BLACK, BLACK, RED);
+	}
+
+	//resolution
+	drawer->drawTextSF("Resolution", (renderWidth / 2) - ((float)MeasureText("Resolution", sys->buttonFontSize) / 2), 550 + shiftDown, buttonFont, BLACK, BLACK, (choice == SettingSelection::RESOLUTION) ? RED : WHITE);
+
+	if(choice == SettingSelection::RESOLUTION) {
+	    shiftDown = 60;
+	    sprintf(tempbuffer, "%.0f x %.0f", screenW, screenH);
+        drawer->drawTextSF(tempbuffer, (renderWidth / 2) - ((float)MeasureText(tempbuffer, textFont) / 2), 603, textFont, BLACK, BLACK, (choice == SettingSelection::RESOLUTION) ? RED : WHITE);
+        if(dm == DisplayMode::RESIZABLE_WINDOW) {
+            drawer->drawArrowSF((renderWidth / 2) - ((float)MeasureText(tempbuffer, textFont) / 2) - 15 - textFont, 603, textFont, textFont, 3.0f, true, BLACK, BLACK, RED);
+            drawer->drawArrowSF((renderWidth / 2) + ((float)MeasureText(tempbuffer, textFont) / 2) + 15, 603, textFont, textFont, 3.0f, false, BLACK, BLACK, RED);
+        }
+	}
+
+	//reset video
+	drawer->drawTextSF("Reset Video", (renderWidth / 2) - ((float)MeasureText("Reset Video", buttonFont) / 2), 610 + shiftDown, buttonFont, BLACK, BLACK, (choice == SettingSelection::RESETVIDEO) ? RED : WHITE);
+
 	//Exit
-	this->drawer->drawTextSF("Exit", ( renderWidth / 2) - ((float)MeasureText("Exit", this->sys->buttonFontSize) / 2), 490 + shiftDown, this->sys->buttonFontSize, BLACK, BLACK, (this->choice == SettingSelection::EXIT) ? RED : WHITE);
+	drawer->drawTextSF("Exit", ( renderWidth / 2) - ((float)MeasureText("Exit", sys->buttonFontSize) / 2), 670 + shiftDown, buttonFont, BLACK, BLACK, (choice == SettingSelection::EXIT) ? RED : WHITE);
 
-	EndTextureMode();
-
-    //draw render (adapted to screen)
-    DrawTexturePro(
-        render.texture,
-        (const Rectangle){0.0f, 0.0f, renderWidth, -renderHeight}, //source
-        { 0.0f, 0.0f, sys->getScreenSizeWH().x, sys->getScreenSizeWH().y}, //dest
-        {0.0f, 0.0f}, //origin
-        0.0f, //rotation
-        WHITE
-    );
 }

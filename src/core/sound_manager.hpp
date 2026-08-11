@@ -1,7 +1,6 @@
 #ifndef SOUND_MANAGER_HPP
 #define SOUND_MANAGER_HPP
 
-#include <memory>
 #include <raylib.h>
 
 class SoundManager {

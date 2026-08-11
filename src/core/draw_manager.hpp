@@ -3,15 +3,23 @@
 
 // includes also "soundmanager.hpp" { <raylib.h> }, "modality.hpp"
 #include "system.hpp"
-#include <memory>
+#include <raylib.h>
 
 class DrawManager {
     private:
         static DrawManager* instance;
         System* sys;
+
+        // idealScreen WH = render WH
+        const Rectangle idealScreen = {0.0f, 0.0f, RENDER_WIDTH, -RENDER_HEIGHT};
+        Rectangle actualScreen; // need update() to work
+
         DrawManager();
 
     public:
+        static const int RENDER_WIDTH = 1920, RENDER_HEIGHT = 1080; // for render
+        RenderTexture2D render;
+
         ~DrawManager();
         DrawManager(const DrawManager&) = delete;
         DrawManager& operator=(const DrawManager&) = delete;
@@ -21,6 +29,9 @@ class DrawManager {
         void drawRangeBar(int progress, int height);
         void drawTextSF(const char *text, int x, int y, int font, Color col1, Color col2, Color col3);
         void drawArrowSF(float x, float y, float width, float height, float thick, bool verse, Color col1, Color col2, Color col3);
+        void drawRender();
+
+        void update();
 };
 
 

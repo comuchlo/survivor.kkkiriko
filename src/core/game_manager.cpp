@@ -1,15 +1,14 @@
 #include "game_manager.hpp"
 #include "../components/lobby/lobby.hpp"
-#include <raylib.h>
 
 GameManager* GameManager::instance = nullptr;
 
 GameManager::GameManager() {
-    this->mode = std::make_unique<Lobby>();
+    mode = std::make_unique<Lobby>();
 }
 
 GameManager::~GameManager() {
-    this->mode.reset();
+    mode.reset();
 }
 
 GameManager* GameManager::getInstance(){
@@ -20,16 +19,16 @@ GameManager* GameManager::getInstance(){
 }
 
 void GameManager::resetCamera1() {
-    this->camera1 = (Camera2D) {(Vector2) { 0, 0 }, (Vector2) { 0, 0 }, 0.0f, 1.0f };
+    camera1 = (Camera2D) {(Vector2) { 0, 0 }, (Vector2) { 0, 0 }, 0.0f, 1.0f };
 }
 void GameManager::resetCamera2() {
-    this->camera2 = (Camera2D) {(Vector2) { 0, 0 }, (Vector2) { 0, 0 }, 0.0f, 1.0f };
+    camera2 = (Camera2D) {(Vector2) { 0, 0 }, (Vector2) { 0, 0 }, 0.0f, 1.0f };
 }
 
 float GameManager::getDeltaTime() {
-    return this->deltaTime;
+    return deltaTime;
 }
 
 void GameManager::update() {
-    this->deltaTime = GetFrameTime();
+    deltaTime = GetFrameTime();
 }

@@ -1,11 +1,8 @@
 #ifndef HOWTOPLAY_HPP
 #define HOWTOPLAY_HPP
 
-// #include "../../../../core/modality.hpp"
-// #include "../../../../core/system.hpp"
 #include "../../../../core/draw_manager.hpp"
 #include "../../../../core/game_manager.hpp"
-#include <raylib.h>
 
 class HowToPlay : public Modality {
     private:
