@@ -94,7 +94,7 @@ void SoundManager::decrementSfxVolume(){
 }
 
 void SoundManager::resetVolume(){
-    global= 75.0f;
+    global= 50.0f;
     effects= 70.0f;
     music= 50.0f;
 

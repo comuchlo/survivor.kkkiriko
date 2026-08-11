@@ -65,7 +65,7 @@ System::System(){
 
     SetConfigFlags(FLAG_VSYNC_HINT | FLAG_WINDOW_RESIZABLE);
     InitWindow(DEF_WIDTH, DEF_HEIGHT, "Kiriko and the donuts");
-    // SetExitKey(KEY_NULL);
+    SetExitKey(KEY_NULL);
     SetWindowIcon(icon);
 
     SetWindowMinSize(MIN_WIDTH, MIN_HEIGHT);

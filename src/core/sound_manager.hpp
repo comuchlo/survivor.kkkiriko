@@ -6,7 +6,7 @@
 class SoundManager {
     private:
         static SoundManager* instance;
-        float global= 75.0f;
+        float global= 50.0f;
         float effects= 70.0f;
         float music= 50.0f;
         Music currentMusic, lobbyMusic, survivalMusic, duelMusic;

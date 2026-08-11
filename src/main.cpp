@@ -47,9 +47,9 @@ int main() {
 
         EndDrawing();
 
+
         //controller
         if(cec != ControllerExitCode::CONTINUE) {
-            // game_manager->mode.reset();
 
             if(cec < ControllerExitCode::GOTO_TRAINING) { // lobby modalities
                 game_manager->mode = std::make_unique<Lobby>();

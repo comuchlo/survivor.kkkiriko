@@ -19,7 +19,7 @@ ControllerExitCode Credits::handleModality() {
 
 
 
-    if (IsKeyPressed(KEY_ESCAPE)) {//goto lobby
+    if (IsKeyPressed(KEY_ESCAPE) || IsKeyPressed(KEY_ENTER) || IsKeyPressed(KEY_Z) || IsKeyPressed(KEY_X)) {//goto lobby
         return ControllerExitCode::GOTO_LOBBY;
     }
 

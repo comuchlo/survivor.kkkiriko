@@ -13,25 +13,18 @@ ControllerExitCode LobbyMenu::handleModality() {
         switch (choice) {
             case MenuSelection::TRAINING:
                 return ControllerExitCode::GOTO_TRAINING;
-                break;
             case MenuSelection::SURVIVAL:
                 return ControllerExitCode::GOTO_SURVIVAL;
-                break;
             case MenuSelection::DUEL:
                 return ControllerExitCode::GOTO_DUEL;
-                break;
             case MenuSelection::SETTINGS:
                 return ControllerExitCode::GOTO_LOBBY_SETTINGS;
-                break;
             case MenuSelection::HOWTOPLAY:
                 return ControllerExitCode::GOTO_LOBBY_HOWTOPLAY;
-                break;
             case MenuSelection::CREDITS:
                 return ControllerExitCode::GOTO_LOBBY_CREDITS;
-                break;
             case MenuSelection::EXIT:
                 return ControllerExitCode::SHUTDOWN;
-                break;
         }
     }
 

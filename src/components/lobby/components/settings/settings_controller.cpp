@@ -82,7 +82,7 @@ ControllerExitCode Settings::handleModality() {
         }
 	}
 
-	if (IsKeyPressed(KEY_ENTER)) {
+	if (IsKeyPressed(KEY_ENTER) || IsKeyPressed(KEY_Z)) {
         switch (choice) {
             case SettingSelection::RESETAUDIO:
                 sys->soundManager->resetVolume();
@@ -95,6 +95,10 @@ ControllerExitCode Settings::handleModality() {
             default:
                 break;
         }
+	}
+
+	if(IsKeyPressed(KEY_X)){
+	return ControllerExitCode::GOTO_LOBBY;
 	}
 
 	return ControllerExitCode::CONTINUE;

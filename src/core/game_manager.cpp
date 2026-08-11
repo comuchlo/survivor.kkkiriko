@@ -8,7 +8,6 @@ GameManager::GameManager() {
 }
 
 GameManager::~GameManager() {
-    mode.reset();
 }
 
 GameManager* GameManager::getInstance(){

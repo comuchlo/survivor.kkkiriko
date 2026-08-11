@@ -14,7 +14,7 @@ ControllerExitCode HowToPlay::handleModality() {
             game_manager->camera1.offset.y+5, 1000.0f - drawer->RENDER_HEIGHT
         );
     }
-    if (IsKeyPressed(KEY_ESCAPE)) {//confirm
+    if (IsKeyPressed(KEY_ESCAPE) || IsKeyPressed(KEY_ENTER) || IsKeyPressed(KEY_Z) || IsKeyPressed(KEY_X)) {//confirm
         return ControllerExitCode::GOTO_LOBBY;
     }
 
