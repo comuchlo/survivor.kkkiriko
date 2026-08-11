@@ -6,9 +6,10 @@
 
 class Credits : public Modality {
     private:
-        static const int AUTOSCROLL_SPEED = 80, CREDITS_HEIGHT_END = 1100;
-        float shiftDown;
-        bool endedAutoScrool;
+        static const int DEF_AUTOSCROLL_SPEED = 80, MAX_AUTOSCROLL_SPEED = 320,
+            CREDITS_HEIGHT_END = 1100;
+        int autoscroll_speed;
+        bool endedAutoScrool, stoppedLastText;
 
         System* sys;
         DrawManager* drawer;

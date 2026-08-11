@@ -30,10 +30,14 @@ void Credits::drawModality() {
 		drawer->drawTextSF("Sounds", (renderW / 2) - ((float)MeasureText("Sounds", buttonFont) / 2), 920, buttonFont, RED, BLACK, BLACK);
 		drawer->drawTextSF("Giacomo Pasqualini", (renderW / 2) - ((float)MeasureText("Giacomo Pasqualini", buttonFont) / 2), 970, buttonFont, BLACK, BLACK, RED);
 
-		drawer->drawTextSF("Thanks for Playing!", (renderW / 2) - ((float)MeasureText("Thanks for Playing!", titleFont) / 2), CREDITS_HEIGHT_END+shiftDown, titleFont, RED, BLACK, BLACK);
-
-		if(endedAutoScrool)
-		    DrawText("(Press ESC to exit)", (renderW / 2) - ((float)MeasureText("(Press ESC to exit)", textFont) / 2), CREDITS_HEIGHT_END+shiftDown+95.0f, textFont, BLACK);
+		if(!stoppedLastText)
+		    drawer->drawTextSF("Thanks for Playing!", (renderW / 2) - ((float)MeasureText("Thanks for Playing!", titleFont) / 2), CREDITS_HEIGHT_END, titleFont, RED, BLACK, BLACK);
 
   EndMode2D();
+
+  if(stoppedLastText)
+      drawer->drawTextSF("Thanks for Playing!", (renderW / 2) - ((float)MeasureText("Thanks for Playing!", titleFont) / 2), (float)drawer->RENDER_HEIGHT/2 - (float)titleFont/2, titleFont, RED, BLACK, BLACK);
+  if(endedAutoScrool)
+      DrawText("(Press ESC to exit)", (renderW / 2) - ((float)MeasureText("(Press ESC to exit)", textFont) / 2), (float)drawer->RENDER_HEIGHT/2 + (float)titleFont/2 +5.0f, textFont, BLACK);
+
 }

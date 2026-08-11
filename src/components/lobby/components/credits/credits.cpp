@@ -8,8 +8,10 @@ Credits::Credits(Texture2D* backgroundImage) {
     this->backgroundImage = backgroundImage;
 
     game_manager->resetCamera1();
-    shiftDown = 0;
     endedAutoScrool = false;
+    stoppedLastText = false;
+
+    autoscroll_speed = DEF_AUTOSCROLL_SPEED;
 }
 
 Credits::~Credits() {
