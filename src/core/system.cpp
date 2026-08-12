@@ -50,7 +50,7 @@ int System::getFPS() {
 }
 
 bool System::shouldExit() { // alt + Kirk -> shot program
-    return shutdown || (IsKeyDown(KEY_LEFT_ALT) && IsKeyDown(KEY_K));
+    return shutdown || (IsKeyDown(KEY_LEFT_ALT) && IsKeyDown(KEY_K) || WindowShouldClose());
 }
 
 System::System(){
@@ -88,7 +88,7 @@ System::System(){
 
     soundManager = SoundManager::getInstance();
 
-    modalityType= ModalityType::NONE; // useful?
+    modalityType= ModalityType::NONE; // useful? // no ma è baka, pwe capirsi, credo
 }
 
 System::~System(){
@@ -174,7 +174,7 @@ void System::resetWindow() {
 }
 
  void System::resizeWindowByWidth(int width) {
-     float w = std::max( width, MIN_WIDTH);
+     float w = std::clamp(width, MIN_WIDTH, (int)(getMonitorSizeWH().x));
 
      SetWindowSize(
          w,

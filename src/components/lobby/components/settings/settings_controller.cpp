@@ -39,7 +39,7 @@ ControllerExitCode Settings::handleModality() {
             case SettingSelection::RESOLUTION:
                 if(sys->getDisplayMode() == DisplayMode::RESIZABLE_WINDOW) {
                     const auto [screenW, screenH] = sys->getScreenSizeWH();
-                    sys->resizeWindowByWidth(screenW+10);
+                    sys->resizeWindowByWidth(screenW+64);
                 }
                 break;
             default:
@@ -74,7 +74,7 @@ ControllerExitCode Settings::handleModality() {
             case SettingSelection::RESOLUTION:
                 if(sys->getDisplayMode() == DisplayMode::RESIZABLE_WINDOW) {
                     const auto [screenW, screenH] = sys->getScreenSizeWH();
-                    sys->resizeWindowByWidth(screenW-10);
+                    sys->resizeWindowByWidth(screenW-64);
                 }
                 break;
             default:
@@ -98,7 +98,7 @@ ControllerExitCode Settings::handleModality() {
 	}
 
 	if(IsKeyPressed(KEY_X)){
-	return ControllerExitCode::GOTO_LOBBY;
+	    return ControllerExitCode::GOTO_LOBBY;
 	}
 
 	return ControllerExitCode::CONTINUE;

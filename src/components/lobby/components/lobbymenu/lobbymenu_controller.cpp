@@ -3,13 +3,13 @@
 
 ControllerExitCode LobbyMenu::handleModality() {
 
-    if(IsKeyPressed(KEY_DOWN)) {
+    if(IsKeyPressed(KEY_DOWN) || IsKeyPressed(KEY_S)) {
         choice++;
     }
-    if(IsKeyPressed(KEY_UP)) {
+    if(IsKeyPressed(KEY_UP) || IsKeyPressed(KEY_W)) {
         choice--;
     }
-    if(IsKeyPressed(KEY_ENTER)) {// vigile in mutande
+    if(IsKeyPressed(KEY_ENTER) || IsKeyPressed(KEY_Z)) {// vigile in mutande
         switch (choice) {
             case MenuSelection::TRAINING:
                 return ControllerExitCode::GOTO_TRAINING;
