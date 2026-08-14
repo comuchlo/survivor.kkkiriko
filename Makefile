@@ -31,7 +31,7 @@
 .PHONY: all clean
 
 # Define required raylib variables
-PROJECT_NAME       ?= main
+PROJECT_NAME       ?= kirkgame
 RAYLIB_VERSION     ?= 4.2.0
 RAYLIB_PATH        ?= C:/raylib/raylib
 
@@ -212,7 +212,8 @@ CFLAGS += -Wall -std=c++17 -D_DEFAULT_SOURCE -Wno-missing-braces
 ifeq ($(BUILD_MODE),DEBUG)
     CFLAGS += -g -O0
 else
-    CFLAGS += -s -O1
+    CFLAGS += -O1
+    # -s
 endif
 
 # Additional flags for compiler (if desired)
@@ -402,26 +403,38 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
 
 -include $(OBJS:.o=.d)
 
-# Clean everything
+
 clean:
-ifeq ($(PLATFORM),PLATFORM_DESKTOP)
-    ifeq ($(PLATFORM_OS),WINDOWS)
-		del *.o *.d *.exe /s
-    endif
-    ifeq ($(PLATFORM_OS),LINUX)
-	find -type f -executable | xargs file -i | grep -E 'x-object|x-archive|x-sharedlib|x-executable' | rev | cut -d ':' -f 2- | rev | xargs rm -fv
-	find . -type f -name "*.d" -delete
-    endif
-    ifeq ($(PLATFORM_OS),OSX)
-		find . -type f -perm +ugo+x -delete
-		rm -f *.o *.d
-    endif
-endif
-ifeq ($(PLATFORM),PLATFORM_RPI)
-	find . -type f -executable -delete
-	rm -fv *.o *.d
-endif
+	rm -f $(OBJS) $(DEP)
+	rm -f $(PROJECT_NAME)
+
 ifeq ($(PLATFORM),PLATFORM_WEB)
-	del *.o *.d *.html *.js
+	rm -f *.html *.js
 endif
-	@echo Cleaning done
+
+	@echo "Cleaning done"
+
+
+# # Clean everything
+# clean:
+# ifeq ($(PLATFORM),PLATFORM_DESKTOP)
+#     ifeq ($(PLATFORM_OS),WINDOWS)
+# 		del *.o *.d *.exe /s
+#     endif
+#     ifeq ($(PLATFORM_OS),LINUX)
+#     	find -type f -executable | xargs file -i | grep -E 'x-object|x-archive|x-sharedlib|x-executable' | rev | cut -d ':' -f 2- | rev | xargs rm -fv
+#     	find . -type f -name "*.d" -delete
+#     endif
+#     ifeq ($(PLATFORM_OS),OSX)
+# 		find . -type f -perm +ugo+x -delete
+# 		rm -f *.o *.d
+#     endif
+# endif
+# ifeq ($(PLATFORM),PLATFORM_RPI)
+# 	find . -type f -executable -delete
+# 	rm -fv *.o *.d
+# endif
+# ifeq ($(PLATFORM),PLATFORM_WEB)
+# 	del *.o *.d *.html *.js
+# endif
+# 	@echo Cleaning done

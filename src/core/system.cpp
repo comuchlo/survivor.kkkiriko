@@ -3,6 +3,7 @@
 #include "modality.hpp"
 #include <algorithm>
 #include <chrono>
+#include <cstdio>
 #include <cstring>
 #include <raylib.h>
 
@@ -50,7 +51,7 @@ int System::getFPS() {
 }
 
 bool System::shouldExit() { // alt + Kirk -> shot program
-    return shutdown || (IsKeyDown(KEY_LEFT_ALT) && IsKeyDown(KEY_K) || WindowShouldClose());
+    return shutdown || (IsKeyDown(KEY_LEFT_ALT) && IsKeyDown(KEY_K)) || WindowShouldClose();
 }
 
 System::System(){
