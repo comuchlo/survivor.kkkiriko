@@ -3,9 +3,42 @@
 #include "modality.hpp"
 #include <algorithm>
 #include <chrono>
-#include <cstdio>
 #include <cstring>
 #include <raylib.h>
+
+DisplayMode& operator++(DisplayMode& val) {
+    if (val == DisplayMode::BORDERLESS_WINDOW){
+        val = DisplayMode::RESIZABLE_WINDOW;
+    }else{
+        val = static_cast<DisplayMode>(
+            static_cast<int>(val) + 1
+        );
+    }
+    return val;
+}
+
+DisplayMode operator++(DisplayMode& val, int) {
+  DisplayMode oldVal = val;
+  ++val; //reuse the preincrement implementation
+  return oldVal;
+}
+
+DisplayMode& operator--(DisplayMode& val) {
+    if (val == DisplayMode::RESIZABLE_WINDOW){
+        val = DisplayMode::BORDERLESS_WINDOW;
+    }else{
+        val = static_cast<DisplayMode>(
+            static_cast<int>(val) - 1
+        );
+    }
+    return val;
+}
+
+DisplayMode operator--(DisplayMode& val, int) {
+  DisplayMode oldVal = val;
+  --val; //reuse the predecrement implementation
+  return oldVal;
+}
 
 System* System::instance = nullptr;
 
@@ -46,8 +79,46 @@ void System::updateCurrentMonitor() {
 //     return { RENDER_WIDTH, RENDER_HEIGHT };
 // }
 
-int System::getFPS() {
+unsigned int System::getFPS() {
     return fps;
+}
+
+unsigned int System::getCurrentFPS() {
+    return GetFPS();
+}
+
+void System::incrementFPS() {
+    fps += DELTA_FPS;
+
+    if(fps > MAX_FPS) {
+        fps = MIN_FPS;
+    } else if(fps < MIN_FPS) {
+        fps = MAX_FPS;
+    }
+
+    SetTargetFPS(fps);
+}
+void System::decrementFPS() {
+    fps -= DELTA_FPS;
+
+    if(fps > MAX_FPS) {
+        fps = MIN_FPS;
+    } else if(fps < MIN_FPS) {
+        fps = MAX_FPS;
+    }
+
+    SetTargetFPS(fps);
+}
+
+bool System::isVsyncOn() {
+    return IsWindowState(FLAG_VSYNC_HINT);
+}
+
+void System::toggleVsync() {
+    if(isVsyncOn())
+        ClearWindowState(FLAG_VSYNC_HINT);
+    else
+        SetWindowState(FLAG_VSYNC_HINT);
 }
 
 bool System::shouldExit() { // alt + Kirk -> shot program
@@ -82,8 +153,8 @@ System::System(){
 
     borderlessWindow = false;
 
-    // render = LoadRenderTexture(RENDER_WIDTH, RENDER_HEIGHT);
-
+    // note: if V-SYNC works properly, SetTargetFPS may be able to only lower the FPS
+    // here SetTargetFPS is a fallback if V-SYNC is not supported
     fps = DEF_FPS;
     SetTargetFPS(fps);
 
@@ -172,6 +243,16 @@ void System::resetWindow() {
     );
 
     updateScreenSizeWH(); // update only
+}
+
+void System::resetVideo() {
+    resetWindow();
+
+    fps = DEF_FPS;
+    SetTargetFPS(fps);
+
+    if(!isVsyncOn()) toggleVsync();
+
 }
 
  void System::resizeWindowByWidth(int width) {

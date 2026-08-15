@@ -42,6 +42,12 @@ ControllerExitCode Settings::handleModality() {
                     sys->resizeWindowByWidth(screenW+64);
                 }
                 break;
+            case SettingSelection::FPS:
+                sys->incrementFPS();
+                break;
+            case SettingSelection::VSYNC:
+                sys->toggleVsync();
+                break;
             default:
                 break;
         }
@@ -77,6 +83,12 @@ ControllerExitCode Settings::handleModality() {
                     sys->resizeWindowByWidth(screenW-64);
                 }
                 break;
+            case SettingSelection::FPS:
+                sys->decrementFPS();
+                break;
+            case SettingSelection::VSYNC:
+                sys->toggleVsync();
+                break;
             default:
                 break;
         }
@@ -88,7 +100,7 @@ ControllerExitCode Settings::handleModality() {
                 sys->soundManager->resetVolume();
                 break;
             case SettingSelection::RESETVIDEO:
-                sys->resetWindow();
+                sys->resetVideo();
                 break;
             case SettingSelection::EXIT:
                 return ControllerExitCode::GOTO_LOBBY; // temp

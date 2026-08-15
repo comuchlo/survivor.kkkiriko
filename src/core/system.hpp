@@ -16,18 +16,25 @@ enum class DisplayMode {
     BORDERLESS_WINDOW = 3,
 };
 
+DisplayMode& operator++(DisplayMode& val);
+DisplayMode  operator++(DisplayMode& val, int);
+
+DisplayMode& operator--(DisplayMode& val);
+DisplayMode  operator--(DisplayMode& val, int);
+
 class System {
     private:
         static const int DEF_FPS = 60,
             DEF_WIDTH = 960, DEF_HEIGHT = 540, // default res should be 16:9
-            MIN_WIDTH = 640, MIN_HEIGHT = 360;
+            MIN_WIDTH = 640, MIN_HEIGHT = 360,
+            MIN_FPS = 0, MAX_FPS = 360, DELTA_FPS = 10; // N.B.: 0 fps = uncapped
 
         // static const int RENDER_WIDTH = 1920, RENDER_HEIGHT = 1080; // for render
 
         static System* instance;
 
         bool shutdown, pause, borderlessWindow;
-        int fps = 0, currMonitor, setting;
+        int fps, currMonitor, setting;
         float screenWidth, screenHeight, monitorWidth, monitorHeight;
         Vector2 mousePos;
         Font font;
@@ -58,7 +65,13 @@ class System {
         void updateMonitorSizeWH();
         void updateCurrentMonitor();
 
-        int getFPS();
+        unsigned int getFPS();
+        unsigned int getCurrentFPS();
+        void incrementFPS();
+        void decrementFPS();
+
+        bool isVsyncOn();
+        void toggleVsync();
 
         bool shouldExit();
         void shutDown();
@@ -72,6 +85,8 @@ class System {
         void checkWindowResized();
         DisplayMode getDisplayMode();
         void update();
+
+        void resetVideo();
 };
 
 #endif

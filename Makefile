@@ -23,15 +23,13 @@
 
 #**************************************************************************************************
 # ATTENTION: this file was modified in order to adapt compilation only for C++ (17)
-# part modified: - compilation flags ({std=c99 now std=c++17, std=gnu99 now std=gnu++})
-#                - target files (.c now .cpp , .h now .hpp)
 # NOTE: this project uses raylib.h not the wrapper raylib.hpp for C++
 #**************************************************************************************************
 
 .PHONY: all clean
 
 # Define required raylib variables
-PROJECT_NAME       ?= kirkgame
+PROJECT_NAME       ?= kkkirkgame
 RAYLIB_VERSION     ?= 4.2.0
 RAYLIB_PATH        ?= C:/raylib/raylib
 
@@ -111,6 +109,13 @@ ifeq ($(PLATFORM_OS),WINDOWS)
     MKDIR = if not exist "$(1)" mkdir "$(1)"
 else
     MKDIR = mkdir -p "$(1)"
+endif
+
+# remove function
+ifeq ($(PLATFORM_OS),WINDOWS)
+    RM = rmdir /s /q "$(1)"
+else
+    RM = rm -rf "$(1)"
 endif
 
 # RAYLIB_PATH adjustment for different platforms.
@@ -212,8 +217,8 @@ CFLAGS += -Wall -std=c++17 -D_DEFAULT_SOURCE -Wno-missing-braces
 ifeq ($(BUILD_MODE),DEBUG)
     CFLAGS += -g -O0
 else
-    CFLAGS += -O1
-    # -s
+    CFLAGS += -O1 -s
+    # no dai pk l'hai tolto? sono cattivo e lo rimetto
 endif
 
 # Additional flags for compiler (if desired)
@@ -363,8 +368,10 @@ endif
 rwildcard=$(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2) $(filter $(subst *,%,$2),$d))
 
 # Define all source files required
+# NOTE: all file and folder generated from "make" command should be in BUILD_DIR -> easy cleanup
 SRC_DIR = src
-OBJ_DIR = obj
+BUILD_DIR = build
+OBJ_DIR = $(BUILD_DIR)/obj
 
 # Define all object files from source files
 #
@@ -392,7 +399,7 @@ all:
 
 # Project target defined by PROJECT_NAME
 $(PROJECT_NAME): $(OBJS)
-	$(CC) -o $(PROJECT_NAME)$(EXT) $(OBJS) $(CFLAGS) $(INCLUDE_PATHS) $(LDFLAGS) $(LDLIBS) -D$(PLATFORM)
+	$(CC) -o $(BUILD_DIR)/$(PROJECT_NAME)$(EXT) $(OBJS) $(CFLAGS) $(INCLUDE_PATHS) $(LDFLAGS) $(LDLIBS) -D$(PLATFORM)
 
 # Compile source files
 # NOTE: This pattern will compile every module defined on $(OBJS)
@@ -405,36 +412,5 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
 
 
 clean:
-	rm -f $(OBJS) $(DEP)
-	rm -f $(PROJECT_NAME)
-
-ifeq ($(PLATFORM),PLATFORM_WEB)
-	rm -f *.html *.js
-endif
-
+	$(call RM,$(BUILD_DIR))
 	@echo "Cleaning done"
-
-
-# # Clean everything
-# clean:
-# ifeq ($(PLATFORM),PLATFORM_DESKTOP)
-#     ifeq ($(PLATFORM_OS),WINDOWS)
-# 		del *.o *.d *.exe /s
-#     endif
-#     ifeq ($(PLATFORM_OS),LINUX)
-#     	find -type f -executable | xargs file -i | grep -E 'x-object|x-archive|x-sharedlib|x-executable' | rev | cut -d ':' -f 2- | rev | xargs rm -fv
-#     	find . -type f -name "*.d" -delete
-#     endif
-#     ifeq ($(PLATFORM_OS),OSX)
-# 		find . -type f -perm +ugo+x -delete
-# 		rm -f *.o *.d
-#     endif
-# endif
-# ifeq ($(PLATFORM),PLATFORM_RPI)
-# 	find . -type f -executable -delete
-# 	rm -fv *.o *.d
-# endif
-# ifeq ($(PLATFORM),PLATFORM_WEB)
-# 	del *.o *.d *.html *.js
-# endif
-# 	@echo Cleaning done

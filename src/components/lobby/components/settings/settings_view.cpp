@@ -1,5 +1,6 @@
 #include "settings.hpp"
 #include <cstdio>
+#include <cstring>
 
 
 void Settings::drawModality() { //: master volume , music volume , effects volume
@@ -80,10 +81,45 @@ void Settings::drawModality() { //: master volume , music volume , effects volum
         }
 	}
 
+	//fps
+	drawer->drawTextSF("FPS", (renderWidth / 2) - ((float)MeasureText("FPS", buttonFont) / 2), 610 + shiftDown, buttonFont, BLACK, BLACK, (choice == SettingSelection::FPS) ? RED : WHITE);
+
+	if(choice == SettingSelection::FPS) {
+        shiftDown = 100;
+
+	    // max fps
+		const unsigned int tempFPS = sys->getFPS();
+		if(tempFPS == 0) {
+		    strcpy(tempbuffer, "maximum: uncapped");
+	    } else {
+			sprintf(tempbuffer, "maximum: %d", sys->getFPS());
+		}
+        drawer->drawTextSF(tempbuffer, (renderWidth / 2) - ((float)MeasureText(tempbuffer, textFont) / 2), 663, textFont, BLACK, BLACK, RED);
+        drawer->drawArrowSF((renderWidth / 2) - ((float)MeasureText(tempbuffer, textFont) / 2) - 15 - textFont, 663, textFont, textFont, 3.0f, true, BLACK, BLACK, RED);
+        drawer->drawArrowSF((renderWidth / 2) + ((float)MeasureText(tempbuffer, textFont) / 2) + 15, 663, textFont, textFont, 3.0f, false, BLACK, BLACK, RED);
+
+        // current fps
+        sprintf(tempbuffer, "current: %d", sys->getCurrentFPS());
+        drawer->drawTextSF(tempbuffer, (renderWidth / 2) - ((float)MeasureText(tempbuffer, textFont) / 2), 698, textFont, BLACK, BLACK, RED);
+
+	}
+
+	// vsync
+	drawer->drawTextSF("V-SYNC", (renderWidth / 2) - ((float)MeasureText("V-SYNC", buttonFont) / 2), 670 + shiftDown, buttonFont, BLACK, BLACK, (choice == SettingSelection::VSYNC) ? RED : WHITE);
+
+	if(choice == SettingSelection::VSYNC) {
+        shiftDown = 60;
+        strcpy(tempbuffer, (sys->isVsyncOn()) ? "ON" : "OFF");
+        drawer->drawTextSF(tempbuffer, (renderWidth / 2) - ((float)MeasureText(tempbuffer, textFont) / 2), 723, textFont, BLACK, BLACK, RED);
+        drawer->drawArrowSF((renderWidth / 2) - ((float)MeasureText(tempbuffer, textFont) / 2) - 15 - textFont, 723, textFont, textFont, 3.0f, true, BLACK, BLACK, RED);
+        drawer->drawArrowSF((renderWidth / 2) + ((float)MeasureText(tempbuffer, textFont) / 2) + 15, 723, textFont, textFont, 3.0f, false, BLACK, BLACK, RED);
+
+	}
+
 	//reset video
-	drawer->drawTextSF("Reset Video", (renderWidth / 2) - ((float)MeasureText("Reset Video", buttonFont) / 2), 610 + shiftDown, buttonFont, BLACK, BLACK, (choice == SettingSelection::RESETVIDEO) ? RED : WHITE);
+	drawer->drawTextSF("Reset Video", (renderWidth / 2) - ((float)MeasureText("Reset Video", buttonFont) / 2), 730 + shiftDown, buttonFont, BLACK, BLACK, (choice == SettingSelection::RESETVIDEO) ? RED : WHITE);
 
 	//Exit
-	drawer->drawTextSF("Exit", ( renderWidth / 2) - ((float)MeasureText("Exit", sys->buttonFontSize) / 2), 670 + shiftDown, buttonFont, BLACK, BLACK, (choice == SettingSelection::EXIT) ? RED : WHITE);
+	drawer->drawTextSF("Exit", ( renderWidth / 2) - ((float)MeasureText("Exit", sys->buttonFontSize) / 2), 790 + shiftDown, buttonFont, BLACK, BLACK, (choice == SettingSelection::EXIT) ? RED : WHITE);
 
 }
