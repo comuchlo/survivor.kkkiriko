@@ -16,21 +16,19 @@ enum class ModalityType {
 enum class ControllerExitCode {
     // CONTINUE = 0,
     // EXITMODALITY = 1,
+    // ok ormai per la lobby ma il riesto pls gestiamolo internamente nel component
+    // con un propio enum e logica, senza dover fare un cambio di contesto e passando comunque
+    // per il main, non con un'ulteriore astrazione che confonde i livelli di gestione usando
+    // un enum globale per una gestione locale come nella lobby
     GOTO_LOBBY = 0,
     GOTO_LOBBY_SETTINGS = 1,
     GOTO_LOBBY_HOWTOPLAY = 2,
     GOTO_LOBBY_CREDITS = 3,
     GOTO_TRAINING = 4,
-    GOTO_TRAINING_PAUSE = 5,
-    GOTO_TRAINING_SETTINGS = 6,
-    GOTO_SURVIVAL = 7,
-    GOTO_SURVIVAL_PAUSE = 8,
-    GOTO_SURVIVAL_SETTINGS = 9,
-    GOTO_DUEL = 10,
-    GOTO_DUEL_PAUSE = 11,
-    GOTO_DUEL_SETTINGS = 12,
-    CONTINUE = 13,
-    SHUTDOWN = 14,
+    GOTO_SURVIVAL = 5,
+    GOTO_DUEL = 6,
+    CONTINUE = 7,
+    SHUTDOWN = 8,
 };
 
 class Modality {// define general class to hold lobby, training, duel, survival
