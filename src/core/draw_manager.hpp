@@ -5,6 +5,12 @@
 #include "system.hpp"
 #include <raylib.h>
 
+enum class GAME_MAPS {
+    NONE=1,
+    URBAN=2,
+    GRASS=3,
+};
+
 class DrawManager {
     private:
         static DrawManager* instance;
@@ -32,6 +38,20 @@ class DrawManager {
         void drawRender();
 
         void update();
+
+        //Textures
+        Texture2D playerTexture, kunaiTexture, mapTexture;
+
+        void initSurvivorTextures(GAME_MAPS= GAME_MAPS::URBAN);
+        void destroySurvivorTextures();
+
+        Texture2D* getPlayerTexture();
+        Texture2D* getKunaiTexture();
+
+        GAME_MAPS loaded_map;
+        Texture2D* setMapTexture(GAME_MAPS= GAME_MAPS::URBAN);
+        Texture2D* getMapTexture();
+
 };
 
 

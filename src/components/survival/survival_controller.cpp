@@ -1,4 +1,8 @@
+#include "survival.hpp"
 
+ControllerExitCode Survival::handleModality() {
+    return ControllerExitCode::CONTINUE;
+}
 // void InitSurvival() {
 //   player1.x = screenWidth / 2 - 100;
 //   player1.y = screenHeight / 2 - 100;

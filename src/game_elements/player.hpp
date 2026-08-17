@@ -1,6 +1,7 @@
 #ifndef PLAYER_HPP
 #define PLAYER_HPP
 
+#include <cstdint>
 #include <raylib.h>
 #include <vector>
 #include "kunai.hpp"
@@ -13,17 +14,21 @@ enum class PlayerActions {
 };
 
 class Player {
-  float x, y;
-  int width, height, vita;
-  double xVel, yVel;
-  bool hitten;
-  unsigned short int hittenFrame, runningFrame, throwingFrame;
-  short int speed = 250;
-  unsigned long long score;
-  PlayerActions action;
-  Texture2D texture, attackTexture, kunaiTexture;
-  short int frameAnimazioneCamminata = 8, fpsAnimazioneCamminata = 8;
-  std::vector<Kunai> Kunais;
+    public:
+        Player();
+        Player(float, float, int16_t, int16_t, int16_t, int16_t= 250, int64_t = 0);
+
+        float x, y;
+        int16_t width, height, health;
+        double xVel, yVel;
+        bool hitten;
+        uint8_t hittenFrame, runningFrame, throwingFrame;
+        int16_t speed;
+        unsigned long long score;
+        PlayerActions action;
+        uint8_t frameAnimazioneCamminata, fpsAnimazioneCamminata;
+        std::vector<Kunai> kunais;
+        Texture2D* texture;
 };
 
 

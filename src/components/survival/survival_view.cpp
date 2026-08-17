@@ -1,3 +1,9 @@
+#include "survival.hpp"
+
+void Survival::drawModality() {
+}
+void Survival::drawEndModality() {
+}
 /* void DrawSurvival() {
   BeginMode2D(camera1);
 

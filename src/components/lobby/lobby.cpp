@@ -1,5 +1,6 @@
 #include "lobby.hpp"
 #include "components/lobbymenu/lobbymenu.hpp"
+#include <cstdio>
 #include <memory>
 
 Lobby::Lobby() {

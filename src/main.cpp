@@ -1,5 +1,6 @@
 // includes also "system.hpp" {"soundmanager.hpp" { <raylib.h> }, "modality.hpp"}
 #include "components/lobby/lobby.hpp"
+#include "components/survival/survival.hpp"
 // includes also "system.hpp" {"soundmanager.hpp" { <raylib.h> }, "modality.hpp"}
 #include "components/workinprogress/workinprogress.hpp"
 #include "core/draw_manager.hpp"
@@ -55,7 +56,7 @@ int main() {
                 game_manager->mode = std::make_unique<Lobby>();
 
             } else if(cec < ControllerExitCode::GOTO_SURVIVAL) { // training modalities
-                game_manager->mode = std::make_unique<WorkInProgress>();
+                game_manager->mode = std::make_unique<Survival>();
 
             } else if (cec < ControllerExitCode::GOTO_DUEL) { // survival modalities
                 game_manager->mode = std::make_unique<WorkInProgress>();

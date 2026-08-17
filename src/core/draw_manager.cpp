@@ -1,5 +1,6 @@
 #include "draw_manager.hpp"
 
+#include <cstdio>
 #include <limits>
 #include <raylib.h>
 
@@ -97,4 +98,50 @@ void DrawManager::update() { // to update actualScreen
             actualScreen.y = screenH / 2 - actualScreen.height / 2;
         }
     }
+}
+
+
+void DrawManager::initSurvivorTextures(GAME_MAPS map){
+    this->playerTexture= LoadTexture("./textures/kiriko.png");
+    this->kunaiTexture= LoadTexture("./textures/kunai.png");
+    this->setMapTexture(map);
+}
+
+void DrawManager::destroySurvivorTextures(){
+    UnloadTexture(this->playerTexture);
+    UnloadTexture(this->kunaiTexture);
+    UnloadTexture(this->mapTexture);
+}
+
+Texture2D* DrawManager::getPlayerTexture(){
+    if(!IsTextureValid(this->playerTexture)){
+        this->playerTexture= LoadTexture("./textures/kiriko.png");
+    }
+    return &(this->playerTexture);
+}
+Texture2D* DrawManager::getKunaiTexture(){
+    if(!IsTextureValid(this->kunaiTexture)){ //considering to skip this check
+        this->kunaiTexture= LoadTexture("./textures/kunai.png");
+    }
+    return &(this->kunaiTexture);
+}
+Texture2D* DrawManager::setMapTexture(GAME_MAPS map){
+    switch (map) {
+        case GAME_MAPS::NONE:
+        case GAME_MAPS::URBAN:
+            this->mapTexture= LoadTexture("./textures/map_urban.png");
+            this->loaded_map= GAME_MAPS::URBAN;
+            break;
+        case GAME_MAPS::GRASS:
+            this->mapTexture= LoadTexture("./textures/map_grass.png");
+            this->loaded_map= GAME_MAPS::GRASS;
+            break;
+    }
+    return &(this->mapTexture);
+}
+Texture2D* DrawManager::getMapTexture(){
+    if(this->loaded_map == GAME_MAPS::NONE || !IsTextureValid(this->mapTexture)){
+        this->setMapTexture();
+    }
+    return &(this->mapTexture);
 }
