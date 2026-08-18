@@ -234,8 +234,10 @@ void System::resetWindow() {
     }
     if(borderlessWindow) {
         ToggleBorderlessWindowed();
-    }
         borderlessWindow = false;
+    }
+
+    RestoreWindow();
 
     SetWindowSize(DEF_WIDTH, DEF_HEIGHT);
     SetWindowPosition( // center
@@ -258,6 +260,8 @@ void System::resetVideo() {
 
  void System::resizeWindowByWidth(int width) {
      float w = std::clamp(width, MIN_WIDTH, (int)(getMonitorSizeWH().x));
+
+     RestoreWindow();
 
      SetWindowSize(
          w,
