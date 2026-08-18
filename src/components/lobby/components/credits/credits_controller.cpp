@@ -1,10 +1,10 @@
 #include "credits.hpp"
 #include <raylib.h>
 
-ControllerExitCode Credits::handleModality() {
+LobbyState Credits::handleLobbySubMode() {
     // CHECK INPUT
     if (IsKeyPressed(KEY_ESCAPE) || IsKeyPressed(KEY_ENTER) || IsKeyPressed(KEY_Z) || IsKeyPressed(KEY_X)) {//goto lobby
-        return ControllerExitCode::GOTO_LOBBY;
+        return LobbyState::MENU;
     }
     autoscroll_speed = (IsKeyDown(KEY_DOWN) || IsKeyDown(KEY_S)) ?
         MAX_AUTOSCROLL_SPEED : DEF_AUTOSCROLL_SPEED;
@@ -31,5 +31,5 @@ ControllerExitCode Credits::handleModality() {
         endedAutoScrool = true;
     }
 
-    return ControllerExitCode::CONTINUE;
+    return LobbyState::CONTINUE_SELF;
 }

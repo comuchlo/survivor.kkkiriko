@@ -38,13 +38,6 @@ MenuSelection operator--(MenuSelection& val, int)
 }
 
 
-LobbyMenu::LobbyMenu(Texture2D* backgroundImage) {
-    choice = MenuSelection::TRAINING;
-    sys = System::getInstance();
-    drawer = DrawManager::getInstance();
-    this->backgroundImage = backgroundImage;
-}
-
-LobbyMenu::~LobbyMenu() {
-
+LobbyMenu::LobbyMenu() {
+    this->choice = MenuSelection::TRAINING;
 }

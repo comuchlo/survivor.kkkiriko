@@ -1,6 +1,8 @@
 #include "survival.hpp"
+#include <raylib.h>
 
 void Survival::drawModality() {
+    drawer->drawTextSF("surv", (1920.0f / 2) - ((float)MeasureText("Settings", 50) / 2), 50, 50, RED, WHITE, WHITE);
 }
 void Survival::drawEndModality() {
 }

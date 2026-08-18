@@ -1,32 +1,32 @@
 #include "lobbymenu.hpp"
+#include <cstdio>
 #include <raylib.h>
 
-ControllerExitCode LobbyMenu::handleModality() {
-
+LobbyState LobbyMenu::handleLobbySubMode() {
     if(IsKeyPressed(KEY_DOWN) || IsKeyPressed(KEY_S)) {
-        choice++;
+        this->choice++;
     }
     if(IsKeyPressed(KEY_UP) || IsKeyPressed(KEY_W)) {
-        choice--;
+        this->choice--;
     }
     if(IsKeyPressed(KEY_ENTER) || IsKeyPressed(KEY_Z)) {// vigile in mutande
-        switch (choice) {
+        switch (this->choice) {
             case MenuSelection::TRAINING:
-                return ControllerExitCode::GOTO_TRAINING;
-            case MenuSelection::SURVIVAL:
-                return ControllerExitCode::GOTO_SURVIVAL;
+                return LobbyState::GOTO_TRAINING;
             case MenuSelection::DUEL:
-                return ControllerExitCode::GOTO_DUEL;
+                return LobbyState::GOTO_DUEL;
+            case MenuSelection::SURVIVAL:
+                return LobbyState::GOTO_SURVIVAL;
             case MenuSelection::SETTINGS:
-                return ControllerExitCode::GOTO_LOBBY_SETTINGS;
+                return LobbyState::SETTINGS;
             case MenuSelection::HOWTOPLAY:
-                return ControllerExitCode::GOTO_LOBBY_HOWTOPLAY;
+                return LobbyState::HOWTOPLAY;
             case MenuSelection::CREDITS:
-                return ControllerExitCode::GOTO_LOBBY_CREDITS;
+                return LobbyState::CREDITS;
             case MenuSelection::EXIT:
-                return ControllerExitCode::SHUTDOWN;
+                return LobbyState::SHUTDOWN;
         }
     }
 
-    return ControllerExitCode::CONTINUE;
+    return LobbyState::CONTINUE_SELF;
 }

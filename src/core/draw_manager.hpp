@@ -40,13 +40,14 @@ class DrawManager {
         void update();
 
         //Textures
-        Texture2D playerTexture, kunaiTexture, mapTexture;
+        Texture2D playerTexture, kunaiTexture, mapTexture, lobbyBgTexture;
 
         void initSurvivorTextures(GAME_MAPS= GAME_MAPS::URBAN);
         void destroySurvivorTextures();
 
         Texture2D* getPlayerTexture();
         Texture2D* getKunaiTexture();
+        Texture2D* getLobbyBgTexture();
 
         GAME_MAPS loaded_map;
         Texture2D* setMapTexture(GAME_MAPS= GAME_MAPS::URBAN);

@@ -16,6 +16,10 @@ DrawManager::DrawManager() {
 
 DrawManager::~DrawManager() {
     UnloadRenderTexture(render);
+    UnloadTexture(kunaiTexture);
+    UnloadTexture(playerTexture);
+    UnloadTexture(mapTexture);
+    UnloadTexture(lobbyBgTexture);
 }
 
 DrawManager* DrawManager::getInstance(){
@@ -125,6 +129,13 @@ Texture2D* DrawManager::getKunaiTexture(){
     }
     return &(this->kunaiTexture);
 }
+Texture2D* DrawManager::getLobbyBgTexture(){
+    if(!IsTextureValid(this->lobbyBgTexture)){
+        this->lobbyBgTexture= LoadTexture("./textures/kirikobg2.png");
+    }
+    return &(this->lobbyBgTexture);
+}
+
 Texture2D* DrawManager::setMapTexture(GAME_MAPS map){
     switch (map) {
         case GAME_MAPS::NONE:

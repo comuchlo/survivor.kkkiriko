@@ -1,6 +1,11 @@
 #include "survival.hpp"
+#include <cstdio>
+#include <raylib.h>
 
 ControllerExitCode Survival::handleModality() {
+    if (IsKeyPressed(KEY_X)){
+        return ControllerExitCode::GOTO_LOBBY;
+    }
     return ControllerExitCode::CONTINUE;
 }
 // void InitSurvival() {

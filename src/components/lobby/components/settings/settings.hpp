@@ -1,7 +1,7 @@
 #ifndef SETTINGS_HPP
 #define SETTINGS_HPP
 
-#include "../../../../core/draw_manager.hpp"
+#include "../../lobby.hpp"
 #include <raylib.h>
 
 enum class SettingSelection {
@@ -23,18 +23,15 @@ SettingSelection  operator++(SettingSelection& val, int);
 SettingSelection& operator--(SettingSelection& val);
 SettingSelection  operator--(SettingSelection& val, int);
 
-class Settings : public Modality {
+class Settings : public LobbyScreen {
     private:
-        System* sys;
-        DrawManager* drawer;
         SettingSelection choice;
-        Texture2D* backgroundImage;
-
     public:
-        Settings(Texture2D* backgroundImage);
-        ~Settings() override;
+        Settings();
+        ~Settings() override = default;
         void drawModality() override;
-        ControllerExitCode handleModality() override;
+        LobbyState handleLobbySubMode() override;
+
 };
 
 #endif

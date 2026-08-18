@@ -52,22 +52,31 @@ int main() {
         //controller
         if(cec != ControllerExitCode::CONTINUE) {
 
-            if(cec < ControllerExitCode::GOTO_TRAINING) { // lobby modalities
-                game_manager->mode = std::make_unique<Lobby>();
+            switch (cec) {
+                case ControllerExitCode::GOTO_LOBBY:
+                    game_manager->mode = std::make_unique<Lobby>();
+                    break;
+                case ControllerExitCode::GOTO_DUEL:
+                    game_manager->mode = std::make_unique<WorkInProgress>();
+                    break;
 
-            } else if(cec < ControllerExitCode::GOTO_SURVIVAL) { // training modalities
-                game_manager->mode = std::make_unique<Survival>();
+                case ControllerExitCode::GOTO_TRAINING:
+                    game_manager->mode = std::make_unique<WorkInProgress>();
+                    break;
 
-            } else if (cec < ControllerExitCode::GOTO_DUEL) { // survival modalities
-                game_manager->mode = std::make_unique<WorkInProgress>();
+                case ControllerExitCode::GOTO_SURVIVAL:
+                    game_manager->mode = std::make_unique<Survival>();
+                    break;
 
-            } else if (cec < ControllerExitCode::CONTINUE) { // duel modalities
-                game_manager->mode = std::make_unique<WorkInProgress>();
+                case ControllerExitCode::SHUTDOWN:
+                    sys->shutDown();
+                    break;
 
-            } else if (cec == ControllerExitCode::SHUTDOWN) { // shutdown
-                sys->shutDown();
-
+                default:
+                    game_manager->mode = std::make_unique<Lobby>();
+                    break;
             }
+
         }
     }
 

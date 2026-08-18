@@ -5,27 +5,36 @@
 #include "components/howtoplay/howtoplay.hpp"
 #include "components/credits/credits.hpp"
 
+#include <cstdio>
 #include <memory>
 
 ControllerExitCode Lobby::handleModality() {
-    const ControllerExitCode cec = lobbyModality->handleModality();
+    const LobbyState lobby_state = lobbyModality->handleLobbySubMode();
 
-    switch (cec) {
-        case ControllerExitCode::GOTO_LOBBY:// ontroller can handle request
-            lobbyModality = std::make_unique<LobbyMenu>(&backgroundImage);
-            break;
-        case ControllerExitCode::GOTO_LOBBY_SETTINGS:
-            lobbyModality = std::make_unique<Settings>(&backgroundImage);
-            break;
-        case ControllerExitCode::GOTO_LOBBY_HOWTOPLAY:
-            lobbyModality = std::make_unique<HowToPlay>(&backgroundImage);
-            break;
-        case ControllerExitCode::GOTO_LOBBY_CREDITS:
-            lobbyModality = std::make_unique<Credits>(&backgroundImage);
-            break;
-        default: // can't handle request: forward it
-            return cec;
-    }
+        switch (lobby_state) {
+            case LobbyState::MENU:
+                lobbyModality = std::make_unique<LobbyMenu>();
+                break;
+            case LobbyState::SETTINGS:
+                lobbyModality = std::make_unique<Settings>();
+                break;
+            case LobbyState::HOWTOPLAY:
+                lobbyModality = std::make_unique<HowToPlay>();
+                break;
+            case LobbyState::CREDITS:
+                lobbyModality = std::make_unique<Credits>();
+                break;
+            case LobbyState::GOTO_SURVIVAL:
+                return ControllerExitCode::GOTO_SURVIVAL;
+            case LobbyState::GOTO_DUEL:
+                return ControllerExitCode::GOTO_DUEL;
+            case LobbyState::GOTO_TRAINING:
+                return ControllerExitCode::GOTO_TRAINING;
+            case LobbyState::SHUTDOWN:
+                return ControllerExitCode::SHUTDOWN;
+            case LobbyState::CONTINUE_SELF:
+                return ControllerExitCode::CONTINUE;
+        }
 
     return ControllerExitCode::CONTINUE;
 }

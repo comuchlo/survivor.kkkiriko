@@ -3,6 +3,7 @@
 #include "modality.hpp"
 #include <algorithm>
 #include <chrono>
+#include <cstdio>
 #include <cstring>
 #include <raylib.h>
 
@@ -133,7 +134,7 @@ System::System(){
     auto milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(duration).count();
     rng.seed(milliseconds);
 
-    icon = LoadImage("./textures/temp donut.png");
+    icon = LoadImage("./textures/donut.png");
 
     SetConfigFlags(FLAG_VSYNC_HINT | FLAG_WINDOW_RESIZABLE);
     InitWindow(DEF_WIDTH, DEF_HEIGHT, "Kiriko and the donuts");
@@ -233,8 +234,8 @@ void System::resetWindow() {
     }
     if(borderlessWindow) {
         ToggleBorderlessWindowed();
-        borderlessWindow = false;
     }
+        borderlessWindow = false;
 
     SetWindowSize(DEF_WIDTH, DEF_HEIGHT);
     SetWindowPosition( // center
@@ -267,8 +268,12 @@ void System::resetVideo() {
  }
 
  DisplayMode System::getDisplayMode() {
-     if(borderlessWindow) return DisplayMode::BORDERLESS_WINDOW;
-     if(IsWindowFullscreen()) return DisplayMode::FULLSCREEN;
+     if(borderlessWindow) {
+         return DisplayMode::BORDERLESS_WINDOW;
+     }
+     if(IsWindowFullscreen()) {
+         return DisplayMode::FULLSCREEN;
+     }
 
      return DisplayMode::RESIZABLE_WINDOW;
  }

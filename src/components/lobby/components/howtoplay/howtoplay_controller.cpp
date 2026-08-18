@@ -3,7 +3,7 @@
 #include <raylib.h>
 
 
-ControllerExitCode HowToPlay::handleModality() {
+LobbyState HowToPlay::handleLobbySubMode() {
     if (IsKeyDown(KEY_UP) || IsKeyDown(KEY_W)) {//up
         game_manager->camera1.offset.y = std::max(
             game_manager->camera1.offset.y-5, 0.0f
@@ -15,8 +15,8 @@ ControllerExitCode HowToPlay::handleModality() {
         );
     }
     if (IsKeyPressed(KEY_ESCAPE) || IsKeyPressed(KEY_ENTER) || IsKeyPressed(KEY_Z) || IsKeyPressed(KEY_X)) {//confirm
-        return ControllerExitCode::GOTO_LOBBY;
+        return LobbyState::MENU;
     }
 
-    return ControllerExitCode::CONTINUE;
+    return LobbyState::CONTINUE_SELF ;
 }

@@ -21,9 +21,9 @@ enum class ControllerExitCode {
     // per il main, non con un'ulteriore astrazione che confonde i livelli di gestione usando
     // un enum globale per una gestione locale come nella lobby
     GOTO_LOBBY = 0,
-    GOTO_LOBBY_SETTINGS = 1,
-    GOTO_LOBBY_HOWTOPLAY = 2,
-    GOTO_LOBBY_CREDITS = 3,
+    // GOTO_LOBBY_SETTINGS = 1,
+    // GOTO_LOBBY_HOWTOPLAY = 2,
+    // GOTO_LOBBY_CREDITS = 3,
     GOTO_TRAINING = 4,
     GOTO_SURVIVAL = 5,
     GOTO_DUEL = 6,

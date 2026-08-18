@@ -35,13 +35,6 @@ SettingSelection operator--(SettingSelection& val, int) {
   return oldVal;
 }
 
-Settings::Settings(Texture2D* backgroundImage) {
-    sys = System::getInstance();
-    drawer = DrawManager::getInstance();
-    this->backgroundImage = backgroundImage;
+Settings::Settings() {
     choice = SettingSelection::MASTERVOLUME;
-}
-
-Settings::~Settings() {
-
 }

@@ -3,7 +3,7 @@
 
 // #include "../../../../core/modality.hpp"
 // #include "../../../../core/system.hpp"
-#include "../../../../core/draw_manager.hpp"
+#include "../../lobby.hpp"
 #include <raylib.h>
 
 enum class MenuSelection{
@@ -23,21 +23,19 @@ MenuSelection& operator--(MenuSelection& val);
 MenuSelection  operator--(MenuSelection& val, int);
 
 
-class LobbyMenu : public Modality {
+class LobbyMenu : public LobbyScreen {
     private:
         MenuSelection choice;
-        System* sys;
-        DrawManager* drawer;
-        Texture2D* backgroundImage; //shared from parent
 
     public:
-        LobbyMenu(Texture2D* backgroundImage);
-        ~LobbyMenu() override;
+        LobbyMenu();
+        ~LobbyMenu() override = default;
 
         // inherited methods to override
         void drawModality() override;
         // void drawEndModality() override;
-        ControllerExitCode handleModality() override;
+        // ControllerExitCode handleModality() override;
+        LobbyState handleLobbySubMode() override;
 };
 
 

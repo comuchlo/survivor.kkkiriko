@@ -1,6 +1,6 @@
 #include "settings.hpp"
 
-ControllerExitCode Settings::handleModality() {
+LobbyState Settings::handleLobbySubMode() {
     //events
 	if (IsKeyPressed(KEY_UP) || IsKeyPressed(KEY_W)) {//up
 	    choice--;
@@ -26,13 +26,14 @@ ControllerExitCode Settings::handleModality() {
             case SettingSelection::DISPLAYMODE:
                 switch (sys->getDisplayMode()) {
                     case DisplayMode::BORDERLESS_WINDOW:
+
                         sys->resetWindow();
-                        break;
-                    case DisplayMode::FULLSCREEN:
-                        sys->setBorderlessWindow();
                         break;
                     case DisplayMode::RESIZABLE_WINDOW:
                         sys->setFullScreen();
+                        break;
+                    case DisplayMode::FULLSCREEN:
+                        sys->setBorderlessWindow();
                         break;
                 }
                 break;
@@ -103,15 +104,15 @@ ControllerExitCode Settings::handleModality() {
                 sys->resetVideo();
                 break;
             case SettingSelection::EXIT:
-                return ControllerExitCode::GOTO_LOBBY; // temp
+                return LobbyState::MENU; // temp
             default:
                 break;
         }
 	}
 
 	if(IsKeyPressed(KEY_X)){
-	    return ControllerExitCode::GOTO_LOBBY;
+	    return LobbyState::MENU;
 	}
 
-	return ControllerExitCode::CONTINUE;
+	return LobbyState::CONTINUE_SELF;
 }
