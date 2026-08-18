@@ -37,7 +37,6 @@ class Lobby : public Modality {
     private:
         System* sys;
         DrawManager* drawer;
-        Texture2D* backgroundImage;
 
     public:
 
