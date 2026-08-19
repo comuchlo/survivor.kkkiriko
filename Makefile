@@ -212,7 +212,7 @@ endif
 #  -std=gnu++           defines C language mode (GNU C from 1999 revision)
 #  -Wno-missing-braces  ignore invalid warning (GCC bug 53119)
 #  -D_DEFAULT_SOURCE    use with -std=c++17 on Linux and PLATFORM_WEB, required for timespec
-CFLAGS += -Wall -std=c++17 -D_DEFAULT_SOURCE -Wno-missing-braces
+CFLAGS += -Wall -Wextra -std=c++17 -D_DEFAULT_SOURCE -Wno-missing-braces -flto
 
 ifeq ($(BUILD_MODE),DEBUG)
     CFLAGS += -g -O0
