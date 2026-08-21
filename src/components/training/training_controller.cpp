@@ -1,49 +1,26 @@
-/* void InitTraining() {
-  player1.x = -100;
-  player1.y = -100;
-  player1.width = 200;
-  player1.height = 200;
-  player1.vita = 100;
-  player1.hitten = false;
-  player1.hittenFrame = 0;
-  player1.runningFrame = 0;
-  player1.throwingFrame = 0;
-  player1.score = 0;
-  player1.action = IDLE;
-  player1.xVel = playerSpeed;
-  player1.yVel = playerSpeed;
+#include "training.hpp"
 
-  vectorClearEnemies(enemies1);
-  vectorResizeEnemies(enemies1, 1);
+#include "components/traininggame/traininggame.hpp"
+#include "components/trainingmenu/trainingmenu.hpp"
 
-  Enemy enemy;
+#include <cstdio>
+#include <memory>
 
-  enemy.x = screenWidth / 2;
-  enemy.y = 0;
-  enemy.typeEnemy = CIAMBELLA;
-  enemy.width = ciambellaSize * 3;
-  enemy.height = ciambellaSize * 3;
-  enemy.vita = 75;
-  enemy.frameHit = 0;
+ControllerExitCode Training::handleModality() {
+    const TrainingState lobby_state = trainingModality->handleTrainingSubMode();
 
-  Vector2 vettoreVelocitaNemico = normalizeVector(
-    (Vector2) {
-      player1.x + player1.width / 2 - enemy.x + enemy.width / 2,
-      player1.y + player1.height / 2 - enemy.y + enemy.height / 2
-    }
-  );
+        switch (lobby_state) {
+            case TrainingState::IN_GAME:
+                trainingModality = std::make_unique<TrainingGame>(&trainingMap);
+                break;
+            case TrainingState::TRAINING_PAUSE_MENU:
+                trainingModality = std::make_unique<TrainingMenu>();
+                break;
+            case TrainingState::GOTO_LOBBY:
+                return ControllerExitCode::GOTO_LOBBY;
+            case TrainingState::CONTINUE:
+                return ControllerExitCode::CONTINUE;
+        }
 
-  enemy.xVel = vettoreVelocitaNemico.x * enemySpeed;
-  enemy.yVel = vettoreVelocitaNemico.y * enemySpeed;
-
-  enemy.oldRec = (Rectangle) {
-    enemy.x,
-    enemy.y,
-    enemy.width,
-    enemy.height
-  };
-
-  vectorPushEnemies(enemies1, enemy);
-
-  vectorClearKunais(kunais1);
-} */
+    return ControllerExitCode::CONTINUE;
+}

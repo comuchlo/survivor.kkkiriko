@@ -26,7 +26,6 @@ LobbyState Settings::handleLobbySubMode() {
             case SettingSelection::DISPLAYMODE:
                 switch (sys->getDisplayMode()) {
                     case DisplayMode::BORDERLESS_WINDOW:
-
                         sys->resetWindow();
                         break;
                     case DisplayMode::RESIZABLE_WINDOW:

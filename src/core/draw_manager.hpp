@@ -3,6 +3,7 @@
 
 // includes also "soundmanager.hpp" { <raylib.h> }, "modality.hpp"
 #include "system.hpp"
+#include <array>
 #include <raylib.h>
 
 enum class GAME_MAPS {
@@ -16,15 +17,22 @@ class DrawManager {
         static DrawManager* instance;
         System* sys;
 
+        Font fontRegular, fontOutline;
+        // font data
+        bool fontAvailable;
+
         // idealScreen WH = render WH
         const Rectangle idealScreen = {0.0f, 0.0f, RENDER_WIDTH, -RENDER_HEIGHT};
         Rectangle actualScreen; // need update() to work
+        std::array<RenderTexture2D, 2> renderSet; // render array -> fast frame swap
+        unsigned short int currRenderIndex;
 
         DrawManager();
-
     public:
-        static const int RENDER_WIDTH = 1920, RENDER_HEIGHT = 1080; // for render
-        RenderTexture2D render;
+        static const int RENDER_WIDTH = 1920, RENDER_HEIGHT = 1080, // for render
+            titleFontSize=90, subTitleFontSize=60,
+            buttonFontSize=40, textFontSize=30;
+
 
         ~DrawManager();
         DrawManager(const DrawManager&) = delete;
@@ -33,11 +41,21 @@ class DrawManager {
 
         // N.B.: every draw calls should refer to render width & height
         void drawRangeBar(int progress, int height);
-        void drawTextSF(const char *text, int x, int y, int font, Color col1, Color col2, Color col3);
+        void drawText(const char *text, int x, int y, int fontSize, Color col);
+        void drawTextSF(const char *text, int x, int y, int fontSize, Color col1, Color col2, Color col3);
+        void drawTextSFC(const char *text, int y, int fontSize, Color col1, Color col2, Color col3);
         void drawArrowSF(float x, float y, float width, float height, float thick, bool verse, Color col1, Color col2, Color col3);
+        float measureText(const char *text, int fontSize);
+
+        RenderTexture2D* currRender();
+        RenderTexture2D* prevRender();
+        void switchRender();
         void drawRender();
 
         void update();
+
+        Texture2D* getPrevRenderTexture();
+        void unsetPrevRenderTexture();
 
         //Textures
         Texture2D playerTexture, kunaiTexture, mapTexture, lobbyBgTexture;

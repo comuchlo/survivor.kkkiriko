@@ -37,14 +37,10 @@ class System {
         int fps, currMonitor, setting;
         float screenWidth, screenHeight, monitorWidth, monitorHeight;
         Vector2 mousePos;
-        Font font;
         Image icon;
 
         System();
     public:
-        static const int titlefontSize=90, subTitleFontSize=60,
-            buttonFontSize=40, textFontSize=30;
-
         RNG rng;
         SoundManager* soundManager; // only system should acquire soundManager
         int choice;
@@ -82,7 +78,6 @@ class System {
         void maximizeWindow();
         void resetWindow();
         void resizeWindowByWidth(int width);
-        void checkWindowResized();
         DisplayMode getDisplayMode();
         void update();
 

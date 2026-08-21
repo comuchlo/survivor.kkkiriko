@@ -13,7 +13,7 @@ LobbyState Credits::handleLobbySubMode() {
     // UPDATE
     // translate 2D coord to screen coord of the last text
     float creditsHEndByScreen = GetWorldToScreen2D(
-        {0.0f, CREDITS_HEIGHT_END+(float)sys->titlefontSize/2}, //center of the final text
+        {0.0f, CREDITS_HEIGHT_END+(float)drawer->titleFontSize/2}, //center of the final text
         game_manager->camera1
     ).y;
 

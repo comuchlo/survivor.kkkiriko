@@ -1,25 +1,61 @@
 #include "draw_manager.hpp"
 
+#include <array>
 #include <cstdio>
+#include <iostream>
 #include <limits>
 #include <raylib.h>
+#include "../utils/utils.hpp"
 
 
 DrawManager* DrawManager::instance = nullptr;
 
 DrawManager::DrawManager() {
+    const char *REGULAR_FONT_PATH = "./fonts/logofontik/logofontik.4f.ttf",
+        *OUTLINE_FONT_PATH = "./fonts/logofontik/logofontik.extruded-4f.ttf";
+
     sys = System::getInstance();
-    render = LoadRenderTexture(RENDER_WIDTH, RENDER_HEIGHT);
+
+    currRenderIndex = 0;
+    // load render foreach
+    for(auto i = renderSet.begin(); i != renderSet.cend(); i++) {
+        *i = LoadRenderTexture(RENDER_WIDTH, RENDER_HEIGHT);
+    }
+
+    // load fonts
+    // check if the fonts are available
+    if(fileExists(REGULAR_FONT_PATH)) {
+        // note: NULL, 0 in code points and its count = default
+        fontRegular = LoadFontEx(REGULAR_FONT_PATH, titleFontSize, NULL, 0);
+        fontOutline = LoadFontEx(OUTLINE_FONT_PATH, titleFontSize, NULL, 0);
+        fontAvailable = true;
+
+    } else {
+        fontRegular = {0};
+        fontOutline = {0};
+        fontAvailable = false;
+
+    }
+
+    std::cout<<"FONT IS AVAILABLE ? " << ((fontAvailable) ? "YES" : "NO")<<std::endl;
 
     update(); // to update actual screen
 }
 
 DrawManager::~DrawManager() {
-    UnloadRenderTexture(render);
+    for(auto i = renderSet.begin(); i != renderSet.cend(); i++) {
+        UnloadRenderTexture(*i);
+    }
+
     UnloadTexture(kunaiTexture);
     UnloadTexture(playerTexture);
     UnloadTexture(mapTexture);
     UnloadTexture(lobbyBgTexture);
+
+    if(fontAvailable) {
+        UnloadFont(fontRegular);
+        UnloadFont(fontOutline);
+    }
 }
 
 DrawManager* DrawManager::getInstance(){
@@ -27,12 +63,6 @@ DrawManager* DrawManager::getInstance(){
             instance = new DrawManager();
     }
     return instance;
-}
-
-void DrawManager::drawTextSF(const char *text, int x, int y, int font, Color col1, Color col2, Color col3) {
-   	DrawText(text, x - 2, y - 2, font, col1);
-   	DrawText(text, x, y, font, col2);
-   	DrawText(text, x + 2, y + 2, font, col3);
 }
 
 void DrawManager::drawRangeBar(int progress, int height) {
@@ -50,6 +80,39 @@ void DrawManager::drawRangeBar(int progress, int height) {
 
    	DrawRectangle((RENDER_WIDTH / 2) - 127 + progressLenght, height - 1, 10, 26, BLACK);//outerRangeCursor
    	DrawRectangle((RENDER_WIDTH / 2) - 125 + progressLenght, height + 1, 6, 22, RED);//innerRangeCursor
+}
+
+void DrawManager::drawText(const char *text, int x, int y, int fontSize, Color col) {
+    if(fontAvailable) {
+        DrawTextEx(fontRegular, text, {(float)x, (float)y}, fontSize, 0, col);
+    } else {
+        DrawText(text, x, y, fontSize, col);
+    }
+}
+
+void DrawManager::drawTextSF(const char *text, int x, int y, int fontSize, Color col1, Color col2, Color col3) {
+    if(fontAvailable) {
+        DrawTextEx(fontRegular, text, {(float)x, (float)y}, fontSize, 0, col3);
+        DrawTextEx(fontOutline, text, {(float)x, (float)y}, fontSize, 0, col1);
+    } else {
+        DrawText(text, x - 2, y - 2, fontSize, col1);
+       	DrawText(text, x, y, fontSize, col2);
+       	DrawText(text, x + 2, y + 2, fontSize, col3);
+    }
+}
+
+// drawTextSF but x-axis-centered based on RENDER_WIDTH
+void DrawManager::drawTextSFC(const char *text, int y, int fontSize, Color col1, Color col2, Color col3) {
+    if(fontAvailable) {
+        const float x = (float)RENDER_WIDTH/2 - MeasureTextEx(fontRegular, text, fontSize, 0).x/2;
+        DrawTextEx(fontRegular, text, {x, (float)y}, fontSize, 0, col3);
+        DrawTextEx(fontOutline, text, {x, (float)y}, fontSize, 0, col1);
+    } else {
+        const int x = (float)RENDER_WIDTH/2 - (float)MeasureText(text, fontSize)/2;
+        DrawText(text, x - 2, y - 2, fontSize, col1);
+       	DrawText(text, x, y, fontSize, col2);
+       	DrawText(text, x + 2, y + 2, fontSize, col3);
+    }
 }
 
 void DrawManager::drawArrowSF(float x, float y, float width, float height, float thick, bool verse, Color col1, Color col2, Color col3) {
@@ -74,15 +137,37 @@ void DrawManager::drawArrowSF(float x, float y, float width, float height, float
    	}
 }
 
+float DrawManager::measureText(const char *text, int fontSize) {
+    return (fontAvailable) ?
+        MeasureTextEx(fontRegular, text, fontSize, 0).x :
+        (float)MeasureText(text, fontSize);
+}
+
 void DrawManager::drawRender() {
     DrawTexturePro(
-        render.texture,
+        renderSet[currRenderIndex].texture,
         idealScreen, //source
         actualScreen, //dest
         {0.0f, 0.0f}, //origin
         0.0f, //rotation
         WHITE
     );
+}
+
+RenderTexture2D* DrawManager::currRender() {
+    return &renderSet[currRenderIndex];
+}
+
+RenderTexture2D* DrawManager::prevRender() {
+    int index = currRenderIndex-1;
+    if(index < 0) index = renderSet.size()-1;
+
+    return &renderSet[index];
+}
+
+void DrawManager::switchRender() {
+    currRenderIndex++;
+    if(currRenderIndex >= renderSet.size()) currRenderIndex = 0;
 }
 
 void DrawManager::update() { // to update actualScreen
@@ -103,7 +188,6 @@ void DrawManager::update() { // to update actualScreen
         }
     }
 }
-
 
 void DrawManager::initSurvivorTextures(GAME_MAPS map){
     this->playerTexture= LoadTexture("./textures/kiriko.png");

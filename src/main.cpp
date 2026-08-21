@@ -2,6 +2,7 @@
 #include "components/lobby/lobby.hpp"
 #include "components/survival/survival.hpp"
 // includes also "system.hpp" {"soundmanager.hpp" { <raylib.h> }, "modality.hpp"}
+#include "components/training/training.hpp"
 #include "components/workinprogress/workinprogress.hpp"
 #include "core/draw_manager.hpp"
 #include "core/game_manager.hpp"
@@ -38,7 +39,7 @@ int main() {
             ClearBackground(BLACK);
 
             //all drawing goes into render
-            BeginTextureMode(draw_manager->render);
+            BeginTextureMode(*draw_manager->currRender());
                 ClearBackground(BLACK);
                 game_manager->mode->drawModality();
             EndTextureMode();
@@ -61,7 +62,7 @@ int main() {
                     break;
 
                 case ControllerExitCode::GOTO_TRAINING:
-                    game_manager->mode = std::make_unique<WorkInProgress>();
+                    game_manager->mode = std::make_unique<Training>();
                     break;
 
                 case ControllerExitCode::GOTO_SURVIVAL:
