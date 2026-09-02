@@ -1,8 +1,19 @@
 #include "trainingmenu.hpp"
+#include <cstring>
 #include <raylib.h>
 
 void TrainingMenu::drawModality() {
-    const int renderW = drawer->RENDER_WIDTH, renderH = drawer->RENDER_HEIGHT;
+    const float renderW = drawer->RENDER_WIDTH, renderH = drawer->RENDER_HEIGHT;
+    const auto [screenW, screenH] = sys->getScreenSizeWH();
+    const int titleFont= drawer->titleFontSize, buttonFont= drawer->buttonFontSize,
+        subTitleFont= drawer->subTitleFontSize, textFont = drawer->textFontSize;
+    const DisplayMode dm = sys->getDisplayMode();
+
+    const int arrowPadding = 15;
+    const float arrowThickness = 3.0f;
+
+    int currH = 250;
+    char tempbuffer[60];
 
     // background
     DrawTexture(drawer->prevRender()->texture, 0, 0, WHITE);
@@ -20,7 +31,191 @@ void TrainingMenu::drawModality() {
     DrawRectangle((renderW/3)-5, 0, (renderW/3)+10, renderH, BLACK);//outerbody
     DrawRectangle(renderW/3, 0, renderW/3, renderH, GRAY);//innerbody
 
-    // TODO: CONTINUE
+    //title
+    drawer->drawTextSFC("Training", 20, titleFont, RED, BLACK, BLACK);
+    drawer->drawTextSFC("options", 130, subTitleFont, RED, BLACK, BLACK);
+
+    //line separator (draw line SF)
+    DrawLineEx(
+        (Vector2){renderW/3 +8.0f,223},
+        (Vector2){((renderW/3)*2)-12.0f,223},
+        3,
+        BLACK
+    );
+    DrawLineEx(
+        (Vector2){renderW/3 +10.0f,225},
+        (Vector2){((renderW/3)*2)-10.0f,225},
+        3,
+        RED
+    );
+    DrawLineEx(
+        (Vector2){renderW/3 +12.0f,227},
+        (Vector2){((renderW/3)*2)-8.0f,227},
+        3,
+        BLACK
+    );
+
+    switch (macroSelection) {
+        // GENERAL ------------------------------------------------------------
+        case TrainingMenuMacroSelection::GENERAL:
+            //settings view
+            strcpy(tempbuffer, "General");
+            drawer->drawTextSFCA(tempbuffer, currH, subTitleFont, choiceOnGeneral == SettingModSelection::INDEX, arrowPadding, arrowThickness, BLACK, BLACK, (choiceOnGeneral == SettingModSelection::INDEX) ? RED : WHITE);
+
+            //Master Volume
+            currH+= 100;
+            drawer->drawTextSFC("Master Volume", currH, buttonFont, BLACK, BLACK, (choiceOnGeneral == SettingModSelection::MASTERVOLUME) ? RED : WHITE);
+
+           	if (choiceOnGeneral == SettingModSelection::MASTERVOLUME) {//Master Volume range bar if MasterVolume is focussed
+          		currH+= 53;
+          		drawer->drawRangeBar(sys->soundManager->getGlobalLvl(), currH);
+           	}
+
+           	//Music Volume
+           	currH+= 60;
+           	drawer->drawTextSFC("Music Volume", currH, buttonFont, BLACK, BLACK, (choiceOnGeneral == SettingModSelection::MUSICVOLUME) ? RED : WHITE);
+
+           	if (choiceOnGeneral == SettingModSelection::MUSICVOLUME) {//Music Volume range bar if MusicVolume is focussed
+          		currH+= 53;
+          		drawer->drawRangeBar(sys->soundManager->getMusicLvl(), currH);
+           	}
+
+           	//Effects Volume
+           	currH+= 60;
+           	drawer->drawTextSFC("Effects Volume", currH, buttonFont, BLACK, BLACK, (choiceOnGeneral == SettingModSelection::EFFECTSVOLUME) ? RED : WHITE);
+
+           	if (choiceOnGeneral == SettingModSelection::EFFECTSVOLUME) {//Effects Volume range bar if EffectsVolume is focussed
+          		currH+= 53;
+          		drawer->drawRangeBar(sys->soundManager->getSfxLvl(), currH);
+           	}
+
+           	//reset the settings
+           	currH+= 60;
+           	drawer->drawTextSFC("Reset audio Settings", currH, buttonFont, BLACK, BLACK, (choiceOnGeneral == SettingModSelection::RESETAUDIO) ? RED : WHITE);
+
+           	// display mode
+           	currH+= 60;
+           	drawer->drawTextSFC("Display Mode", currH, buttonFont, BLACK, BLACK, (choiceOnGeneral == SettingModSelection::DISPLAYMODE) ? RED : WHITE);
+
+           	if(choiceOnGeneral == SettingModSelection::DISPLAYMODE) {
+                currH+= 53;
+
+               	sprintf(
+               	    tempbuffer,
+              		"%s",
+              		(dm == DisplayMode::BORDERLESS_WINDOW) ?
+              		    "Borderless window" :
+             			((dm == DisplayMode::FULLSCREEN) ?
+             			    "Fullscreen" :
+                				"Resizable window"
+             			)
+               	);
+
+                drawer->drawTextSFCA(tempbuffer, currH, textFont, true, arrowPadding, arrowThickness, BLACK, BLACK, (choiceOnGeneral == SettingModSelection::DISPLAYMODE) ? RED : WHITE);
+           	}
+
+           	//resolution
+           	currH+= 60;
+           	drawer->drawTextSFC("Resolution", currH, buttonFont, BLACK, BLACK, (choiceOnGeneral == SettingModSelection::RESOLUTION) ? RED : WHITE);
+
+           	if(choiceOnGeneral == SettingModSelection::RESOLUTION) {
+          		currH+= 53;
+           	    sprintf(tempbuffer, "%.0f x %.0f", screenW, screenH);
+          		drawer->drawTextSFCA(tempbuffer, currH, textFont, dm == DisplayMode::RESIZABLE_WINDOW, arrowPadding, arrowThickness, BLACK, BLACK, (choiceOnGeneral == SettingModSelection::RESOLUTION) ? RED : WHITE);
+           	}
+
+           	//fps
+           	currH+= 60;
+           	drawer->drawTextSFC("FPS", currH, buttonFont, BLACK, BLACK, (choiceOnGeneral == SettingModSelection::FPS) ? RED : WHITE);
+
+           	if(choiceOnGeneral == SettingModSelection::FPS) {
+                currH+= 53;
+
+           	    // max fps
+          		const unsigned int tempFPS = sys->getFPS();
+          		if(tempFPS == 0) {
+          		    strcpy(tempbuffer, "maximum: uncapped");
+           	    } else {
+         			sprintf(tempbuffer, "maximum: %d", sys->getFPS());
+          		}
+          		drawer->drawTextSFCA(tempbuffer, currH, textFont, true, arrowPadding, arrowThickness, BLACK, BLACK, RED);
+
+                // current fps
+                currH+= 35;
+                sprintf(tempbuffer, "current: %d", sys->getCurrentFPS());
+                drawer->drawTextSFC(tempbuffer, currH, textFont, BLACK, BLACK, RED);
+           	}
+
+           	// vsync
+           	currH+= 60;
+           	drawer->drawTextSFC("V-SYNC", currH, buttonFont, BLACK, BLACK, (choiceOnGeneral == SettingModSelection::VSYNC) ? RED : WHITE);
+
+           	if(choiceOnGeneral == SettingModSelection::VSYNC) {
+                currH+= 53;
+                strcpy(tempbuffer, (sys->isVsyncOn()) ? "ON" : "OFF");
+                drawer->drawTextSFCA(tempbuffer, currH, textFont, true, arrowPadding, arrowThickness, BLACK, BLACK, RED);
+
+           	}
+
+           	//reset video
+           	currH+= 60;
+           	drawer->drawTextSFC("Reset Video", currH, buttonFont, BLACK, BLACK, (choiceOnGeneral == SettingModSelection::RESETVIDEO) ? RED : WHITE);
+
+            //Resume
+           	currH+= 60;
+           	drawer->drawTextSFC("Resume", currH, buttonFont, BLACK, BLACK, (choiceOnGeneral == SettingModSelection::RESUME) ? RED : WHITE);
+
+           	//Exit
+           	currH+= 60;
+           	drawer->drawTextSFC("Exit", currH, buttonFont, BLACK, BLACK, (choiceOnGeneral == SettingModSelection::EXIT) ? RED : WHITE);
+
+            break;
+
+        // PLAYER ------------------------------------------------------------
+        case TrainingMenuMacroSelection::PLAYER:
+            strcpy(tempbuffer, "Player");
+            drawer->drawTextSFCA(tempbuffer, currH, subTitleFont, choiceOnPlayer == PlayerModSelection::INDEX, arrowPadding, arrowThickness, BLACK, BLACK, (choiceOnPlayer == PlayerModSelection::INDEX) ? RED : WHITE);
+
+            // skin
+            currH+= 100;
+            if(choiceOnPlayer == PlayerModSelection::SKIN) {
+                drawer->drawTextSFC("Skin", currH, buttonFont, BLACK, BLACK, RED);
+
+                currH+= 53;
+                // TODO: continue (need Player mechanics to be defined firstly)
+            } else {
+                drawer->drawTextSFC("Skin", currH, buttonFont, BLACK, BLACK, WHITE);
+
+            }
+            // hp
+            // strenght
+            // movement speed
+            // attack speed
+            // dimension
+            // ult
+            // resume
+            // exit
+            break;
+
+        // ENEMY ------------------------------------------------------------
+        case TrainingMenuMacroSelection::ENEMY:
+            strcpy(tempbuffer, "Enemy");
+            drawer->drawTextSFCA(tempbuffer, currH, subTitleFont, choiceOnEnemy == EnemyModSelection::INDEX, arrowPadding, arrowThickness, BLACK, BLACK, (choiceOnEnemy == EnemyModSelection::INDEX) ? RED : WHITE);
+
+            //type
+            // generation criteria
+            // hp
+            // strenght
+            // movement speed
+            // attack speed
+            // dimension
+            // behaviour
+            // resume
+            // exit
+            break;
+    }
+
+
 }
 
 /*

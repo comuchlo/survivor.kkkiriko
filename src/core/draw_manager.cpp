@@ -101,7 +101,6 @@ void DrawManager::drawTextSF(const char *text, int x, int y, int fontSize, Color
     }
 }
 
-// drawTextSF but x-axis-centered based on RENDER_WIDTH
 void DrawManager::drawTextSFC(const char *text, int y, int fontSize, Color col1, Color col2, Color col3) {
     if(fontAvailable) {
         const float x = (float)RENDER_WIDTH/2 - MeasureTextEx(fontRegular, text, fontSize, 0).x/2;
@@ -136,6 +135,31 @@ void DrawManager::drawArrowSF(float x, float y, float width, float height, float
   		DrawLineEx((Vector2){x+width+2,y+height+2},(Vector2){x+2,y+(height/2)+2},thick,col3);
    	}
 }
+
+void DrawManager::drawTextSFCA(const char *text, int y, int fontSize, bool drawArrow, int arrowPadding, float arrowThickness, Color col1, Color col2, Color col3) {
+    float halfTextLen, x;
+
+    if(fontAvailable) {
+        halfTextLen = MeasureTextEx(fontRegular, text, fontSize, 0).x/2;
+        x = (float)RENDER_WIDTH/2 - halfTextLen;
+
+        DrawTextEx(fontRegular, text, {x, (float)y}, fontSize, 0, col3);
+        DrawTextEx(fontOutline, text, {x, (float)y}, fontSize, 0, col1);
+    } else {
+        halfTextLen = (float)MeasureText(text, fontSize)/2;
+        x = (float)RENDER_WIDTH/2 - halfTextLen;
+
+        DrawText(text, x - 2, y - 2, fontSize, col1);
+       	DrawText(text, x, y, fontSize, col2);
+       	DrawText(text, x + 2, y + 2, fontSize, col3);
+    }
+
+    if(drawArrow) {
+        drawArrowSF(x - arrowPadding - fontSize, y, fontSize, fontSize, arrowThickness, true, col1, col2, col3);
+        drawArrowSF(((float)RENDER_WIDTH / 2) + halfTextLen + arrowPadding, y, fontSize, fontSize, arrowThickness, false, col1, col2, col3);
+    }
+}
+
 
 float DrawManager::measureText(const char *text, int fontSize) {
     return (fontAvailable) ?
