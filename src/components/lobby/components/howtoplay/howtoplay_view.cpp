@@ -11,7 +11,7 @@ void HowToPlay::drawModality() {
 	DrawTexture(*backgroundImage, 0, 0, WHITE); // render is same res as image
 	DrawRectangle(0, 0, renderWidth, renderHeight, GetColor(0xb0b0b05f));//darken bg
 
-	BeginMode2D(game_manager->camera1);
+	BeginMode2D(game_manager->cameras[0]);
         drawer->drawTextSFC("How to Play", currH, titleFont, RED, BLACK, BLACK);
         currH+= 200;
     	drawer->drawTextSFC("Hi and welcome to 'Kiriko and the donuts!'", currH, subTitleFont, BLACK, BLACK, RED);

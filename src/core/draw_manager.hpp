@@ -4,16 +4,55 @@
 // includes also "soundmanager.hpp" { <raylib.h> }, "modality.hpp"
 #include "system.hpp"
 #include <array>
+#include <cstdint>
 #include <raylib.h>
+#include <string>
+#include <unordered_map>
+#include <vector>
 
-enum class GAME_MAPS {
+enum class GameMaps {
     NONE=1,
     URBAN=2,
     GRASS=3,
 };
 
+enum class InitializedModality {
+    NONE = 0,
+    TRAINING,
+    SURVIVAL,
+    DUEL,
+};
+
+typedef struct {
+    // (N.B.: kunai is part of the skin of the player)
+
+    // name of the skin (≈ id)
+    const char* name;
+
+    // total frame number for each skin-type
+    uint8_t idleTotFrame, runTotFrame, attackTotFrame, kunaiTotFrame;
+
+    // specify common-for-all skin-frame width and height
+    float width, topHeight, bottomHeight,
+    // specify width and height of the kunai
+        kunaiWidth, kunaiHeight,
+    // specify coords where every frame-skin-type is
+        topIdleY, bottomIdleY,
+        topRunY, bottomRunY,
+        topAttackY,
+    // specify coords of kunai
+        kunaiY;
+} PlayerSkinInfo;
+
+typedef struct {
+    PlayerSkinInfo skinInfo;
+    Texture2D texture;
+} PlayerSkin;
+
 class DrawManager {
     private:
+        const char *TEXTURES_FOLDER = "./textures/",
+            *PLAYERSKIN_FOLDER = "./textures/playerskins/";
         static DrawManager* instance;
         System* sys;
 
@@ -27,12 +66,24 @@ class DrawManager {
         std::array<RenderTexture2D, 2> renderSet; // render array -> fast frame swap
         unsigned short int currRenderIndex;
 
+        // textures & skins
+        std::unordered_map<std::string, PlayerSkin> playerSkins;
+        Texture2D mapTexture, lobbyBgTexture;
+
+        GameMaps loaded_map;
+
+        // mark what modality was initialized (avoid check for every get)
+        InitializedModality initializedMod = InitializedModality::NONE;
+
+        // load all player skins info (once on init)
+        bool loadPlayerSkinsInfo();
+
+
         DrawManager();
     public:
         static const int RENDER_WIDTH = 1920, RENDER_HEIGHT = 1080, // for render
             titleFontSize=90, subTitleFontSize=60,
             buttonFontSize=40, textFontSize=30;
-
 
         ~DrawManager();
         DrawManager(const DrawManager&) = delete;
@@ -69,19 +120,27 @@ class DrawManager {
 
         void update();
 
-        //Textures
-        Texture2D playerTexture, kunaiTexture, mapTexture, lobbyBgTexture;
-
-        void initSurvivorTextures(GAME_MAPS= GAME_MAPS::URBAN);
+        PlayerSkin* initSurvivorTextures(GameMaps= GameMaps::URBAN);
         void destroySurvivorTextures();
 
-        Texture2D* getPlayerTexture();
-        Texture2D* getKunaiTexture();
+        PlayerSkin* initTrainingTextures();
+        void destroyTrainingTextures();
+
+        // get skin texture / info
+
+        // get player skin info
+        std::vector<PlayerSkinInfo> getPlayerSkinsInfo();
+        // load player skin based on its name
+        PlayerSkin* loadPlayerSkin(const char* skinName);
+        // unload all player skins
+        void unloadPlayerSkins();
+
+        // useful ? only used in Lobby -> should be a Lobby resources
         Texture2D* getLobbyBgTexture();
 
-        GAME_MAPS loaded_map;
-        Texture2D* setMapTexture(GAME_MAPS= GAME_MAPS::URBAN);
+        Texture2D* setMapTexture(GameMaps= GameMaps::URBAN);
         Texture2D* getMapTexture();
+        GameMaps getGameMap();
 
 };
 

@@ -4,14 +4,14 @@
 void Credits::drawModality() {
     const float renderW = drawer->RENDER_WIDTH, renderH = drawer->RENDER_HEIGHT;
     const int titleFont= drawer->titleFontSize, buttonFont= drawer->buttonFontSize,
-        subTitleFont= drawer->subTitleFontSize, textFont = drawer->textFontSize;
+        textFont = drawer->textFontSize;
 
     int currH = 50; // for draw calls height
 
 	DrawTexture(*backgroundImage, 0, 0, WHITE); // render is same res as image
 	DrawRectangle(0, 0, renderW, renderH, GetColor(0xb0b0b05f));//darken bg
 
-	BeginMode2D(game_manager->camera1);
+	BeginMode2D(game_manager->cameras[0]);
 		drawer->drawTextSFC("Credits", currH, titleFont, RED, BLACK, BLACK);
 		currH+= 150;
 		drawer->drawTextSFC("Programmers", currH, buttonFont, RED, BLACK, BLACK);

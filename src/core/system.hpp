@@ -29,12 +29,10 @@ class System {
             MIN_WIDTH = 640, MIN_HEIGHT = 360,
             MIN_FPS = 0, MAX_FPS = 360, DELTA_FPS = 10; // N.B.: 0 fps = uncapped
 
-        // static const int RENDER_WIDTH = 1920, RENDER_HEIGHT = 1080; // for render
-
         static System* instance;
 
-        bool shutdown, pause, borderlessWindow;
-        int fps, currMonitor, setting;
+        bool shutdown, borderlessWindow;
+        int fps, currMonitor;
         float screenWidth, screenHeight, monitorWidth, monitorHeight;
         Vector2 mousePos;
         Image icon;
@@ -45,7 +43,6 @@ class System {
         SoundManager* soundManager; // only system should acquire soundManager
         int choice;
         ModalityType modalityType;
-        // RenderTexture2D render;
 
         System(const System&) = delete;
         System& operator=(const System&) = delete;

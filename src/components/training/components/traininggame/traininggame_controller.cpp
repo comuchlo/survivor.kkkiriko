@@ -1,7 +1,10 @@
 #include "traininggame.hpp"
+#include <iostream>
 #include <raylib.h>
 
 TrainingState TrainingGame::handleTrainingSubMode() {
+    game_manager->updateGameTraining();
+
     // go pause
     if(IsKeyPressed(KEY_ESCAPE)) {
         return TrainingState::TRAINING_PAUSE_MENU;

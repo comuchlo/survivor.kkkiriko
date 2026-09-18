@@ -2,21 +2,21 @@
 #define SURVIVAL_HPP
 
 #include "../../core/draw_manager.hpp"
-#include "../../game_elements/player.hpp"
+#include "../../core/game_manager.hpp"
 #include <raylib.h>
 
 
-enum class SurvivalState {
-    IN_GAME= 1,
-    PAUSE= 2,
-};
+// enum class SurvivalState {
+//     IN_GAME= 1,
+//     PAUSE= 2,
+// };
 
 
 class Survival : public Modality  {
     private:
         DrawManager* drawer;
-        Player player;
-        SurvivalState state;
+        GameManager* game_manager;
+        // SurvivalState state; // use polymorphism
         Texture2D* mapTexture;
     public:
         Survival();

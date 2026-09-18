@@ -3,7 +3,7 @@
 
 Credits::Credits()  {
     game_manager = GameManager::getInstance();
-    game_manager->resetCamera1();
+    game_manager->resetCamera(0);
     endedAutoScrool = false;
     stoppedLastText = false;
 

@@ -1,11 +1,15 @@
 #include "traininggame.hpp"
+#include <raylib.h>
 
 void TrainingGame::drawModality() {
     const float renderW = drawer->RENDER_WIDTH, renderH = drawer->RENDER_HEIGHT;
 
-    BeginMode2D(game_manager->camera1);
+    BeginMode2D(game_manager->cameras[0]);
       //map
-      DrawTextureV(*trainingMap, (Vector2) { -renderW, -renderH }, WHITE);
+      DrawTexture(*this->trainingMap, -renderW, -renderH, WHITE);
+
+      // player + kunais related
+      game_manager->players[0].draw();
 
       // TODO: DRAW THE REST
 

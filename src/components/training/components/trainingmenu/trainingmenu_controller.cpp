@@ -120,10 +120,6 @@ TrainingState TrainingMenu::handleTrainingSubMode() {
                         break;
                 }
            	}
-
-           	if(IsKeyPressed(KEY_X)){
-           	    return TrainingState::IN_GAME;
-           	}
             break;
 
         // PLAYER -------------------------------------------
@@ -199,11 +195,6 @@ TrainingState TrainingMenu::handleTrainingSubMode() {
                         break;
                 }
             }
-
-            if(IsKeyPressed(KEY_X)){
-           	    return TrainingState::IN_GAME;
-           	}
-
             break;
 
         // ENEMY -------------------------------------------
@@ -283,12 +274,11 @@ TrainingState TrainingMenu::handleTrainingSubMode() {
                         break;
                 }
             }
-
-            if(IsKeyPressed(KEY_X)){
-           	    return TrainingState::IN_GAME;
-           	}
-
             break;
+    }
+
+    if(IsKeyPressed(KEY_ESCAPE) || IsKeyPressed(KEY_X)) {
+        return TrainingState::IN_GAME;
     }
 
     return TrainingState::CONTINUE;

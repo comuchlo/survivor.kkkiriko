@@ -143,7 +143,7 @@ EnemyModSelection operator--(EnemyModSelection& val, int)
 
 TrainingMenu::TrainingMenu() {
     game_manager = GameManager::getInstance();
-    game_manager->resetCamera1();
+    // game_manager->resetCamera(0);
     drawer = DrawManager::getInstance();
 
     macroSelection = TrainingMenuMacroSelection::GENERAL;

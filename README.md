@@ -23,6 +23,36 @@ make -C ...
 ```
 grazie a tutti
 
+## About: skins
+Per caricare le 'skin' dei giocatori e dei nemici, si fa uso di due file per skin: [\<nomeFile\>.png](#png) e [\<nomeFile\>.sfinfo](#sfinfo) formattati in una precisa maniera:
+### png
+Un atlas (insieme di tutte le texture in un unico file) che rispetta le informazioni descritte dal [.sfinfo](#sfinfo)
+### sfinfo
+#### Struttura file
+Un file di testo contenente:
+
+##### per i `Players`:
+
+prima riga: lunghezze e larghezze
+```
+<playerWidth> <playerTopHeight> <playerBottomHeight> <kunaiWidth> <kunaiHeight>
+```
+seconda riga: frame totali
+```
+<IdleTotFrame> <RunTotFrame> <AttackTotFrame> <kunaiTotFrame>
+```
+terza riga: posizioni dei frame
+```
+<IdleTopY> <IdleBottomY> <RunTopY> <RunBottomY> <AttackTopY> <kunaiY> 
+```
+
+##### Per gli `Enemies`:
+tbd
+
+#### Accortezze
+- ogni primo tipo di frame (es: idleTop, idleBottom, ...) ha `x = 0`
+- tra frame: `padding = 0`
+
 
 ## Features generali
 (forza kiriko team)

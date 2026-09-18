@@ -2,7 +2,7 @@
 
 
 void LobbyMenu::drawModality() { //: training , duel , survival , settings
-    const float renderWidth = drawer->RENDER_WIDTH, renderHeight = drawer->RENDER_HEIGHT;
+    // const float renderWidth = drawer->RENDER_WIDTH, renderHeight = drawer->RENDER_HEIGHT;
     const int titleFont= drawer->titleFontSize, buttonFont= drawer->buttonFontSize,
         subTitleFont= drawer->subTitleFontSize;
 

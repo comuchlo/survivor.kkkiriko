@@ -3,14 +3,15 @@
 
 // includes also <raylib.h>, kunai.hpp
 #include "../game_elements/player.hpp"
+#include "draw_manager.hpp"
 #include "modality.hpp"
 #include <memory>
-// // includes also <raylib.h>
-// #include "sound_manager.hpp"
+#include <raylib.h>
 
 class GameManager {
     private:
         static GameManager* instance;
+        static DrawManager* drawer;
         //
         // da mettere nelle singole classi dei game elements
         //
@@ -20,8 +21,7 @@ class GameManager {
         // const short int ciambellaSize = 22, ciambellaChadWidth = 128, ciambellaChadHeight = 172, ciambellaKingSize = 128;
         //
         unsigned long long bestSurvivedTime, bestScore;
-        float eSpeedMultiplier = 1, pSpeedMultiplier = 1;
-        std::vector<Player> players;
+        // float eSpeedMultiplier = 1, pSpeedMultiplier = 1;// ?
         float deltaTime;
 
         GameManager();
@@ -31,10 +31,19 @@ class GameManager {
         GameManager& operator=(const GameManager&) = delete;
         static GameManager* getInstance();
         std::unique_ptr<Modality> mode;
-        Camera2D camera1, camera2;
-        void resetCamera1();
-        void resetCamera2();
+        std::vector<Player> players;
+        std::vector<Camera2D> cameras;
+        void resetCamera(int cameraNumber);
+        void cameraFollowPlayer(int number);
         float getDeltaTime();
-        void update();
+        void updateTime();
+        void updateGameTraining();
+        void updateGameDuel();
+
+        void initTraining();
+        void uninitTraining();
+
+        void initSurvival();
+        void uninitSurvival();
 };
 #endif

@@ -23,7 +23,7 @@ int main() {
     while(!sys->shouldExit()) {
         // every-frame-updates
         sys->soundManager->updateAudio();
-        game_manager->update();
+        game_manager->updateTime();
 
         // conditional updates
         if(IsWindowResized()) {

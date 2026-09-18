@@ -3,6 +3,7 @@
 
 // includes also "system.hpp" {"soundmanager.hpp" { <raylib.h> }, "modality.hpp"}
 #include "../../core/draw_manager.hpp"
+#include "../../core/game_manager.hpp"
 #include <memory>
 #include <raylib.h>
 
@@ -32,6 +33,7 @@ class Training : public Modality {
     private:
         System* sys;
         DrawManager* drawer;
+        GameManager* game_manager;
         Texture2D trainingMap;
 
     public:

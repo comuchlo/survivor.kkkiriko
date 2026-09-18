@@ -14,7 +14,7 @@ class TrainingGame : public TrainingModality {
         GameManager* game_manager;
     public:
         TrainingGame(Texture2D* trainingMap);
-        ~TrainingGame() override = default;
+        ~TrainingGame() override;
 
         TrainingState handleTrainingSubMode() override;
         void drawModality() override;

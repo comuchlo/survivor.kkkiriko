@@ -16,7 +16,7 @@ void TrainingMenu::drawModality() {
     char tempbuffer[60];
 
     // background
-    DrawTexture(drawer->prevRender()->texture, 0, 0, WHITE);
+    DrawTextureRec(drawer->prevRender()->texture, {0.0f, 0.0f, renderW, -renderH}, {0.0f, 0.0f}, WHITE);
 
     // darken background
    	DrawRectangle(0, 0, renderW, renderH, GetColor(0xb0b0b05f));

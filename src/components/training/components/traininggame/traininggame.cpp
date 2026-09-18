@@ -3,6 +3,8 @@
 
 TrainingGame::TrainingGame(Texture2D* trainingMap) {
     this->trainingMap = trainingMap;
-    game_manager = GameManager::getInstance();
-    game_manager->resetCamera1();
+    this->game_manager = GameManager::getInstance();
+}
+
+TrainingGame::~TrainingGame() {
 }

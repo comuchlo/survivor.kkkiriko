@@ -2,9 +2,15 @@
 
 #include <array>
 #include <cstdio>
+#include <cstring>
+#include <fstream>
 #include <iostream>
 #include <limits>
 #include <raylib.h>
+#include <sstream>
+#include <stdexcept>
+#include <string>
+#include <unordered_map>
 #include "../utils/utils.hpp"
 
 
@@ -15,6 +21,9 @@ DrawManager::DrawManager() {
         *OUTLINE_FONT_PATH = "./fonts/logofontik/logofontik.extruded-4f.ttf";
 
     sys = System::getInstance();
+
+    lobbyBgTexture.id = 0;
+    mapTexture.id = 0;
 
     currRenderIndex = 0;
     // load render foreach
@@ -31,25 +40,31 @@ DrawManager::DrawManager() {
         fontAvailable = true;
 
     } else {
-        fontRegular = {0};
-        fontOutline = {0};
+        Font
+        fontRegular = GetFontDefault();
+        fontOutline = fontRegular;
         fontAvailable = false;
 
     }
 
-    std::cout<<"FONT IS AVAILABLE ? " << ((fontAvailable) ? "YES" : "NO")<<std::endl;
+    if(fontAvailable) std::cout<<"INFO: Game font is available"<<std::endl;
+    else std::cout<<"WARNING: Game font is not available"<<std::endl;
+
+    // retrive (once and for all) every skins info
+    if (!loadPlayerSkinsInfo())
+        std::cout<< "ERROR: Error on retrieving player skins info"<<std::endl;
 
     update(); // to update actual screen
 }
 
 DrawManager::~DrawManager() {
     for(auto i = renderSet.begin(); i != renderSet.cend(); i++) {
-        UnloadRenderTexture(*i);
+        if(IsRenderTextureValid(*i)) // profilacto tactics
+            UnloadRenderTexture(*i);
     }
 
-    UnloadTexture(kunaiTexture);
-    UnloadTexture(playerTexture);
-    UnloadTexture(mapTexture);
+    unloadPlayerSkins();
+    setMapTexture(GameMaps::NONE);
     UnloadTexture(lobbyBgTexture);
 
     if(fontAvailable) {
@@ -213,30 +228,208 @@ void DrawManager::update() { // to update actualScreen
     }
 }
 
-void DrawManager::initSurvivorTextures(GAME_MAPS map){
-    this->playerTexture= LoadTexture("./textures/kiriko.png");
-    this->kunaiTexture= LoadTexture("./textures/kunai.png");
-    this->setMapTexture(map);
+bool DrawManager::loadPlayerSkinsInfo() {
+    int unvalidSkins = 0;
+
+    std::cout<<"INFO: Loading player skins info"<<std::endl;
+
+    // get all .png files in textures/playerskins
+    FilePathList skinFiles = LoadDirectoryFilesEx(
+        PLAYERSKIN_FOLDER,
+        ".png",
+        false
+    );
+
+    for(unsigned int i = 0; i < skinFiles.count; i++) {
+        bool currValid = true;
+
+        // get filename
+        const std::string fileName = GetFileNameWithoutExt(skinFiles.paths[i]);
+
+        //init skininfo
+        PlayerSkinInfo skinInfo = {
+            fileName.c_str(), // name
+            0, // idleTotFrame
+            0, // runTotFrame
+            0, // attackTotFrame
+            0, // kunaiTotFrame
+            0, // topWidth
+            0, // topHeight
+            0, // bottomHeight
+            0, // kunaiWidth
+            0, // kunaiHeight
+            0, // topIdleY
+            0, // bottomIdleY
+            0, // topRunY
+            0, // bottomRunY
+            0, // topAttackY
+            0, // kunaiY
+        };
+
+        // check if .sfinfo correspective file exist
+        std::ifstream fileInfo(PLAYERSKIN_FOLDER+fileName+".sfinfo");
+
+        if(fileInfo) { // open succesfull
+            std::string tmp;
+
+            //first line:
+            // <playerWidth> <playerTopHeight> <playerBottomHeight> <kunaiWidth> <kunaiHeight>
+            if(std::getline(fileInfo, tmp)) {
+                ////////// ATTANTION: uint8 IS char -> 6 = 48(='0')+6
+                /// so when reading: uint8_t behave as char (:
+                int width, topHeight, bottomHeight, kunaiWidth, kunaiHeight;
+                if(!(std::istringstream (tmp) >> width >> topHeight >> bottomHeight >> kunaiWidth >> kunaiHeight)) {
+                    currValid = false;
+                }
+                skinInfo.width = width;
+                skinInfo.topHeight = topHeight;
+                skinInfo.bottomHeight = bottomHeight;
+                skinInfo.kunaiWidth = kunaiWidth;
+                skinInfo.kunaiHeight = kunaiHeight;
+            } else {
+                currValid = false;
+            }
+
+            //second line:
+            // <IdleTotFrame> <RunTotFrame> <AttackTotFrame> <kunaiTotFrame>
+            if(std::getline(fileInfo, tmp)) {
+                ////////// ATTANTION: uint8 IS char -> 6 = 48(='0')+6
+                /// so when reading: uint8_t behave as char (:
+                int idleTotFrame, runTotFrame, attackTotFrame, kunaiTotFrame;
+                if(!(std::istringstream (tmp) >> idleTotFrame >> runTotFrame >> attackTotFrame >> kunaiTotFrame)) {
+                    currValid = false;
+                }
+                skinInfo.idleTotFrame = idleTotFrame;
+                skinInfo.runTotFrame = runTotFrame;
+                skinInfo.attackTotFrame = attackTotFrame;
+                skinInfo.kunaiTotFrame = kunaiTotFrame;
+            } else {
+                currValid = false;
+            }
+
+            //third line:
+            // <IdleTopY> <IdleBottomY> <RunTopY> <RunBottomY> <AttackTopY> <kunaiY>
+            if(std::getline(fileInfo, tmp)) {
+                int topIdleY, bottomIdleY, topRunY, bottomRunY, topAttackY, kunaiY;
+                if(!(std::istringstream (tmp) >> topIdleY >> bottomIdleY >> topRunY >> bottomRunY >> topAttackY >> kunaiY)) {
+                    currValid = false;
+                }
+                skinInfo.topIdleY = topIdleY;
+                skinInfo.bottomIdleY = bottomIdleY;
+                skinInfo.topRunY = topRunY;
+                skinInfo.bottomRunY = bottomRunY;
+                skinInfo.topAttackY = topAttackY;
+                skinInfo.kunaiY = kunaiY;
+
+
+            } else {
+                currValid = false;
+            }
+        } else {
+            currValid = false;
+        }
+
+        if(currValid) {
+            std::cout<<
+                "INFO: Player skin info named '"<<
+                fileName<<
+                "' succesfully loaded"<<
+                std::endl;
+
+            // save result with zeroed-texture
+            playerSkins.insert({fileName, {skinInfo, {0, 0, 0, 0, 0}}});
+        } else {
+            unvalidSkins++;
+
+            std::cout<<
+                "ERROR: Player skin info named '"<<
+                fileName<<
+                "' present errors"<<
+                std::endl;
+        }
+    }
+
+    if(unvalidSkins > 0) {
+        std::cout<<
+            "ERROR: "<<
+            unvalidSkins<<
+            " player skin(s) info contained errors"<<
+            std::endl;
+    } else {
+        std::cout<<"INFO: All player skins info were succesfully loaded"<<std::endl;
+    }
+
+    return true;
 }
 
-void DrawManager::destroySurvivorTextures(){
-    UnloadTexture(this->playerTexture);
-    UnloadTexture(this->kunaiTexture);
-    UnloadTexture(this->mapTexture);
+std::vector<PlayerSkinInfo> DrawManager::getPlayerSkinsInfo() {
+    std::vector<PlayerSkinInfo> skinsInfo;
+    skinsInfo.reserve(playerSkins.size());
+
+    for(auto& [key, value]: playerSkins) {
+        skinsInfo.push_back(value.skinInfo);
+    }
+
+    return skinsInfo;
 }
 
-Texture2D* DrawManager::getPlayerTexture(){
-    if(!IsTextureValid(this->playerTexture)){
-        this->playerTexture= LoadTexture("./textures/kiriko.png");
+PlayerSkin* DrawManager::loadPlayerSkin(const char* skinName) {
+    PlayerSkin* found;
+
+    // load first if no name provided
+    const char *name = (strcmp(skinName, "") == 0) ?
+        skinName = playerSkins.begin()->first.c_str() :
+        skinName;
+
+    try {
+        found = &playerSkins.at(name);
+
+        if(!IsTextureValid(found->texture)) {
+            char tempbuffer[100];
+            sprintf(tempbuffer, "%s%s.png", PLAYERSKIN_FOLDER, name);
+            found->texture = LoadTexture(tempbuffer);
+        }
+    } catch (const std::runtime_error e) {
+        std::cout<<"ERROR: Error on loading player skin "<<name<<std::endl;
     }
-    return &(this->playerTexture);
+
+    return found;
 }
-Texture2D* DrawManager::getKunaiTexture(){
-    if(!IsTextureValid(this->kunaiTexture)){ //considering to skip this check
-        this->kunaiTexture= LoadTexture("./textures/kunai.png");
+
+void DrawManager::unloadPlayerSkins() {
+    for(auto& [key, value]: playerSkins) {
+        if(IsTextureValid(value.texture)) {
+            UnloadTexture(value.texture);
+            value.texture.id = 0; // strong mark as unvalid
+        }
+
     }
-    return &(this->kunaiTexture);
 }
+
+PlayerSkin* DrawManager::initSurvivorTextures(GameMaps map) {
+    setMapTexture(map);
+    PlayerSkin* playerSkin = loadPlayerSkin("");
+    initializedMod = InitializedModality::TRAINING;
+    return playerSkin;
+}
+
+void DrawManager::destroySurvivorTextures() {
+    setMapTexture(GameMaps::NONE);
+    unloadPlayerSkins();
+    initializedMod = InitializedModality::NONE;
+}
+
+PlayerSkin* DrawManager::initTrainingTextures() {
+    PlayerSkin* playerSkin = loadPlayerSkin("");
+    initializedMod = InitializedModality::TRAINING;
+    return playerSkin;
+}
+
+void DrawManager::destroyTrainingTextures() {
+    unloadPlayerSkins();
+    initializedMod = InitializedModality::NONE;
+}
+
 Texture2D* DrawManager::getLobbyBgTexture(){
     if(!IsTextureValid(this->lobbyBgTexture)){
         this->lobbyBgTexture= LoadTexture("./textures/kirikobg2.png");
@@ -244,22 +437,30 @@ Texture2D* DrawManager::getLobbyBgTexture(){
     return &(this->lobbyBgTexture);
 }
 
-Texture2D* DrawManager::setMapTexture(GAME_MAPS map){
-    switch (map) {
-        case GAME_MAPS::NONE:
-        case GAME_MAPS::URBAN:
-            this->mapTexture= LoadTexture("./textures/map_urban.png");
-            this->loaded_map= GAME_MAPS::URBAN;
-            break;
-        case GAME_MAPS::GRASS:
-            this->mapTexture= LoadTexture("./textures/map_grass.png");
-            this->loaded_map= GAME_MAPS::GRASS;
-            break;
+Texture2D* DrawManager::setMapTexture(GameMaps map) {
+    if(this->loaded_map != map) {
+        UnloadTexture(this->mapTexture);
+        this->mapTexture.id = 0; // strong mark as unvalid
+        this->loaded_map = map;
+        char tempbuffer[100];
+
+        switch (map) {
+            case GameMaps::NONE:
+            case GameMaps::URBAN:
+                sprintf(tempbuffer, "%smap_urban.png", TEXTURES_FOLDER);
+                this->mapTexture= LoadTexture(tempbuffer);
+                break;
+            case GameMaps::GRASS:
+                sprintf(tempbuffer, "%smap_grass.png", TEXTURES_FOLDER);
+                this->mapTexture= LoadTexture(tempbuffer);
+                break;
+        }
     }
+
     return &(this->mapTexture);
 }
-Texture2D* DrawManager::getMapTexture(){
-    if(this->loaded_map == GAME_MAPS::NONE || !IsTextureValid(this->mapTexture)){
+Texture2D* DrawManager::getMapTexture() {
+    if(this->loaded_map == GameMaps::NONE || !IsTextureValid(this->mapTexture)){
         this->setMapTexture();
     }
     return &(this->mapTexture);
