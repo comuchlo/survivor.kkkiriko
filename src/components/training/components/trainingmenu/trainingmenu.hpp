@@ -3,6 +3,7 @@
 
 #include "../../../../core/game_manager.hpp"
 #include "../../training.hpp"
+#include <vector>
 
 enum class TrainingMenuMacroSelection {
     GENERAL = 0,
@@ -29,13 +30,17 @@ enum class PlayerModSelection { // enumerate player stats that are modifiable
     INDEX = 0, // important
     SKIN = 1,
     HP = 2,
-    STRENGHT = 3,
-    MOVEMENT_SPEED = 4,
-    ATTACK_SPEED = 5,
-    DIMENSION = 6,
-    ULT = 7,
-    RESUME = 8,
-    EXIT = 9,
+    MOVEMENT_SPEED = 3,
+    ATTACK_SPEED = 4,
+    ATTACK_COOLDOWN = 5,
+    KUNAI_SPEED = 6,
+    DIMENSION = 7,
+    KUNAI_DIMENSION = 8,
+    KUNAI_DAMAGE = 9,
+    ULT = 10,
+    RESET_PLAYER = 11,
+    RESUME = 12,
+    EXIT = 13,
 };
 
 enum class EnemyModSelection { // enumerate player stats that are modifiable
@@ -48,8 +53,9 @@ enum class EnemyModSelection { // enumerate player stats that are modifiable
     ATTACK_SPEED = 6,
     DIMENSION = 7,
     BEHAVIOUR = 8,
-    RESUME = 9,
-    EXIT = 10,
+    RESET_ENEMY = 9,
+    RESUME = 10,
+    EXIT = 11,
 };
 
 SettingModSelection& operator++(SettingModSelection& val);
@@ -80,14 +86,25 @@ class TrainingMenu : public TrainingModality {
     private:
         GameManager* game_manager;
 
+        // choice menu selection
         TrainingMenuMacroSelection macroSelection;
         SettingModSelection choiceOnGeneral;
         PlayerModSelection choiceOnPlayer;
         EnemyModSelection choiceOnEnemy;
 
+        //player params
+        Player* playerParams;
+
+        std::vector<PlayerSkinInfo> playerSkinsInfo;
+        unsigned int oldPlayerSkinIndex, currPlayerSkinIndex;
+
+        // represent maximum menu height that can be scrolled
+        // (so that all menu voices are correctly on screen)
+        float scrollableHeight;
+
     public:
-        TrainingMenu();
-        ~TrainingMenu() override = default;
+        TrainingMenu(Player* playerParams);
+        ~TrainingMenu() override;
 
         TrainingState handleTrainingSubMode() override;
         void drawModality() override;

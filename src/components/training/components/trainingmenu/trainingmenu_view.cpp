@@ -1,5 +1,6 @@
 #include "trainingmenu.hpp"
 #include <cstring>
+#include <iostream>
 #include <raylib.h>
 
 void TrainingMenu::drawModality() {
@@ -13,7 +14,13 @@ void TrainingMenu::drawModality() {
     const float arrowThickness = 3.0f;
 
     int currH = 250;
+    const int macroTitleH = currH, startMacroChoicesH = currH + 100;
+
+    Player& player = game_manager->players[0];
+
     char tempbuffer[60];
+
+    bool isIndexFocused = false;
 
     // background
     DrawTextureRec(drawer->prevRender()->texture, {0.0f, 0.0f, renderW, -renderH}, {0.0f, 0.0f}, WHITE);
@@ -31,39 +38,14 @@ void TrainingMenu::drawModality() {
     DrawRectangle((renderW/3)-5, 0, (renderW/3)+10, renderH, BLACK);//outerbody
     DrawRectangle(renderW/3, 0, renderW/3, renderH, GRAY);//innerbody
 
-    //title
-    drawer->drawTextSFC("Training", 20, titleFont, RED, BLACK, BLACK);
-    drawer->drawTextSFC("options", 130, subTitleFont, RED, BLACK, BLACK);
-
-    //line separator (draw line SF)
-    DrawLineEx(
-        (Vector2){renderW/3 +8.0f,223},
-        (Vector2){((renderW/3)*2)-12.0f,223},
-        3,
-        BLACK
-    );
-    DrawLineEx(
-        (Vector2){renderW/3 +10.0f,225},
-        (Vector2){((renderW/3)*2)-10.0f,225},
-        3,
-        RED
-    );
-    DrawLineEx(
-        (Vector2){renderW/3 +12.0f,227},
-        (Vector2){((renderW/3)*2)-8.0f,227},
-        3,
-        BLACK
-    );
+    BeginMode2D(game_manager->cameras[1]);
 
     switch (macroSelection) {
         // GENERAL ------------------------------------------------------------
         case TrainingMenuMacroSelection::GENERAL:
-            //settings view
-            strcpy(tempbuffer, "General");
-            drawer->drawTextSFCA(tempbuffer, currH, subTitleFont, choiceOnGeneral == SettingModSelection::INDEX, arrowPadding, arrowThickness, BLACK, BLACK, (choiceOnGeneral == SettingModSelection::INDEX) ? RED : WHITE);
+            currH= startMacroChoicesH;
 
-            //Master Volume
-            currH+= 100;
+            // Master Volume
             drawer->drawTextSFC("Master Volume", currH, buttonFont, BLACK, BLACK, (choiceOnGeneral == SettingModSelection::MASTERVOLUME) ? RED : WHITE);
 
            	if (choiceOnGeneral == SettingModSelection::MASTERVOLUME) {//Master Volume range bar if MasterVolume is focussed
@@ -169,39 +151,195 @@ void TrainingMenu::drawModality() {
            	currH+= 60;
            	drawer->drawTextSFC("Exit", currH, buttonFont, BLACK, BLACK, (choiceOnGeneral == SettingModSelection::EXIT) ? RED : WHITE);
 
+            // prepare parms to draw macro title
+            strcpy(tempbuffer, "General");
+            isIndexFocused = (choiceOnGeneral == SettingModSelection::INDEX);
+
             break;
 
         // PLAYER ------------------------------------------------------------
         case TrainingMenuMacroSelection::PLAYER:
-            strcpy(tempbuffer, "Player");
-            drawer->drawTextSFCA(tempbuffer, currH, subTitleFont, choiceOnPlayer == PlayerModSelection::INDEX, arrowPadding, arrowThickness, BLACK, BLACK, (choiceOnPlayer == PlayerModSelection::INDEX) ? RED : WHITE);
+            currH= startMacroChoicesH;
 
             // skin
-            currH+= 100;
             if(choiceOnPlayer == PlayerModSelection::SKIN) {
                 drawer->drawTextSFC("Skin", currH, buttonFont, BLACK, BLACK, RED);
 
                 currH+= 53;
-                // TODO: continue (need Player mechanics to be defined firstly)
+                drawer->drawTextSFCA(playerSkinsInfo[currPlayerSkinIndex].name.c_str(), currH, textFont, true, arrowPadding, arrowThickness, BLACK, BLACK, RED);
+
             } else {
                 drawer->drawTextSFC("Skin", currH, buttonFont, BLACK, BLACK, WHITE);
+            }
+
+            // hp
+            currH+= 60;
+            if(choiceOnPlayer == PlayerModSelection::HP) {
+                drawer->drawTextSFC("Health Points", currH, buttonFont, BLACK, BLACK, RED);
+
+                currH+= 60;
+                drawer->drawRangeBarEx(
+                    (float)((float)(player.getHealth()-Player::getMinHealth())/(float)(Player::getMaxHealth()-Player::getMinHealth()))*100,
+                    currH,
+                    player.getHealth()
+                );
+
+            } else {
+                drawer->drawTextSFC("Health Points", currH, buttonFont, BLACK, BLACK, WHITE);
 
             }
-            // hp
-            // strenght
+
             // movement speed
+            currH+= 60;
+            if(choiceOnPlayer == PlayerModSelection::MOVEMENT_SPEED) {
+                drawer->drawTextSFC("Movement Speed", currH, buttonFont, BLACK, BLACK, RED);
+
+                currH+= 60;
+                drawer->drawRangeBarEx(
+                    ((player.getMoveVel()-Player::getMinMul())/(Player::getMaxMul()-Player::getMinMul()))*100,
+                    currH,
+                    player.getMoveVel()
+                );
+
+            } else {
+                drawer->drawTextSFC("Movement Speed", currH, buttonFont, BLACK, BLACK, WHITE);
+
+            }
+
             // attack speed
+            currH+= 60;
+            if(choiceOnPlayer == PlayerModSelection::ATTACK_SPEED) {
+                drawer->drawTextSFC("Attack Speed", currH, buttonFont, BLACK, BLACK, RED);
+
+                currH+= 60;
+                drawer->drawRangeBarEx(
+                    ((player.getAttackVel()-Player::getMinMul())/(Player::getMaxMul()-Player::getMinMul()))*100,
+                    currH,
+                    player.getAttackVel()
+                );
+
+            } else {
+                drawer->drawTextSFC("Attack Speed", currH, buttonFont, BLACK, BLACK, WHITE);
+
+            }
+
+            // attack cooldown
+            currH+= 60;
+            if(choiceOnPlayer == PlayerModSelection::ATTACK_COOLDOWN) {
+                drawer->drawTextSFC("Attack Cooldown", currH, buttonFont, BLACK, BLACK, RED);
+
+                currH+= 60;
+                drawer->drawRangeBarEx(
+                    ((player.getAttackCooldown()-Player::getMinAttackCooldown())/(Player::getMaxAttackCooldown()-Player::getMinAttackCooldown()))*100,
+                    currH,
+                    player.getAttackCooldown()
+                );
+
+            } else {
+                drawer->drawTextSFC("Attack Cooldown", currH, buttonFont, BLACK, BLACK, WHITE);
+
+            }
+
+            // kunai speed
+            currH+= 60;
+            if(choiceOnPlayer == PlayerModSelection::KUNAI_SPEED) {
+                drawer->drawTextSFC("Kunai Speed", currH, buttonFont, BLACK, BLACK, RED);
+
+                currH+= 60;
+                drawer->drawRangeBarEx(
+                    ((player.getKunaiVel()-Player::getMinMul())/(Player::getMaxMul()-Player::getMinMul()))*100,
+                    currH,
+                    player.getKunaiVel()
+                );
+
+            } else {
+                drawer->drawTextSFC("Kunai Speed", currH, buttonFont, BLACK, BLACK, WHITE);
+
+            }
+
             // dimension
+            currH+= 60;
+            if(choiceOnPlayer == PlayerModSelection::DIMENSION) {
+                drawer->drawTextSFC("Dimension", currH, buttonFont, BLACK, BLACK, RED);
+
+                currH+= 60;
+                drawer->drawRangeBarEx(
+                    ((player.getPlayerDimensionMul()-Player::getMinMul())/(Player::getMaxMul()-Player::getMinMul()))*100,
+                    currH,
+                    player.getPlayerDimensionMul()
+                );
+
+            } else {
+                drawer->drawTextSFC("Dimension", currH, buttonFont, BLACK, BLACK, WHITE);
+
+            }
+
+            // kunai dimension
+            currH+= 60;
+            if(choiceOnPlayer == PlayerModSelection::KUNAI_DIMENSION) {
+                drawer->drawTextSFC("Kunai Dimension", currH, buttonFont, BLACK, BLACK, RED);
+
+                currH+= 60;
+                drawer->drawRangeBarEx(((player.getKunaiDimensionMul()-Player::getMinMul())/(Player::getMaxMul()-Player::getMinMul()))*100,
+                    currH,
+                    player.getKunaiDimensionMul()
+                );
+
+            } else {
+                drawer->drawTextSFC("Kunai Dimension", currH, buttonFont, BLACK, BLACK, WHITE);
+
+            }
+
+            // kunai damage
+            currH+= 60;
+            if(choiceOnPlayer == PlayerModSelection::KUNAI_DAMAGE) {
+                drawer->drawTextSFC("Kunai Damage", currH, buttonFont, BLACK, BLACK, RED);
+
+                currH+= 60;
+                drawer->drawRangeBarEx(((player.getKunaiDamageMul()-Player::getMinMul())/(Player::getMaxMul()-Player::getMinMul()))*100,
+                    currH,
+                    player.getKunaiDamageMul()
+                );
+
+            } else {
+                drawer->drawTextSFC("Kunai Damage", currH, buttonFont, BLACK, BLACK, WHITE);
+
+            }
+
             // ult
+            currH+= 60;
+            if(choiceOnPlayer == PlayerModSelection::ULT) {
+                drawer->drawTextSFC("Ultimate", currH, buttonFont, BLACK, BLACK, RED);
+
+                currH+= 53;
+                // TODO
+                drawer->drawTextSFCA("[!]: Work in progress...", currH, textFont, false, arrowPadding, arrowThickness, BLACK, BLACK, RED);
+
+            } else {
+                drawer->drawTextSFC("Ultimate", currH, buttonFont, BLACK, BLACK, WHITE);
+            }
+
+            // reset player
+            currH+= 60;
+           	drawer->drawTextSFC("Reset Player", currH, buttonFont, BLACK, BLACK, (choiceOnPlayer == PlayerModSelection::RESET_PLAYER) ? RED : WHITE);
+
             // resume
-            // exit
+           	currH+= 60;
+           	drawer->drawTextSFC("Resume", currH, buttonFont, BLACK, BLACK, (choiceOnPlayer == PlayerModSelection::RESUME) ? RED : WHITE);
+
+           	// exit
+           	currH+= 60;
+           	drawer->drawTextSFC("Exit", currH, buttonFont, BLACK, BLACK, (choiceOnPlayer == PlayerModSelection::EXIT) ? RED : WHITE);
+
+            // prepare parms to draw macro title
+            strcpy(tempbuffer, "Player");
+            isIndexFocused = (choiceOnPlayer == PlayerModSelection::INDEX);
+
             break;
 
         // ENEMY ------------------------------------------------------------
         case TrainingMenuMacroSelection::ENEMY:
-            strcpy(tempbuffer, "Enemy");
-            drawer->drawTextSFCA(tempbuffer, currH, subTitleFont, choiceOnEnemy == EnemyModSelection::INDEX, arrowPadding, arrowThickness, BLACK, BLACK, (choiceOnEnemy == EnemyModSelection::INDEX) ? RED : WHITE);
-
+            currH = startMacroChoicesH;
             //type
             // generation criteria
             // hp
@@ -212,10 +350,49 @@ void TrainingMenu::drawModality() {
             // behaviour
             // resume
             // exit
+
+
+            // prepare parms to draw macro title
+            strcpy(tempbuffer, "Enemy");
+            isIndexFocused = (choiceOnEnemy == EnemyModSelection::INDEX);
+
             break;
     }
 
+    EndMode2D();
 
+    // hide passed texts
+    DrawRectangle(renderW/3, 0, renderW/3, macroTitleH+65, GRAY);
+
+    //title
+    drawer->drawTextSFC("Training", 20, titleFont, RED, BLACK, BLACK);
+    drawer->drawTextSFC("options", 130, subTitleFont, RED, BLACK, BLACK);
+
+    //line separator (draw line SF)
+    DrawLineEx(
+        (Vector2){renderW/3 +8.0f,223},
+        (Vector2){((renderW/3)*2)-12.0f,223},
+        3,
+        BLACK
+    );
+    DrawLineEx(
+        (Vector2){renderW/3 +10.0f,225},
+        (Vector2){((renderW/3)*2)-10.0f,225},
+        3,
+        RED
+    );
+    DrawLineEx(
+        (Vector2){renderW/3 +12.0f,227},
+        (Vector2){((renderW/3)*2)-8.0f,227},
+        3,
+        BLACK
+    );
+
+    // macro title
+    drawer->drawTextSFCA(tempbuffer, macroTitleH, subTitleFont, isIndexFocused, arrowPadding, arrowThickness, BLACK, BLACK, (isIndexFocused) ? RED : WHITE);
+
+    scrollableHeight = (float)currH-(renderH-80.0f);
+    if(scrollableHeight < 0.0f) scrollableHeight = 0.0f;
 }
 
 /*

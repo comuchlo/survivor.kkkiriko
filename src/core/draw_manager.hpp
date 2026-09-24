@@ -27,7 +27,7 @@ typedef struct {
     // (N.B.: kunai is part of the skin of the player)
 
     // name of the skin (≈ id)
-    const char* name;
+    std::string name;
 
     // total frame number for each skin-type
     uint8_t idleTotFrame, runTotFrame, attackTotFrame, kunaiTotFrame;
@@ -96,6 +96,11 @@ class DrawManager {
         // - progress in a range of [0, 100]
         // - height of the range bar (always horizontally)
         void drawRangeBar(int progress, int height);
+        // draw a range bar with params:
+        // - progress in a range of [0, 100]
+        // - height of the range bar (always horizontally)
+        // - displayedValue: value to be displayed at the left of the range bar
+        void drawRangeBarEx(int progress, int height, float displayedValue);
         // raylib::DrawText() with DrawManager font
         void drawText(const char *text, int x, int y, int fontSize, Color col);
         // drawText() but decorated
@@ -131,7 +136,7 @@ class DrawManager {
         // get player skin info
         std::vector<PlayerSkinInfo> getPlayerSkinsInfo();
         // load player skin based on its name
-        PlayerSkin* loadPlayerSkin(const char* skinName);
+        PlayerSkin* loadPlayerSkin(std::string skinName);
         // unload all player skins
         void unloadPlayerSkins();
 

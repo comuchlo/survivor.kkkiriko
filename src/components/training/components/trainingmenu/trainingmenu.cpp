@@ -1,4 +1,6 @@
 #include "trainingmenu.hpp"
+#include <cstring>
+#include <stdexcept>
 
 TrainingMenuMacroSelection& operator++(TrainingMenuMacroSelection& val) {
     if (val == TrainingMenuMacroSelection::ENEMY){
@@ -141,15 +143,48 @@ EnemyModSelection operator--(EnemyModSelection& val, int)
 }
 
 
-TrainingMenu::TrainingMenu() {
+TrainingMenu::TrainingMenu(Player* playerParams) {
     game_manager = GameManager::getInstance();
-    // game_manager->resetCamera(0);
     drawer = DrawManager::getInstance();
 
+    game_manager->resetCamera(1);
+
+    // choice
     macroSelection = TrainingMenuMacroSelection::GENERAL;
     choiceOnGeneral = SettingModSelection::INDEX;
     choiceOnPlayer = PlayerModSelection::INDEX;
     choiceOnEnemy = EnemyModSelection::INDEX;
 
+    // player params
+    this->playerParams = playerParams;
+
+    // player skin infos
+    playerSkinsInfo = drawer->getPlayerSkinsInfo();
+    std::string currPlayerSkinName = game_manager->players[0].getSkinName();
+
+    for(oldPlayerSkinIndex = 0; oldPlayerSkinIndex < playerSkinsInfo.size(); oldPlayerSkinIndex++) {
+        if(currPlayerSkinName.compare(playerSkinsInfo[oldPlayerSkinIndex].name) == 0) {
+            break;
+        }
+    }
+
+    if(oldPlayerSkinIndex == playerSkinsInfo.size()) {
+        throw std::out_of_range("Error trying to acess playerSkinsInfo out of bound");
+    }
+
+    currPlayerSkinName = oldPlayerSkinIndex;
+
     drawer->switchRender(); // preserve last frame draws as background
+}
+
+TrainingMenu::~TrainingMenu() {
+    //before resuming:
+
+    // load player skin if changed
+    if(oldPlayerSkinIndex != currPlayerSkinIndex) {
+        std::string newSkinName = playerSkinsInfo[currPlayerSkinIndex].name;
+        drawer->unloadPlayerSkins();
+        game_manager->players[0].setSkin(drawer->loadPlayerSkin(newSkinName));
+
+    }
 }

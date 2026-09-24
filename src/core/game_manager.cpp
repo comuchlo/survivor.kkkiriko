@@ -2,7 +2,6 @@
 #include "../components/lobby/lobby.hpp"
 #include "draw_manager.hpp"
 #include <algorithm>
-#include <iostream>
 #include <raylib.h>
 
 GameManager* GameManager::instance = nullptr;
@@ -62,7 +61,7 @@ void GameManager::updateGameTraining() {
     Vector2 verse = {0.0f, 0.0f};
 
 
-    if(p->health > 0) {
+    if(p->getHealth() > 0) {
         if(IsKeyDown(KEY_UP) || IsKeyDown(KEY_W)) verse.y--;
         if(IsKeyDown(KEY_DOWN) || IsKeyDown(KEY_S)) verse.y++;
         if(IsKeyDown(KEY_RIGHT) || IsKeyDown(KEY_D)) verse.x++;
@@ -107,12 +106,11 @@ void GameManager::updateGameTraining() {
 }
 
 void GameManager::updateGameDuel() {
-    int i = 0;
     Player *p1 = &players[0], *p2 = &players[1];
     Camera2D *cam1 = &cameras[0], *cam2 = &cameras[1];
     Vector2 verse = {0.0f, 0.0f};
 
-    if(p1->health > 0 && p2->health > 0) {
+    if(p1->getHealth() > 0 && p2->getHealth() > 0) {
         // PLAYER 1 UPDATE
         if(IsKeyDown(KEY_W)) verse.y++;
         if(IsKeyDown(KEY_S)) verse.y--;

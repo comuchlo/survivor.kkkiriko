@@ -1,6 +1,7 @@
 #include "player.hpp"
 #include "kunai.hpp"
 #include "../core/draw_manager.hpp"
+#include <algorithm>
 #include <cmath>
 #include <cstdint>
 #include <cstdio>
@@ -9,36 +10,37 @@
 #include <vector>
 
 // problem: float cant be static -> workaround like this
-// specify duration of the action
+
+static const int DEF_WIDTH = 67, DEF_HEIGHT = 72,
+    DEF_KUNAI_WIDTH = 32, DEF_KUNAI_HEIGHT = 8;
+
+static const int32_t MIN_HEALTH = 1, DEF_HEALTH = 100, MAX_HEALTH = 50000;
+
+// specify duration of the actions
 const float IDLE_FRAME_PERIOD = 1.0f, RUN_FRAME_PERIOD = 2.0f,
     ATTACK_FRAME_PERIOD = 1.5f,
+// default kunai frame period
+    KUNAI_FRAME_PERIOD = 0.2f,
+
 // default player displacement per frame
     DEF_PLAYER_MOVE = 10,
 // default attack cooldown
     DEF_ATTACK_COOLDOWN = 5.0f,
-// default kunai frame period
-    KUNAI_FRAME_PERIOD = 0.2f,
 // default kunai displacement per frame
     DEF_KUNAI_MOVE = 20,
+
 // default kunai damage
     DEF_KUNAI_DAMAGE = 10,
 // max time limit before kunai should despawn
-    KUNAI_MAX_TTL = 2.0f;
+    KUNAI_MAX_TTL = 2.0f,
 
+// minimum/maximum values
 
-Player::Player(PlayerSkin* skin)
-    : Player(
-        skin, // skin of the player
-        3.0f, // multiplier of the dimension of the player
-        5.0f, // multiplier of the dimension of the kunai
-        1.0f, // multiplier of the displacement of the player
-        1.0f, // multiplier of the speed of the player attacks
-        DEF_ATTACK_COOLDOWN, // cooldown between two attacks
-        DEF_HEALTH, // health of the player
-        1.0f, // multiplier of the displacement of the kunai
-        1.0f// multiplier of the damage of the kunai
-    )
-{}
+// (for multiplicator e.g.:moveVel, playerDimensionMUl, ...)
+    MIN_MUL = 0.01f, MAX_MUL = 10.0f,
+// minimum/maximum cooldown between attacks (in seconds)
+    MIN_ATTACK_COOLDOWN = 0.0f, MAX_ATTACK_COOLDOWN = 10.0f;
+
 
 Player::Player(
     PlayerSkin* skin, // skin of the player
@@ -47,9 +49,9 @@ Player::Player(
     float moveVel, // multiplier of the displacement of the player
     float attackVel, // multiplier of the speed of the player attacks
     float attackCooldown, // cooldown between two attacks
-    uint16_t health, // health of the player
+    int32_t health, // health of the player
     float kunaiVel, // multiplier of the displacement of the kunai
-    uint16_t kunaiDamageMul // multiplier of the damage of the kunai
+    float kunaiDamageMul // multiplier of the damage of the kunai
 ) {
     this->skinInfo = skin->skinInfo;
     this->texture = &skin->texture;
@@ -90,6 +92,68 @@ Player::Player(
     }
 
 }
+
+Player::Player(PlayerSkin* skin) // TODO: [!] modified params
+    : Player(
+        skin, // skin of the player
+        3.0f, // multiplier of the dimension of the player
+        5.0f, // multiplier of the dimension of the kunai
+        1.0f, // multiplier of the displacement of the player
+        1.0f, // multiplier of the speed of the player attacks
+        DEF_ATTACK_COOLDOWN, // cooldown between two attacks
+        DEF_HEALTH, // health of the player
+        1.0f, // multiplier of the displacement of the kunai
+        1.0f// multiplier of the damage of the kunai
+    )
+{}
+
+
+void Player::copy(const Player& playerCopy) {
+    this->skinInfo = playerCopy.skinInfo;
+    this->texture = playerCopy.texture;
+    this->hurtBox = playerCopy.hurtBox;
+    this->topHeight = playerCopy.topHeight;
+    this->moveVel = playerCopy.moveVel;
+    this->move = playerCopy.move;
+    this->attackVel = playerCopy.attackVel;
+    this->attackCooldown = playerCopy.attackCooldown;
+    this->health = playerCopy.health;
+    this->kunaiDimensionMul = playerCopy.kunaiDimensionMul;
+    this->kunaiDamageMul = playerCopy.kunaiDamageMul;
+    this->kunaiVel = playerCopy.kunaiVel;
+
+    this->currAction = playerCopy.currAction;
+    this->currTopActionFrame = playerCopy.currTopActionFrame;
+    this->currBottomActionFrame = playerCopy.currBottomActionFrame;
+    this->topActionRemainingTime = playerCopy.topActionRemainingTime;
+    this->bottomActionRemainingTime = playerCopy.bottomActionRemainingTime;
+    this->attackCooldownRemainingTime = playerCopy.attackCooldownRemainingTime;
+
+    this->isMoving = playerCopy.isMoving;
+    this->isAttacking = playerCopy.isAttacking;
+    this->hurted = playerCopy.hurted;
+    this->currVerse = playerCopy.currVerse;
+    this->score = playerCopy.score;
+
+    this->srcTopDraw = playerCopy.srcTopDraw;
+    this->srcBottomDraw = playerCopy.srcBottomDraw;
+    this->kunaisSrcDraw = playerCopy.kunaisSrcDraw;
+}
+
+void Player::resetModifiers() {
+    hurtBox.width = DEF_WIDTH;
+    hurtBox.height = DEF_HEIGHT;
+    topHeight = hurtBox.height*(skinInfo.topHeight/(skinInfo.topHeight+skinInfo.bottomHeight));
+    kunaiDimensionMul = 1.0f;
+    moveVel = 1.0f;
+    move = DEF_PLAYER_MOVE*moveVel;
+    attackVel = 1.0f;
+    attackCooldown = DEF_ATTACK_COOLDOWN;
+    health = DEF_HEALTH;
+    kunaiVel = 1.0f;
+    kunaiDamageMul = 1.0f;
+}
+
 
 void Player::updateGraphics(float deltaTime) {
     // check if still alive
@@ -261,14 +325,7 @@ void Player::updateLogic(float deltaTime, Vector2 verse) {
     }
 
     // attack
-    if(attackCooldownRemainingTime <= 0.0f) {
-        // if player can attack -> start attacking
-        isAttacking = true;
-        attackCooldownRemainingTime =
-            (ATTACK_FRAME_PERIOD/moveVel)+attackCooldown;
-
-
-    } else if(isAttacking && topActionRemainingTime <= 0.0f) {
+    if(isAttacking && topActionRemainingTime <= 0.0f) {
         // if player is attacking && ended animation
         isAttacking = false;
 
@@ -277,8 +334,8 @@ void Player::updateLogic(float deltaTime, Vector2 verse) {
             (Rectangle) { // hitBox
                 hurtBox.x + hurtBox.width/2,
                 hurtBox.y + hurtBox.height/2,
-                Player::DEF_KUNAI_WIDTH*kunaiDimensionMul,
-                Player::DEF_KUNAI_HEIGHT*kunaiDimensionMul
+                DEF_KUNAI_WIDTH*kunaiDimensionMul,
+                DEF_KUNAI_HEIGHT*kunaiDimensionMul
             },
             DEF_KUNAI_MOVE*kunaiVel, // move
             0.0f, // slope // TODO: adjust slope to nearest enemy
@@ -291,18 +348,29 @@ void Player::updateLogic(float deltaTime, Vector2 verse) {
         });
     }
 
-    for(int i = kunais.size()-1; i>=0; i--) {
-        Kunai& k = kunais[i];
+    if(attackCooldownRemainingTime <= 0.0f) {
+        // if player can attack -> start attacking
+        isAttacking = true;
+        attackCooldownRemainingTime =
+            (ATTACK_FRAME_PERIOD/attackVel)+attackCooldown;
 
+
+    }
+
+    auto toPop = kunais.begin();
+    for(auto& k : kunais) {
         k.ttl-= deltaTime;
         if(k.ttl > 0.0f) {
             // update kunai pos if is still valid (ttl not exceeded)
             k.hitBox.x+= std::cos(k.slope)*k.move;
             k.hitBox.y+= std::sin(k.slope)*k.move;
         } else {
-            kunais.pop_back();
+            toPop++;
         }
     }
+
+    // need to erase after loop
+    kunais.erase(kunais.cbegin(), toPop);
 }
 
 void Player::draw() {
@@ -357,4 +425,119 @@ void Player::draw() {
             WHITE
         );
     }
+}
+
+void Player::setSkin(PlayerSkin* skin) {
+    this->texture = &skin->texture;
+    this->skinInfo = skin->skinInfo;
+    topHeight = hurtBox.height*(skinInfo.topHeight/(skinInfo.topHeight+skinInfo.bottomHeight));
+}
+
+void Player::setPlayerDimensionMul(float playerDimensionMul) {
+    float mul = std::clamp(playerDimensionMul, MIN_MUL, MAX_MUL);
+    hurtBox.width = DEF_WIDTH*mul;
+    hurtBox.height = DEF_HEIGHT*mul;
+    topHeight = hurtBox.height*(skinInfo.topHeight/(skinInfo.topHeight+skinInfo.bottomHeight));
+}
+
+void Player::setKunaiDimensionMul(float kunaiDimensionMul) {
+    this->kunaiDimensionMul = std::clamp(kunaiDimensionMul, MIN_MUL, MAX_MUL);
+}
+
+void Player::setMoveVel(float moveVel) {
+    this->moveVel = std::clamp(moveVel, MIN_MUL, MAX_MUL);
+    this->move = DEF_PLAYER_MOVE*this->moveVel;
+}
+
+void Player::setAttackVel(float attackVel) {
+    this->attackVel = std::clamp(attackVel, MIN_MUL, MAX_MUL);
+}
+
+void Player::setAttackCooldown(float attackCooldown) {
+    this->attackCooldown = std::clamp(attackCooldown, MIN_ATTACK_COOLDOWN, MAX_ATTACK_COOLDOWN);
+}
+
+void Player::setHealth(int32_t health) {
+    this->health = std::clamp(health, MIN_HEALTH, MAX_HEALTH);
+}
+
+void Player::setKunaiVel(float kunaiVel) {
+    this->kunaiVel = std::clamp(kunaiVel, MIN_MUL, MAX_MUL);
+}
+
+void Player::setKunaiDamageMul(float kunaiDamageMul) {
+    this->kunaiDamageMul = std::clamp(kunaiDamageMul, MIN_MUL, MAX_MUL);
+}
+
+void Player::incrementScore(unsigned long long int inc) {
+    this->score+= inc;
+}
+
+
+PlayerSkinInfo Player::getSkinInfo() {
+    return skinInfo;
+}
+
+std::string Player::getSkinName() {
+    return skinInfo.name;
+}
+
+float Player::getPlayerDimensionMul() {
+    return hurtBox.width/DEF_WIDTH;
+}
+
+float Player::getKunaiDimensionMul() {
+    return kunaiDimensionMul;
+}
+
+float Player::getMoveVel() {
+    return moveVel;
+}
+
+float Player::getAttackVel() {
+    return attackVel;
+}
+
+float Player::getAttackCooldown() {
+    return attackCooldown;
+}
+
+int32_t Player::getHealth() {
+    return health;
+}
+
+float Player::getKunaiVel() {
+    return kunaiVel;
+}
+
+float Player::getKunaiDamageMul() {
+    return kunaiDamageMul;
+}
+
+unsigned long long int Player::getScore() {
+    return score;
+}
+
+
+float Player::getMinMul() {
+    return MIN_MUL;
+}
+float Player::getMaxMul() {
+    return MAX_MUL;
+}
+
+int32_t Player::getMinHealth() {
+    return MIN_HEALTH;
+}
+
+int32_t Player::getMaxHealth() {
+    return MAX_HEALTH;
+}
+
+float Player::getMinAttackCooldown() {
+    return MIN_ATTACK_COOLDOWN;
+}
+
+float Player::getMaxAttackCooldown() {
+    return MAX_ATTACK_COOLDOWN;
 }

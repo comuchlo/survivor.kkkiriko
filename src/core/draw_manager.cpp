@@ -97,6 +97,26 @@ void DrawManager::drawRangeBar(int progress, int height) {
    	DrawRectangle((RENDER_WIDTH / 2) - 125 + progressLenght, height + 1, 6, 22, RED);//innerRangeCursor
 }
 
+void DrawManager::drawRangeBarEx(int progress, int height, float displayedValue) {
+    int progressLenght = (!progress) ? 0 : progress * 2.5;
+    char tempbuffer[30];
+    sprintf(tempbuffer, "%.2f", displayedValue);
+
+   	DrawRectangle((RENDER_WIDTH / 2) - 127, height, 10, 19, GetColor(0x232323ff));//first end of bar
+   	DrawRectangle((RENDER_WIDTH / 2) + 117, height + 5, 10, 19, GetColor(0x232323ff));//end of bar
+   	DrawRectangle((RENDER_WIDTH / 2) - 127, height + 5, 254, 14, GetColor(0x232323ff));//outerBar
+   	DrawRectangle((RENDER_WIDTH / 2) - 125, height + 7, 250, 10, WHITE);//innerBar
+   	DrawRectangle((RENDER_WIDTH / 2) - 125, height + 7, progressLenght, 10, RED);//colored range (before cursor)
+
+    drawTextSF(tempbuffer, (RENDER_WIDTH / 2) + 136, height + 2, 18, BLACK, BLACK, RED);// displayed value
+    // DrawText(tempbuffer, (RENDER_WIDTH / 2) + 136, height + 2, 18, BLACK);//Master Volume Number
+   	// DrawText(tempbuffer, (RENDER_WIDTH / 2) + 137, height + 3, 18, BLACK);//Master Volume Number
+   	// DrawText(tempbuffer, (RENDER_WIDTH / 2) + 138, height + 4, 18, RED);//Master Volume Number
+
+   	DrawRectangle((RENDER_WIDTH / 2) - 127 + progressLenght, height - 1, 10, 26, BLACK);//outerRangeCursor
+   	DrawRectangle((RENDER_WIDTH / 2) - 125 + progressLenght, height + 1, 6, 22, RED);//innerRangeCursor
+}
+
 void DrawManager::drawText(const char *text, int x, int y, int fontSize, Color col) {
     if(fontAvailable) {
         DrawTextEx(fontRegular, text, {(float)x, (float)y}, fontSize, 0, col);
@@ -248,7 +268,7 @@ bool DrawManager::loadPlayerSkinsInfo() {
 
         //init skininfo
         PlayerSkinInfo skinInfo = {
-            fileName.c_str(), // name
+            fileName, // name
             0, // idleTotFrame
             0, // runTotFrame
             0, // attackTotFrame
@@ -373,12 +393,12 @@ std::vector<PlayerSkinInfo> DrawManager::getPlayerSkinsInfo() {
     return skinsInfo;
 }
 
-PlayerSkin* DrawManager::loadPlayerSkin(const char* skinName) {
+PlayerSkin* DrawManager::loadPlayerSkin(std::string skinName) {
     PlayerSkin* found;
 
     // load first if no name provided
-    const char *name = (strcmp(skinName, "") == 0) ?
-        skinName = playerSkins.begin()->first.c_str() :
+    std::string name = (skinName.size() == 0) ?
+        playerSkins.begin()->first :
         skinName;
 
     try {
@@ -386,7 +406,7 @@ PlayerSkin* DrawManager::loadPlayerSkin(const char* skinName) {
 
         if(!IsTextureValid(found->texture)) {
             char tempbuffer[100];
-            sprintf(tempbuffer, "%s%s.png", PLAYERSKIN_FOLDER, name);
+            sprintf(tempbuffer, "%s%s.png", PLAYERSKIN_FOLDER, name.c_str());
             found->texture = LoadTexture(tempbuffer);
         }
     } catch (const std::runtime_error e) {

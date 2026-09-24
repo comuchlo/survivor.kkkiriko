@@ -14,7 +14,7 @@ ControllerExitCode Training::handleModality() {
                 trainingModality = std::make_unique<TrainingGame>(&trainingMap);
                 break;
             case TrainingState::TRAINING_PAUSE_MENU:
-                trainingModality = std::make_unique<TrainingMenu>();
+                trainingModality = std::make_unique<TrainingMenu>(&playerParams);
                 break;
             case TrainingState::GOTO_LOBBY:
                 return ControllerExitCode::GOTO_LOBBY;

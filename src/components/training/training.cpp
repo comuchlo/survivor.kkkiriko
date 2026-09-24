@@ -9,6 +9,11 @@ Training::Training() {
 
     game_manager = GameManager::getInstance();
     game_manager->initTraining();
+
+    //init training params
+    // copy player stat
+    playerParams.copy(game_manager->players[0]); // copy default player once
+
     trainingModality = std::make_unique<TrainingGame>(&trainingMap);
 }
 

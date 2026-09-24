@@ -36,6 +36,9 @@ class Training : public Modality {
         GameManager* game_manager;
         Texture2D trainingMap;
 
+        // training params
+        Player playerParams;
+
     public:
         Training();
         ~Training() override;
