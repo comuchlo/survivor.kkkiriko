@@ -1,5 +1,4 @@
 #include "trainingmenu.hpp"
-#include <algorithm>
 #include <raylib.h>
 
 TrainingState TrainingMenu::handleTrainingSubMode() {
@@ -23,7 +22,7 @@ TrainingState TrainingMenu::handleTrainingSubMode() {
                     (float)choiceOnGeneral*(scrollableHeight/(float)SettingModSelection::EXIT);
            	}
 
-           	if  (IsKeyPressed(KEY_RIGHT) || IsKeyPressed(KEY_D)) {// right
+           	if  (IsKeyPressed(KEY_RIGHT) || IsKeyPressed(KEY_D) || IsKeyPressedRepeat(KEY_RIGHT) || IsKeyPressedRepeat(KEY_D)) {// right
                 switch (choiceOnGeneral) {
                     case SettingModSelection::INDEX:
                         macroSelection++;
@@ -68,7 +67,7 @@ TrainingState TrainingMenu::handleTrainingSubMode() {
                 }
            	}
 
-           	if (IsKeyPressed(KEY_LEFT) || IsKeyPressed(KEY_A)) {// left
+           	if (IsKeyPressed(KEY_LEFT) || IsKeyPressed(KEY_A) || IsKeyPressedRepeat(KEY_LEFT) || IsKeyPressedRepeat(KEY_A)) {// left
                 switch (choiceOnGeneral) {
                     case SettingModSelection::INDEX:
                         macroSelection--;
@@ -150,7 +149,7 @@ TrainingState TrainingMenu::handleTrainingSubMode() {
                     (float)choiceOnPlayer*(scrollableHeight/(float)PlayerModSelection::EXIT);
            	}
 
-            if  (IsKeyPressed(KEY_RIGHT) || IsKeyPressed(KEY_D)) {// right
+            if  (IsKeyPressed(KEY_RIGHT) || IsKeyPressed(KEY_D) || IsKeyPressedRepeat(KEY_RIGHT) || IsKeyPressedRepeat(KEY_D)) {// right
                 switch (choiceOnPlayer) {
                     case PlayerModSelection::INDEX:
                         macroSelection++;
@@ -163,42 +162,42 @@ TrainingState TrainingMenu::handleTrainingSubMode() {
                         break;
                     case PlayerModSelection::HP:
                         game_manager->players[0].setHealth(
-                            game_manager->players[0].getHealth()+((Player::getMaxHealth()-Player::getMinHealth())/30)
+                            game_manager->players[0].getHealth()+game_manager->players[0].getDeltaHealth()
                         );
                         break;
                     case PlayerModSelection::MOVEMENT_SPEED:
                         game_manager->players[0].setMoveVel(
-                            game_manager->players[0].getMoveVel()+((Player::getMaxMul()-Player::getMinMul())/30)
+                            game_manager->players[0].getMoveVel()+game_manager->players[0].getDeltaMul()
                         );
                         break;
                     case PlayerModSelection::ATTACK_SPEED:
                         game_manager->players[0].setAttackVel(
-                            game_manager->players[0].getAttackVel()+((Player::getMaxMul()-Player::getMinMul())/30)
+                            game_manager->players[0].getAttackVel()+game_manager->players[0].getDeltaMul()
                         );
                         break;
                     case PlayerModSelection::ATTACK_COOLDOWN:
                         game_manager->players[0].setAttackCooldown(
-                            game_manager->players[0].getAttackCooldown()+0.2f
+                            game_manager->players[0].getAttackCooldown()+game_manager->players[0].getDeltaAttackCooldown()
                         );
                         break;
                     case PlayerModSelection::KUNAI_SPEED:
                         game_manager->players[0].setKunaiVel(
-                            game_manager->players[0].getKunaiVel()+((Player::getMaxMul()-Player::getMinMul())/30)
+                            game_manager->players[0].getKunaiVel()+game_manager->players[0].getDeltaMul()
                         );
                         break;
                     case PlayerModSelection::DIMENSION:
                         game_manager->players[0].setPlayerDimensionMul(
-                            game_manager->players[0].getPlayerDimensionMul()+((Player::getMaxMul()-Player::getMinMul())/30)
+                            game_manager->players[0].getPlayerDimensionMul()+game_manager->players[0].getDeltaMul()
                         );
                         break;
                     case PlayerModSelection::KUNAI_DIMENSION:
                         game_manager->players[0].setKunaiDimensionMul(
-                            game_manager->players[0].getKunaiDimensionMul()+((Player::getMaxMul()-Player::getMinMul())/30)
+                            game_manager->players[0].getKunaiDimensionMul()+game_manager->players[0].getDeltaMul()
                         );
                         break;
                     case PlayerModSelection::KUNAI_DAMAGE:
                         game_manager->players[0].setKunaiDamageMul(
-                            game_manager->players[0].getKunaiDamageMul()+((Player::getMaxMul()-Player::getMinMul())/30)
+                            game_manager->players[0].getKunaiDamageMul()+game_manager->players[0].getDeltaMul()
                         );
                         break;
                     case PlayerModSelection::ULT:
@@ -208,7 +207,7 @@ TrainingState TrainingMenu::handleTrainingSubMode() {
                 }
             }
 
-            if  (IsKeyPressed(KEY_LEFT) || IsKeyPressed(KEY_A)) {// left
+            if (IsKeyPressed(KEY_LEFT) || IsKeyPressed(KEY_A) || IsKeyPressedRepeat(KEY_LEFT) || IsKeyPressedRepeat(KEY_A)) {// left
                 switch (choiceOnPlayer) {
                     case PlayerModSelection::INDEX:
                         macroSelection--;
@@ -221,42 +220,42 @@ TrainingState TrainingMenu::handleTrainingSubMode() {
                         break;
                     case PlayerModSelection::HP:
                         game_manager->players[0].setHealth(
-                            game_manager->players[0].getHealth()-((Player::getMaxHealth()-Player::getMinHealth())/30)
+                            game_manager->players[0].getHealth()-game_manager->players[0].getDeltaMul()
                         );
                         break;
                     case PlayerModSelection::MOVEMENT_SPEED:
                         game_manager->players[0].setMoveVel(
-                            game_manager->players[0].getMoveVel()-((Player::getMaxMul()-Player::getMinMul())/30)
+                            game_manager->players[0].getMoveVel()-game_manager->players[0].getDeltaMul()
                         );
                         break;
                     case PlayerModSelection::ATTACK_SPEED:
                         game_manager->players[0].setAttackVel(
-                            game_manager->players[0].getAttackVel()-((Player::getMaxMul()-Player::getMinMul())/30)
+                            game_manager->players[0].getAttackVel()-game_manager->players[0].getDeltaMul()
                         );
                         break;
                     case PlayerModSelection::ATTACK_COOLDOWN:
                         game_manager->players[0].setAttackCooldown(
-                            game_manager->players[0].getAttackCooldown()-0.2f
+                            game_manager->players[0].getAttackCooldown()-game_manager->players[0].getDeltaAttackCooldown()
                         );
                         break;
                     case PlayerModSelection::KUNAI_SPEED:
                         game_manager->players[0].setKunaiVel(
-                            game_manager->players[0].getKunaiVel()-((Player::getMaxMul()-Player::getMinMul())/30)
+                            game_manager->players[0].getKunaiVel()-game_manager->players[0].getDeltaMul()
                         );
                         break;
                     case PlayerModSelection::DIMENSION:
                         game_manager->players[0].setPlayerDimensionMul(
-                            game_manager->players[0].getPlayerDimensionMul()-((Player::getMaxMul()-Player::getMinMul())/30)
+                            game_manager->players[0].getPlayerDimensionMul()-game_manager->players[0].getDeltaMul()
                         );
                         break;
                     case PlayerModSelection::KUNAI_DIMENSION:
                         game_manager->players[0].setKunaiDimensionMul(
-                            game_manager->players[0].getKunaiDimensionMul()-((Player::getMaxMul()-Player::getMinMul())/30)
+                            game_manager->players[0].getKunaiDimensionMul()-game_manager->players[0].getDeltaMul()
                         );
                         break;
                     case PlayerModSelection::KUNAI_DAMAGE:
                         game_manager->players[0].setKunaiDamageMul(
-                            game_manager->players[0].getKunaiDamageMul()-((Player::getMaxMul()-Player::getMinMul())/30)
+                            game_manager->players[0].getKunaiDamageMul()-game_manager->players[0].getDeltaMul()
                         );
                         break;
                     case PlayerModSelection::ULT:
@@ -302,7 +301,7 @@ TrainingState TrainingMenu::handleTrainingSubMode() {
                     (float)choiceOnEnemy*(scrollableHeight/(float)EnemyModSelection::EXIT);
            	}
 
-            if  (IsKeyPressed(KEY_RIGHT) || IsKeyPressed(KEY_D)) {// right
+            if  (IsKeyPressed(KEY_RIGHT) || IsKeyPressed(KEY_D) || IsKeyPressedRepeat(KEY_RIGHT) || IsKeyPressedRepeat(KEY_D)) {// right
                 switch (choiceOnEnemy) {
                     case EnemyModSelection::INDEX:
                         macroSelection++;
@@ -329,7 +328,7 @@ TrainingState TrainingMenu::handleTrainingSubMode() {
                 }
             }
 
-            if  (IsKeyPressed(KEY_LEFT) || IsKeyPressed(KEY_A)) {// left
+            if (IsKeyPressed(KEY_LEFT) || IsKeyPressed(KEY_A) || IsKeyPressedRepeat(KEY_LEFT) || IsKeyPressedRepeat(KEY_A)) {// left
                 switch (choiceOnEnemy) {
                     case EnemyModSelection::INDEX:
                         macroSelection--;

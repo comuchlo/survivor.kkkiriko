@@ -134,14 +134,20 @@ class Player {
         static float getMinMul();
         // get maximum multiplier value
         static float getMaxMul();
+        // get default delta of the multiplier
+        static float getDeltaMul();
         //get minimum player health
         static int32_t getMinHealth();
         //get maximum player health
         static int32_t getMaxHealth();
+        // get default delta of the health
+        static float getDeltaHealth();
         //get minimum attack cooldown
         static float getMinAttackCooldown();
         //get maximum attack cooldown
         static float getMaxAttackCooldown();
+        // get default delta of the cooldown
+        static float getDeltaAttackCooldown();
 };
 
 

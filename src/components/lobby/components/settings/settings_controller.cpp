@@ -1,4 +1,5 @@
 #include "settings.hpp"
+#include <raylib.h>
 
 LobbyState Settings::handleLobbySubMode() {
     //events
@@ -12,7 +13,7 @@ LobbyState Settings::handleLobbySubMode() {
         sys->soundManager->playCurrent();
 	}
 
-	if  (IsKeyPressed(KEY_RIGHT) || IsKeyPressed(KEY_D)) {//right
+	if  (IsKeyPressed(KEY_RIGHT) || IsKeyPressed(KEY_D) || IsKeyPressedRepeat(KEY_RIGHT) || IsKeyPressedRepeat(KEY_D)) {//right
         switch (choice) {
             case SettingSelection::MASTERVOLUME:
                 sys->soundManager->incrementGlobalVolume();
@@ -53,7 +54,7 @@ LobbyState Settings::handleLobbySubMode() {
         }
 	}
 
-	if (IsKeyPressed(KEY_LEFT) || IsKeyPressed(KEY_A)) {//left
+	if (IsKeyPressed(KEY_LEFT) || IsKeyPressed(KEY_A) || IsKeyPressedRepeat(KEY_LEFT) || IsKeyPressedRepeat(KEY_A)) {//left
         switch (choice) {
             case SettingSelection::MASTERVOLUME:
                 sys->soundManager->decrementGlobalVolume();

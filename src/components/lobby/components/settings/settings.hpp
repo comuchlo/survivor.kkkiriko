@@ -1,6 +1,7 @@
 #ifndef SETTINGS_HPP
 #define SETTINGS_HPP
 
+#include "../../../../core/game_manager.hpp"
 #include "../../lobby.hpp"
 #include <raylib.h>
 
