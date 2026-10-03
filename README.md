@@ -47,7 +47,14 @@ terza riga: posizioni dei frame
 ```
 
 ##### Per gli `Enemies`:
-tbd
+prima riga: tipologia nemico (guarda [ENEMY TYPE SET](#enemy-type-set))
+```
+<enemyType>
+```
+seconda riga: dimensioni
+```
+<width> <height>
+```
 
 #### Accortezze
 - ogni primo tipo di frame (es: idleTop, idleBottom, ...) ha `x = 0`
@@ -206,9 +213,9 @@ presente quando si entra nel menù di pausa
 
 ### Variabili
 #### ENEMY TYPE SET
-- donut
-- donut king
-- vero chad
+- DONUT
+- KING_DONUT
+- CHAD_DONUT
 
 #### ENEMY GENERATION CRITERIA
 - a richiesta

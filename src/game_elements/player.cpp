@@ -9,45 +9,6 @@
 #include <raylib.h>
 #include <vector>
 
-// problem: float cant be static -> workaround like this
-
-static const int DEF_WIDTH = 67, DEF_HEIGHT = 72,
-    DEF_KUNAI_WIDTH = 32, DEF_KUNAI_HEIGHT = 8;
-
-static const int32_t MIN_HEALTH = 10, DEF_HEALTH = 100, MAX_HEALTH = 10000,
-// delta of health
-    DELTA_HEALTH = 10;
-
-// specify duration of the actions
-const float IDLE_FRAME_PERIOD = 1.0f, RUN_FRAME_PERIOD = 2.0f,
-    ATTACK_FRAME_PERIOD = 1.5f,
-// default kunai frame period
-    KUNAI_FRAME_PERIOD = 0.2f,
-
-// default player displacement per frame
-    DEF_PLAYER_MOVE = 10,
-// default attack cooldown
-    DEF_ATTACK_COOLDOWN = 5.0f,
-// default attack cooldown
-    DELTA_ATTACK_COOLDOWN = 0.25f,
-// default kunai displacement per frame
-    DEF_KUNAI_MOVE = 20,
-
-// default kunai damage
-    DEF_KUNAI_DAMAGE = 10,
-// max time limit before kunai should despawn
-    KUNAI_MAX_TTL = 2.0f,
-
-// minimum/maximum values
-
-// (for multiplicator e.g.:moveVel, playerDimensionMUl, ...)
-    MIN_MUL = 0.25f, MAX_MUL = 10.0f,
-// delta of MUL
-    DELTA_MUL = 0.25f,
-// minimum/maximum cooldown between attacks (in seconds)
-    MIN_ATTACK_COOLDOWN = 0.0f, MAX_ATTACK_COOLDOWN = 10.0f;
-
-
 Player::Player(
     PlayerSkin* skin, // skin of the player
     float playerDimensionMul, // multiplier of the dimension of the player
@@ -99,7 +60,7 @@ Player::Player(
 
 }
 
-Player::Player(PlayerSkin* skin) // TODO: [!] modified params
+Player::Player(PlayerSkin* skin) // [!] modified params
     : Player(
         skin, // skin of the player
         3.0f, // multiplier of the dimension of the player
@@ -522,41 +483,4 @@ float Player::getKunaiDamageMul() {
 
 unsigned long long int Player::getScore() {
     return score;
-}
-
-
-float Player::getMinMul() {
-    return MIN_MUL;
-}
-float Player::getMaxMul() {
-    return MAX_MUL;
-}
-
-float Player::getDeltaMul() {
-    return DELTA_MUL;
-}
-
-
-int32_t Player::getMinHealth() {
-    return MIN_HEALTH;
-}
-
-int32_t Player::getMaxHealth() {
-    return MAX_HEALTH;
-}
-
-float Player::getDeltaHealth() {
-    return DELTA_HEALTH;
-}
-
-float Player::getMinAttackCooldown() {
-    return MIN_ATTACK_COOLDOWN;
-}
-
-float Player::getMaxAttackCooldown() {
-    return MAX_ATTACK_COOLDOWN;
-}
-
-float Player::getDeltaAttackCooldown() {
-    return DELTA_ATTACK_COOLDOWN;
 }

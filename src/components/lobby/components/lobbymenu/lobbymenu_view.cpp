@@ -2,11 +2,10 @@
 
 
 void LobbyMenu::drawModality() { //: training , duel , survival , settings
-    // const float renderWidth = drawer->RENDER_WIDTH, renderHeight = drawer->RENDER_HEIGHT;
     const int titleFont= drawer->titleFontSize, buttonFont= drawer->buttonFontSize,
         subTitleFont= drawer->subTitleFontSize;
 
-    const int xOffset = 12; // const x offset
+    constexpr int xOffset = 12; // const x offset
     int currH = 50; // for draw calls height
 
     // background image

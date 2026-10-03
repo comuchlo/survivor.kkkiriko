@@ -17,6 +17,17 @@ enum class PlayerActions {
 
 class Player {
     private:
+        static constexpr float IDLE_FRAME_PERIOD = 1.0f, RUN_FRAME_PERIOD = 2.0f,
+            ATTACK_FRAME_PERIOD = 1.5f,
+        // default kunai frame period
+            KUNAI_FRAME_PERIOD = 0.2f;
+
+        // default player displacement per frame
+        static constexpr float DEF_PLAYER_MOVE = 10,
+        // default kunai displacement per frame
+            DEF_KUNAI_MOVE = 20;
+
+
         // curent action of the frame
         PlayerActions currAction;
         // current frame
@@ -60,6 +71,32 @@ class Player {
         std::vector<Rectangle> kunaisSrcDraw;
 
     public:
+        static constexpr int DEF_WIDTH = 67, DEF_HEIGHT = 72,
+            DEF_KUNAI_WIDTH = 32, DEF_KUNAI_HEIGHT = 8;
+
+        static constexpr int32_t MIN_HEALTH = 10, DEF_HEALTH = 100, MAX_HEALTH = 10000,
+        // delta of health
+            DELTA_HEALTH = 10;
+
+            // default attack cooldown
+        static constexpr float DEF_ATTACK_COOLDOWN = 5.0f,
+        // default attack cooldown
+            DELTA_ATTACK_COOLDOWN = 0.25f,
+
+        // default kunai damage
+            DEF_KUNAI_DAMAGE = 10,
+        // max time limit before kunai should despawn
+            KUNAI_MAX_TTL = 2.0f,
+
+        // minimum/maximum values
+
+        // (for multiplicator e.g.:moveVel, playerDimensionMUl, ...)
+            MIN_MUL = 0.25f, MAX_MUL = 10.0f,
+        // delta of MUL
+            DELTA_MUL = 0.25f,
+        // minimum/maximum cooldown between attacks (in seconds)
+            MIN_ATTACK_COOLDOWN = 0.0f, MAX_ATTACK_COOLDOWN = 10.0f;
+
         Rectangle hurtBox;
 
         // bools: fast comunication player <-> game_manager
@@ -90,6 +127,7 @@ class Player {
         );
         Player(PlayerSkin* skin);
         Player() = default; // expose default constructor
+        ~Player() = default;
         // Player(const Player& playerCopy);
 
         // copy player info
@@ -129,25 +167,6 @@ class Player {
         float getKunaiVel();
         float getKunaiDamageMul();
         unsigned long long int getScore();
-
-        // get minimum multiplier value
-        static float getMinMul();
-        // get maximum multiplier value
-        static float getMaxMul();
-        // get default delta of the multiplier
-        static float getDeltaMul();
-        //get minimum player health
-        static int32_t getMinHealth();
-        //get maximum player health
-        static int32_t getMaxHealth();
-        // get default delta of the health
-        static float getDeltaHealth();
-        //get minimum attack cooldown
-        static float getMinAttackCooldown();
-        //get maximum attack cooldown
-        static float getMaxAttackCooldown();
-        // get default delta of the cooldown
-        static float getDeltaAttackCooldown();
 };
 
 

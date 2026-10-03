@@ -24,7 +24,7 @@ DisplayMode  operator--(DisplayMode& val, int);
 
 class System {
     private:
-        static const int DEF_FPS = 60,
+        static constexpr int DEF_FPS = 60,
             DEF_WIDTH = 960, DEF_HEIGHT = 540, // default res should be 16:9
             MIN_WIDTH = 640, MIN_HEIGHT = 360,
             MIN_FPS = 0, MAX_FPS = 360, DELTA_FPS = 10; // N.B.: 0 fps = uncapped
@@ -34,7 +34,7 @@ class System {
         bool shutdown, borderlessWindow;
         int fps, currMonitor;
         float screenWidth, screenHeight, monitorWidth, monitorHeight;
-        Vector2 mousePos;
+        // Vector2 mousePos;
         Image icon;
 
         System();

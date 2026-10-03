@@ -6,7 +6,7 @@
 
 class Credits : public LobbyScreen {
     private:
-        static const int DEF_AUTOSCROLL_SPEED = 80, MAX_AUTOSCROLL_SPEED = 320,
+        static constexpr int DEF_AUTOSCROLL_SPEED = 80, MAX_AUTOSCROLL_SPEED = 320,
             CREDITS_HEIGHT_END = 1100;
         int autoscroll_speed;
         bool endedAutoScrool, stoppedLastText;

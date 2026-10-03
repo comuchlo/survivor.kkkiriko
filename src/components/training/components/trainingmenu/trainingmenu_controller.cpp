@@ -162,42 +162,42 @@ TrainingState TrainingMenu::handleTrainingSubMode() {
                         break;
                     case PlayerModSelection::HP:
                         game_manager->players[0].setHealth(
-                            game_manager->players[0].getHealth()+game_manager->players[0].getDeltaHealth()
+                            game_manager->players[0].getHealth()+Player::DELTA_HEALTH
                         );
                         break;
                     case PlayerModSelection::MOVEMENT_SPEED:
                         game_manager->players[0].setMoveVel(
-                            game_manager->players[0].getMoveVel()+game_manager->players[0].getDeltaMul()
+                            game_manager->players[0].getMoveVel()+Player::DELTA_MUL
                         );
                         break;
                     case PlayerModSelection::ATTACK_SPEED:
                         game_manager->players[0].setAttackVel(
-                            game_manager->players[0].getAttackVel()+game_manager->players[0].getDeltaMul()
+                            game_manager->players[0].getAttackVel()+Player::DELTA_MUL
                         );
                         break;
                     case PlayerModSelection::ATTACK_COOLDOWN:
                         game_manager->players[0].setAttackCooldown(
-                            game_manager->players[0].getAttackCooldown()+game_manager->players[0].getDeltaAttackCooldown()
+                            game_manager->players[0].getAttackCooldown()+Player::DELTA_ATTACK_COOLDOWN
                         );
                         break;
                     case PlayerModSelection::KUNAI_SPEED:
                         game_manager->players[0].setKunaiVel(
-                            game_manager->players[0].getKunaiVel()+game_manager->players[0].getDeltaMul()
+                            game_manager->players[0].getKunaiVel()+Player::DELTA_MUL
                         );
                         break;
                     case PlayerModSelection::DIMENSION:
                         game_manager->players[0].setPlayerDimensionMul(
-                            game_manager->players[0].getPlayerDimensionMul()+game_manager->players[0].getDeltaMul()
+                            game_manager->players[0].getPlayerDimensionMul()+Player::DELTA_MUL
                         );
                         break;
                     case PlayerModSelection::KUNAI_DIMENSION:
                         game_manager->players[0].setKunaiDimensionMul(
-                            game_manager->players[0].getKunaiDimensionMul()+game_manager->players[0].getDeltaMul()
+                            game_manager->players[0].getKunaiDimensionMul()+Player::DELTA_MUL
                         );
                         break;
                     case PlayerModSelection::KUNAI_DAMAGE:
                         game_manager->players[0].setKunaiDamageMul(
-                            game_manager->players[0].getKunaiDamageMul()+game_manager->players[0].getDeltaMul()
+                            game_manager->players[0].getKunaiDamageMul()+Player::DELTA_MUL
                         );
                         break;
                     case PlayerModSelection::ULT:
@@ -220,42 +220,42 @@ TrainingState TrainingMenu::handleTrainingSubMode() {
                         break;
                     case PlayerModSelection::HP:
                         game_manager->players[0].setHealth(
-                            game_manager->players[0].getHealth()-game_manager->players[0].getDeltaMul()
+                            game_manager->players[0].getHealth()-Player::DELTA_MUL
                         );
                         break;
                     case PlayerModSelection::MOVEMENT_SPEED:
                         game_manager->players[0].setMoveVel(
-                            game_manager->players[0].getMoveVel()-game_manager->players[0].getDeltaMul()
+                            game_manager->players[0].getMoveVel()-Player::DELTA_MUL
                         );
                         break;
                     case PlayerModSelection::ATTACK_SPEED:
                         game_manager->players[0].setAttackVel(
-                            game_manager->players[0].getAttackVel()-game_manager->players[0].getDeltaMul()
+                            game_manager->players[0].getAttackVel()-Player::DELTA_MUL
                         );
                         break;
                     case PlayerModSelection::ATTACK_COOLDOWN:
                         game_manager->players[0].setAttackCooldown(
-                            game_manager->players[0].getAttackCooldown()-game_manager->players[0].getDeltaAttackCooldown()
+                            game_manager->players[0].getAttackCooldown()-Player::DELTA_ATTACK_COOLDOWN
                         );
                         break;
                     case PlayerModSelection::KUNAI_SPEED:
                         game_manager->players[0].setKunaiVel(
-                            game_manager->players[0].getKunaiVel()-game_manager->players[0].getDeltaMul()
+                            game_manager->players[0].getKunaiVel()-Player::DELTA_MUL
                         );
                         break;
                     case PlayerModSelection::DIMENSION:
                         game_manager->players[0].setPlayerDimensionMul(
-                            game_manager->players[0].getPlayerDimensionMul()-game_manager->players[0].getDeltaMul()
+                            game_manager->players[0].getPlayerDimensionMul()-Player::DELTA_MUL
                         );
                         break;
                     case PlayerModSelection::KUNAI_DIMENSION:
                         game_manager->players[0].setKunaiDimensionMul(
-                            game_manager->players[0].getKunaiDimensionMul()-game_manager->players[0].getDeltaMul()
+                            game_manager->players[0].getKunaiDimensionMul()-Player::DELTA_MUL
                         );
                         break;
                     case PlayerModSelection::KUNAI_DAMAGE:
                         game_manager->players[0].setKunaiDamageMul(
-                            game_manager->players[0].getKunaiDamageMul()-game_manager->players[0].getDeltaMul()
+                            game_manager->players[0].getKunaiDamageMul()-Player::DELTA_MUL
                         );
                         break;
                     case PlayerModSelection::ULT:

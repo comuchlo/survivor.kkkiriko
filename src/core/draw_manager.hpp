@@ -49,41 +49,37 @@ typedef struct {
     Texture2D texture;
 } PlayerSkin;
 
+
+enum class TypeEnemy {
+  DONUT = 0,
+  KING_DONUT = 1,
+  CHAD_DONUT = 2,
+};
+
+typedef struct {
+    // name of the skin (≈ id)
+    std::string name;
+
+    // type of the enemy
+    TypeEnemy type;
+
+    // specify common-for-all skin-frame width and height
+    float width, height;
+} EnemySkinInfo;
+
+typedef struct {
+    EnemySkinInfo skinInfo;
+    Texture2D texture;
+} EnemySkin;
+
 class DrawManager {
-    private:
-        const char *TEXTURES_FOLDER = "./textures/",
-            *PLAYERSKIN_FOLDER = "./textures/playerskins/";
-        static DrawManager* instance;
-        System* sys;
-
-        Font fontRegular, fontOutline;
-        // font data
-        bool fontAvailable;
-
-        // idealScreen WH = render WH
-        const Rectangle idealScreen = {0.0f, 0.0f, RENDER_WIDTH, -RENDER_HEIGHT};
-        Rectangle actualScreen; // need update() to work
-        std::array<RenderTexture2D, 2> renderSet; // render array -> fast frame swap
-        unsigned short int currRenderIndex;
-
-        // textures & skins
-        std::unordered_map<std::string, PlayerSkin> playerSkins;
-        Texture2D mapTexture, lobbyBgTexture;
-
-        GameMaps loaded_map;
-
-        // mark what modality was initialized (avoid check for every get)
-        InitializedModality initializedMod = InitializedModality::NONE;
-
-        // load all player skins info (once on init)
-        bool loadPlayerSkinsInfo();
-
-
-        DrawManager();
     public:
-        static const int RENDER_WIDTH = 1920, RENDER_HEIGHT = 1080, // for render
+        static constexpr int RENDER_WIDTH = 1920, RENDER_HEIGHT = 1080, // for render
             titleFontSize=90, subTitleFontSize=60,
             buttonFontSize=40, textFontSize=30;
+
+        // EnemyType into const char*
+        static const std::array<const std::string, (int)TypeEnemy::CHAD_DONUT+1> enemyTypeStr;
 
         ~DrawManager();
         DrawManager(const DrawManager&) = delete;
@@ -140,6 +136,13 @@ class DrawManager {
         // unload all player skins
         void unloadPlayerSkins();
 
+        // get enemy skin info
+        std::array<std::vector<EnemySkinInfo>, DrawManager::enemyTypeStr.size()> getEnemySkinsInfo();
+        // load enemy skin based on its name
+        EnemySkin* loadEnemySkin(int numberType, std::string skinName);
+        // unload all enemy skins
+        void unloadEnemySkins();
+
         // useful ? only used in Lobby -> should be a Lobby resources
         Texture2D* getLobbyBgTexture();
 
@@ -147,6 +150,43 @@ class DrawManager {
         Texture2D* getMapTexture();
         GameMaps getGameMap();
 
+    private:
+        const char *TEXTURES_FOLDER = "./textures/",
+            *PLAYERSKIN_FOLDER = "./textures/skins/player/",
+            *ENEMYSKIN_FOLDER = "./textures/skins/enemy/",
+            *DONUT_SKIN_FOLDER = "./textures/skins/enemy/donut/",
+            *KING_DONUT_SKIN_FOLDER = "./textures/skins/enemy/king_donut/",
+            *CHAD_DONUT_SKIN_FOLDER = "./textures/skins/enemy/chad_donut/";
+
+        static DrawManager* instance;
+        System* sys;
+
+        Font fontRegular, fontOutline;
+        // font data
+        bool fontAvailable;
+
+        // idealScreen WH = render WH
+        const Rectangle idealScreen = {0.0f, 0.0f, RENDER_WIDTH, -RENDER_HEIGHT};
+        Rectangle actualScreen; // need update() to work
+        std::array<RenderTexture2D, 2> renderSet; // render array -> fast frame swap
+        unsigned short int currRenderIndex;
+
+        // textures & skins
+        std::unordered_map<std::string, PlayerSkin> playerSkins;
+        std::array<std::unordered_map<std::string, EnemySkin>, enemyTypeStr.size()> enemySkins;
+        Texture2D mapTexture, lobbyBgTexture;
+
+        GameMaps loaded_map;
+
+        // mark what modality was initialized (avoid check for every get)
+        InitializedModality initializedMod = InitializedModality::NONE;
+
+        // load all player skins info (once on init)
+        bool loadPlayerSkinsInfo();
+        // load all enemy skins info (once on init)
+        bool loadEnemySkinsInfo();
+
+        DrawManager();
 };
 
 

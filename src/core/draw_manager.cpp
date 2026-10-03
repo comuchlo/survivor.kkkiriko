@@ -15,6 +15,7 @@
 
 
 DrawManager* DrawManager::instance = nullptr;
+const std::array<const std::string, (int)TypeEnemy::CHAD_DONUT+1> DrawManager::enemyTypeStr = {"donut", "king_donut", "chad_donut"};
 
 DrawManager::DrawManager() {
     const char *REGULAR_FONT_PATH = "./fonts/logofontik/logofontik.4f.ttf",
@@ -54,6 +55,9 @@ DrawManager::DrawManager() {
     if (!loadPlayerSkinsInfo())
         std::cout<< "ERROR: Error on retrieving player skins info"<<std::endl;
 
+    if (!loadEnemySkinsInfo())
+        std::cout<< "ERROR: Error on retrieving enemy skins info"<<std::endl;
+
     update(); // to update actual screen
 }
 
@@ -64,7 +68,10 @@ DrawManager::~DrawManager() {
     }
 
     unloadPlayerSkins();
+    unloadEnemySkins();
+
     setMapTexture(GameMaps::NONE);
+
     UnloadTexture(lobbyBgTexture);
 
     if(fontAvailable) {
@@ -82,6 +89,8 @@ DrawManager* DrawManager::getInstance(){
 
 void DrawManager::drawRangeBar(int progress, int height) {
    	int progressLenght = (!progress) ? 0 : progress * 2.5;
+    char tempbuffer[30];
+    sprintf(tempbuffer, "%d", progress);
 
    	DrawRectangle((RENDER_WIDTH / 2) - 127, height, 10, 19, GetColor(0x232323ff));//first end of bar
    	DrawRectangle((RENDER_WIDTH / 2) + 117, height + 5, 10, 19, GetColor(0x232323ff));//end of bar
@@ -89,9 +98,10 @@ void DrawManager::drawRangeBar(int progress, int height) {
    	DrawRectangle((RENDER_WIDTH / 2) - 125, height + 7, 250, 10, WHITE);//innerBar
    	DrawRectangle((RENDER_WIDTH / 2) - 125, height + 7, progressLenght, 10, RED);//Master Volume Level
 
-   	DrawText(TextFormat("%d", progress), (RENDER_WIDTH / 2) + 136, height + 2, 18, BLACK);//Master Volume Number
-   	DrawText(TextFormat("%d", progress), (RENDER_WIDTH / 2) + 137, height + 3, 18, BLACK);//Master Volume Number
-   	DrawText(TextFormat("%d", progress), (RENDER_WIDTH / 2) + 138, height + 4, 18, RED);//Master Volume Number
+    drawTextSF(tempbuffer, (RENDER_WIDTH / 2) + 136, height + 2, 18, BLACK, BLACK, RED);// displayed value
+   	// DrawText(TextFormat("%d", progress), (RENDER_WIDTH / 2) + 136, height + 2, 18, BLACK);//Master Volume Number
+   	// DrawText(TextFormat("%d", progress), (RENDER_WIDTH / 2) + 137, height + 3, 18, BLACK);//Master Volume Number
+   	// DrawText(TextFormat("%d", progress), (RENDER_WIDTH / 2) + 138, height + 4, 18, RED);//Master Volume Number
 
    	DrawRectangle((RENDER_WIDTH / 2) - 127 + progressLenght, height - 1, 10, 26, BLACK);//outerRangeCursor
    	DrawRectangle((RENDER_WIDTH / 2) - 125 + progressLenght, height + 1, 6, 22, RED);//innerRangeCursor
@@ -379,7 +389,127 @@ bool DrawManager::loadPlayerSkinsInfo() {
         std::cout<<"INFO: All player skins info were succesfully loaded"<<std::endl;
     }
 
-    return true;
+    return (unvalidSkins == 0);
+}
+
+bool DrawManager::loadEnemySkinsInfo() {
+    int unvalidSkins = 0;
+
+    std::cout<<"INFO: Loading enemy skins info"<<std::endl;
+
+    // get all .png files in textures/playerskins
+    std::array<FilePathList, DrawManager::enemyTypeStr.size()> skinFiles = {
+        LoadDirectoryFilesEx(
+            DONUT_SKIN_FOLDER,
+            ".png",
+            false
+        ),
+        LoadDirectoryFilesEx(
+            KING_DONUT_SKIN_FOLDER,
+            ".png",
+            false
+        ),
+        LoadDirectoryFilesEx(
+            CHAD_DONUT_SKIN_FOLDER,
+            ".png",
+            false
+        ),
+    };
+
+    for(int i = 0; i < (int)skinFiles.size(); i++) {
+        for(int j = 0; j < (int)skinFiles[i].count; j++) {
+            bool currValid = true;
+            std::string enemyType = "NONE";
+
+            // get filename
+            const std::string fileName = GetFileNameWithoutExt(skinFiles[i].paths[j]);
+
+            //init skininfo
+            EnemySkinInfo skinInfo = {
+                fileName,// name of the skin (≈ id)
+                TypeEnemy::DONUT,// type of the enemy (temp)
+                0, // width
+                0, // height
+            };
+
+            // check if .sfinfo correspective file exist
+            std::ifstream fileInfo(ENEMYSKIN_FOLDER+enemyTypeStr[i]+"/"+fileName+".sfinfo");
+
+            if(fileInfo) { // open succesfull
+                std::string tmp;
+
+                //first line:
+                // <enemyType>
+                if(std::getline(fileInfo, tmp)) {
+                    if(!(std::istringstream (tmp) >> enemyType)) {
+                        currValid = false;
+                    }
+
+                    if(enemyType.compare("DONUT") == 0) {
+                        skinInfo.type = TypeEnemy::DONUT;
+                    } else if(enemyType.compare("KING_DONUT") == 0) {
+                        skinInfo.type = TypeEnemy::KING_DONUT;
+                    } else if(enemyType.compare("CHAD_DONUT") == 0) {
+                        skinInfo.type = TypeEnemy::CHAD_DONUT;
+                    } else {
+                        currValid = false;
+                    }
+                } else {
+                    currValid = false;
+                }
+
+                //second line:
+                // <width> <height>
+                if(std::getline(fileInfo, tmp)) {
+                    ////////// ATTANTION: uint8 IS char -> 6 = 48(='0')+6
+                    /// so when reading: uint8_t behave as char (:
+                    int width, height;
+                    if(!(std::istringstream (tmp) >> width >> height)) {
+                        currValid = false;
+                    }
+                    skinInfo.width = width;
+                    skinInfo.height = height;
+                } else {
+                    currValid = false;
+                }
+            } else {
+                currValid = false;
+            }
+
+            if(currValid) {
+                std::cout<<
+                    "INFO: Enemy of type '"<<
+                    enemyType
+                    <<"'skin info named '"<<
+                    fileName<<
+                    "' succesfully loaded"<<
+                    std::endl;
+
+                // save result with zeroed-texture
+                enemySkins[(int)skinInfo.type].insert({fileName, {skinInfo, {0, 0, 0, 0, 0}}});
+            } else {
+                unvalidSkins++;
+
+                std::cout<<
+                    "ERROR: Enemy skin info named '"<<
+                    fileName<<
+                    "' present errors"<<
+                    std::endl;
+            }
+        }
+    }
+
+    if(unvalidSkins > 0) {
+        std::cout<<
+            "ERROR: "<<
+            unvalidSkins<<
+            " enemy skin(s) info contained errors"<<
+            std::endl;
+    } else {
+        std::cout<<"INFO: All enemy skins info were succesfully loaded"<<std::endl;
+    }
+
+    return (unvalidSkins == 0);
 }
 
 std::vector<PlayerSkinInfo> DrawManager::getPlayerSkinsInfo() {
@@ -426,9 +556,56 @@ void DrawManager::unloadPlayerSkins() {
     }
 }
 
+std::array<std::vector<EnemySkinInfo>, DrawManager::enemyTypeStr.size()> DrawManager::getEnemySkinsInfo() {
+    std::array<std::vector<EnemySkinInfo>, DrawManager::enemyTypeStr.size()> skinsInfo;
+    for(int i = 0; i < (int)DrawManager::enemyTypeStr.size(); i++) {
+        for(auto& [key, value]: enemySkins[i]) {
+            skinsInfo[i].push_back(value.skinInfo);
+        }
+    }
+
+    return skinsInfo;
+}
+
+EnemySkin* DrawManager::loadEnemySkin(int numberType, std::string skinName) {
+    EnemySkin* found;
+
+    // load first if no name provided
+    std::string name = (skinName.size() == 0) ?
+        enemySkins[numberType].begin()->first :
+        skinName;
+
+    try {
+        found = &enemySkins[numberType].at(name);
+
+        if(!IsTextureValid(found->texture)) {
+            char tempbuffer[100];
+            sprintf(tempbuffer, "%s%s/%s.png", ENEMYSKIN_FOLDER, enemyTypeStr[numberType].c_str(), name.c_str());
+            found->texture = LoadTexture(tempbuffer);
+        }
+    } catch (const std::runtime_error e) {
+        std::cout<<"ERROR: Error on loading enemy skin "<<name<<std::endl;
+    }
+
+    return found;
+}
+
+void DrawManager::unloadEnemySkins() {
+    for(auto& enemyTypeSkin : enemySkins) {
+        for(auto& [key, value]: enemyTypeSkin) {
+            if(IsTextureValid(value.texture)) {
+                UnloadTexture(value.texture);
+                value.texture.id = 0; // strong mark as unvalid
+            }
+        }
+    }
+}
+
 PlayerSkin* DrawManager::initSurvivorTextures(GameMaps map) {
     setMapTexture(map);
     PlayerSkin* playerSkin = loadPlayerSkin("");
+    for(int i = 0; i < (int)DrawManager::enemyTypeStr.size(); i++)
+        loadEnemySkin(i, "");
     initializedMod = InitializedModality::TRAINING;
     return playerSkin;
 }

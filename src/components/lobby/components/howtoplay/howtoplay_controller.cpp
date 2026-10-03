@@ -4,7 +4,7 @@
 
 
 LobbyState HowToPlay::handleLobbySubMode() {
-    const float SCROLL = 0.1f;
+    constexpr float SCROLL = 0.1f;
 
     if (IsKeyDown(KEY_UP) || IsKeyDown(KEY_W)) {//up
         game_manager->cameras[0].offset.y = std::max(

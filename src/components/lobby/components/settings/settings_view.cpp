@@ -7,12 +7,11 @@
 void Settings::drawModality() { //: master volume , music volume , effects volume
     const DisplayMode dm = sys->getDisplayMode();
     const auto [screenW, screenH] = sys->getScreenSizeWH();
-    // const float renderWidth = drawer->RENDER_WIDTH, renderHeight = drawer->RENDER_HEIGHT;
     const int titleFont= drawer->titleFontSize, buttonFont= drawer->buttonFontSize,
         textFont = drawer->textFontSize;
 
-    const int arrowPadding = 15; // distance between arrow and text for drawTextSFCA
-    const float arrowThickness = 3.0f; // arrow thickness for drawTextSFCA
+    constexpr int arrowPadding = 15; // distance between arrow and text for drawTextSFCA
+    constexpr float arrowThickness = 3.0f; // arrow thickness for drawTextSFCA
 
     char tempbuffer[60];
     int currH = 50; // for draw calls height
