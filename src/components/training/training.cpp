@@ -5,7 +5,7 @@
 Training::Training() {
     sys = System::getInstance();
     drawer = DrawManager::getInstance();
-    trainingMap = LoadTexture("./textures/dojo.png");
+    trainingMap = LoadTexture("./textures/maps/dojo.png");
 
     game_manager = GameManager::getInstance();
     game_manager->initTraining();

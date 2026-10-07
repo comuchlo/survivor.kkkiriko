@@ -178,7 +178,7 @@ void TrainingMenu::drawModality() {
 
                 currH+= 60;
                 drawer->drawRangeBarEx(
-                    (float)((float)(player.getHealth()-Player::MIN_HEALTH)/(float)(Player::MAX_HEALTH-Player::MIN_HEALTH))*100,
+                    (float)(player.getHealth()-Player::MIN_HEALTH)/(float)(Player::MAX_HEALTH-Player::MIN_HEALTH),
                     currH,
                     player.getHealth()
                 );
@@ -195,7 +195,7 @@ void TrainingMenu::drawModality() {
 
                 currH+= 60;
                 drawer->drawRangeBarEx(
-                    ((player.getMoveVel()-Player::MIN_MUL)/(Player::MAX_MUL-Player::MIN_MUL))*100,
+                    (player.getMoveVel()-Player::MIN_MUL)/(Player::MAX_MUL-Player::MIN_MUL),
                     currH,
                     player.getMoveVel()
                 );
@@ -212,7 +212,7 @@ void TrainingMenu::drawModality() {
 
                 currH+= 60;
                 drawer->drawRangeBarEx(
-                    ((player.getAttackVel()-Player::MIN_MUL)/(Player::MAX_MUL-Player::MIN_MUL))*100,
+                    (player.getAttackVel()-Player::MIN_MUL)/(Player::MAX_MUL-Player::MIN_MUL),
                     currH,
                     player.getAttackVel()
                 );
@@ -229,7 +229,7 @@ void TrainingMenu::drawModality() {
 
                 currH+= 60;
                 drawer->drawRangeBarEx(
-                    ((player.getAttackCooldown()-Player::MIN_ATTACK_COOLDOWN)/(Player::MAX_ATTACK_COOLDOWN-Player::MIN_ATTACK_COOLDOWN))*100,
+                    (player.getAttackCooldown()-Player::MIN_ATTACK_COOLDOWN)/(Player::MAX_ATTACK_COOLDOWN-Player::MIN_ATTACK_COOLDOWN),
                     currH,
                     player.getAttackCooldown()
                 );
@@ -246,7 +246,7 @@ void TrainingMenu::drawModality() {
 
                 currH+= 60;
                 drawer->drawRangeBarEx(
-                    ((player.getKunaiVel()-Player::MIN_MUL)/(Player::MAX_MUL-Player::MIN_MUL))*100,
+                    (player.getKunaiVel()-Player::MIN_MUL)/(Player::MAX_MUL-Player::MIN_MUL),
                     currH,
                     player.getKunaiVel()
                 );
@@ -263,7 +263,7 @@ void TrainingMenu::drawModality() {
 
                 currH+= 60;
                 drawer->drawRangeBarEx(
-                    ((player.getPlayerDimensionMul()-Player::MIN_MUL)/(Player::MAX_MUL-Player::MIN_MUL))*100,
+                    (player.getPlayerDimensionMul()-Player::MIN_MUL)/(Player::MAX_MUL-Player::MIN_MUL),
                     currH,
                     player.getPlayerDimensionMul()
                 );
@@ -279,7 +279,8 @@ void TrainingMenu::drawModality() {
                 drawer->drawTextSFC("Kunai Dimension", currH, buttonFont, BLACK, BLACK, RED);
 
                 currH+= 60;
-                drawer->drawRangeBarEx(((player.getKunaiDimensionMul()-Player::MIN_MUL)/(Player::MAX_MUL-Player::MIN_MUL))*100,
+                drawer->drawRangeBarEx(
+                    (player.getKunaiDimensionMul()-Player::MIN_MUL)/(Player::MAX_MUL-Player::MIN_MUL),
                     currH,
                     player.getKunaiDimensionMul()
                 );
@@ -295,7 +296,8 @@ void TrainingMenu::drawModality() {
                 drawer->drawTextSFC("Kunai Damage", currH, buttonFont, BLACK, BLACK, RED);
 
                 currH+= 60;
-                drawer->drawRangeBarEx(((player.getKunaiDamageMul()-Player::MIN_MUL)/(Player::MAX_MUL-Player::MIN_MUL))*100,
+                drawer->drawRangeBarEx(
+                    (player.getKunaiDamageMul()-Player::MIN_MUL)/(Player::MAX_MUL-Player::MIN_MUL),
                     currH,
                     player.getKunaiDamageMul()
                 );

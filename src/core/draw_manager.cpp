@@ -1,5 +1,6 @@
 #include "draw_manager.hpp"
 
+#include <algorithm>
 #include <array>
 #include <cstdio>
 #include <cstring>
@@ -87,44 +88,46 @@ DrawManager* DrawManager::getInstance(){
     return instance;
 }
 
-void DrawManager::drawRangeBar(int progress, int height) {
-   	int progressLenght = (!progress) ? 0 : progress * 2.5;
-    char tempbuffer[30];
-    sprintf(tempbuffer, "%d", progress);
+void DrawManager::drawRangeBar(float progress, int height) {
+    const int progressLenght = std::clamp(progress, 0.0f, 1.0f)*250.0f,
+        half_render_w = RENDER_WIDTH / 2;
+    char tempbuffer[3];
+    sprintf(tempbuffer, "%d", (int)(progress*100.0f));
 
-   	DrawRectangle((RENDER_WIDTH / 2) - 127, height, 10, 19, GetColor(0x232323ff));//first end of bar
-   	DrawRectangle((RENDER_WIDTH / 2) + 117, height + 5, 10, 19, GetColor(0x232323ff));//end of bar
-   	DrawRectangle((RENDER_WIDTH / 2) - 127, height + 5, 254, 14, GetColor(0x232323ff));//outerBar
-   	DrawRectangle((RENDER_WIDTH / 2) - 125, height + 7, 250, 10, WHITE);//innerBar
-   	DrawRectangle((RENDER_WIDTH / 2) - 125, height + 7, progressLenght, 10, RED);//Master Volume Level
+   	DrawRectangle(half_render_w - 127, height, 10, 19, GetColor(0x232323ff));//first end of bar
+   	DrawRectangle(half_render_w + 117, height + 5, 10, 19, GetColor(0x232323ff));//end of bar
+   	DrawRectangle(half_render_w - 127, height + 5, 254, 14, GetColor(0x232323ff));//outerBar
+   	DrawRectangle(half_render_w - 125, height + 7, 250, 10, WHITE);//innerBar
+   	DrawRectangle(half_render_w - 125, height + 7, progressLenght, 10, RED);//Master Volume Level
 
-    drawTextSF(tempbuffer, (RENDER_WIDTH / 2) + 136, height + 2, 18, BLACK, BLACK, RED);// displayed value
+    drawTextSF(tempbuffer, half_render_w + 136, height + 2, 18, BLACK, BLACK, RED);// displayed value
    	// DrawText(TextFormat("%d", progress), (RENDER_WIDTH / 2) + 136, height + 2, 18, BLACK);//Master Volume Number
    	// DrawText(TextFormat("%d", progress), (RENDER_WIDTH / 2) + 137, height + 3, 18, BLACK);//Master Volume Number
    	// DrawText(TextFormat("%d", progress), (RENDER_WIDTH / 2) + 138, height + 4, 18, RED);//Master Volume Number
 
-   	DrawRectangle((RENDER_WIDTH / 2) - 127 + progressLenght, height - 1, 10, 26, BLACK);//outerRangeCursor
-   	DrawRectangle((RENDER_WIDTH / 2) - 125 + progressLenght, height + 1, 6, 22, RED);//innerRangeCursor
+   	DrawRectangle(half_render_w - 127 + progressLenght, height - 1, 10, 26, BLACK);//outerRangeCursor
+   	DrawRectangle(half_render_w - 125 + progressLenght, height + 1, 6, 22, RED);//innerRangeCursor
 }
 
-void DrawManager::drawRangeBarEx(int progress, int height, float displayedValue) {
-    int progressLenght = (!progress) ? 0 : progress * 2.5;
-    char tempbuffer[30];
+void DrawManager::drawRangeBarEx(float progress, int height, float displayedValue) {
+    const int progressLenght = std::clamp(progress, 0.0f, 1.0f)*250.0f,
+        half_render_w = RENDER_WIDTH / 2;
+    char tempbuffer[15];
     sprintf(tempbuffer, "%.2f", displayedValue);
 
-   	DrawRectangle((RENDER_WIDTH / 2) - 127, height, 10, 19, GetColor(0x232323ff));//first end of bar
-   	DrawRectangle((RENDER_WIDTH / 2) + 117, height + 5, 10, 19, GetColor(0x232323ff));//end of bar
-   	DrawRectangle((RENDER_WIDTH / 2) - 127, height + 5, 254, 14, GetColor(0x232323ff));//outerBar
-   	DrawRectangle((RENDER_WIDTH / 2) - 125, height + 7, 250, 10, WHITE);//innerBar
-   	DrawRectangle((RENDER_WIDTH / 2) - 125, height + 7, progressLenght, 10, RED);//colored range (before cursor)
+   	DrawRectangle(half_render_w - 127, height, 10, 19, GetColor(0x232323ff));//first end of bar
+   	DrawRectangle(half_render_w + 117, height + 5, 10, 19, GetColor(0x232323ff));//end of bar
+   	DrawRectangle(half_render_w - 127, height + 5, 254, 14, GetColor(0x232323ff));//outerBar
+   	DrawRectangle(half_render_w - 125, height + 7, 250, 10, WHITE);//innerBar
+   	DrawRectangle(half_render_w - 125, height + 7, progressLenght, 10, RED);//colored range (before cursor)
 
-    drawTextSF(tempbuffer, (RENDER_WIDTH / 2) + 136, height + 2, 18, BLACK, BLACK, RED);// displayed value
+    drawTextSF(tempbuffer, half_render_w + 136, height + 2, 18, BLACK, BLACK, RED);// displayed value
     // DrawText(tempbuffer, (RENDER_WIDTH / 2) + 136, height + 2, 18, BLACK);//Master Volume Number
    	// DrawText(tempbuffer, (RENDER_WIDTH / 2) + 137, height + 3, 18, BLACK);//Master Volume Number
    	// DrawText(tempbuffer, (RENDER_WIDTH / 2) + 138, height + 4, 18, RED);//Master Volume Number
 
-   	DrawRectangle((RENDER_WIDTH / 2) - 127 + progressLenght, height - 1, 10, 26, BLACK);//outerRangeCursor
-   	DrawRectangle((RENDER_WIDTH / 2) - 125 + progressLenght, height + 1, 6, 22, RED);//innerRangeCursor
+   	DrawRectangle(half_render_w - 127 + progressLenght, height - 1, 10, 26, BLACK);//outerRangeCursor
+   	DrawRectangle(half_render_w - 125 + progressLenght, height + 1, 6, 22, RED);//innerRangeCursor
 }
 
 void DrawManager::drawText(const char *text, int x, int y, int fontSize, Color col) {
@@ -601,35 +604,38 @@ void DrawManager::unloadEnemySkins() {
     }
 }
 
-PlayerSkin* DrawManager::initSurvivorTextures(GameMaps map) {
+void DrawManager::initSurvivorTextures(GameMaps map, PlayerSkin** playerSkin, std::array<EnemySkin*, enemyTypeStr.size()>* enemiesSkin) {
     setMapTexture(map);
-    PlayerSkin* playerSkin = loadPlayerSkin("");
-    for(int i = 0; i < (int)DrawManager::enemyTypeStr.size(); i++)
-        loadEnemySkin(i, "");
-    initializedMod = InitializedModality::TRAINING;
-    return playerSkin;
+
+    (*playerSkin) = loadPlayerSkin("");
+
+    for(int i = 0; i < (int)enemyTypeStr.size(); i++) {
+        (*enemiesSkin)[i] = loadEnemySkin(i, "");
+    }
 }
 
 void DrawManager::destroySurvivorTextures() {
     setMapTexture(GameMaps::NONE);
     unloadPlayerSkins();
-    initializedMod = InitializedModality::NONE;
+    unloadEnemySkins();
 }
 
-PlayerSkin* DrawManager::initTrainingTextures() {
-    PlayerSkin* playerSkin = loadPlayerSkin("");
-    initializedMod = InitializedModality::TRAINING;
-    return playerSkin;
+void DrawManager::initTrainingTextures(PlayerSkin** playerSkin, std::array<EnemySkin*, enemyTypeStr.size()>* enemiesSkin) {
+    (*playerSkin) = loadPlayerSkin("");
+
+    for(int i = 0; i < (int)enemyTypeStr.size(); i++) {
+        (*enemiesSkin)[i] = loadEnemySkin(i, "");
+    }
 }
 
 void DrawManager::destroyTrainingTextures() {
     unloadPlayerSkins();
-    initializedMod = InitializedModality::NONE;
+    unloadEnemySkins();
 }
 
 Texture2D* DrawManager::getLobbyBgTexture(){
     if(!IsTextureValid(this->lobbyBgTexture)){
-        this->lobbyBgTexture= LoadTexture("./textures/kirikobg2.png");
+        this->lobbyBgTexture= LoadTexture("./textures/backgrounds/lobby.png");
     }
     return &(this->lobbyBgTexture);
 }
@@ -644,11 +650,11 @@ Texture2D* DrawManager::setMapTexture(GameMaps map) {
         switch (map) {
             case GameMaps::NONE:
             case GameMaps::URBAN:
-                sprintf(tempbuffer, "%smap_urban.png", TEXTURES_FOLDER);
+                sprintf(tempbuffer, "%surban.png", MAP_FOLDER);
                 this->mapTexture= LoadTexture(tempbuffer);
                 break;
             case GameMaps::GRASS:
-                sprintf(tempbuffer, "%smap_grass.png", TEXTURES_FOLDER);
+                sprintf(tempbuffer, "%sgrass.png", MAP_FOLDER);
                 this->mapTexture= LoadTexture(tempbuffer);
                 break;
         }
@@ -656,6 +662,7 @@ Texture2D* DrawManager::setMapTexture(GameMaps map) {
 
     return &(this->mapTexture);
 }
+
 Texture2D* DrawManager::getMapTexture() {
     if(this->loaded_map == GameMaps::NONE || !IsTextureValid(this->mapTexture)){
         this->setMapTexture();

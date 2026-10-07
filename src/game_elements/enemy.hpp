@@ -5,7 +5,7 @@
 #include <raylib.h>
 #include "../core/draw_manager.hpp"
 
-// TODO: re organize texture + drawRange using float ? + spawn enemy
+// TODO: spawn enemy
 
 class Enemy{
     private:

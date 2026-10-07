@@ -5,10 +5,14 @@
 
 class SoundManager {
     private:
+        static constexpr float DEF_GLOBAL_LVL = 0.5f, DEF_EFFECTS_LVL = 0.7f,
+            DEF_MUSIC_LVL = 0.5f, DELTA_LVL = 0.05f;
+
         static SoundManager* instance;
-        float global= 50.0f;
-        float effects= 70.0f;
-        float music= 50.0f;
+
+        float global = DEF_GLOBAL_LVL;
+        float effects = DEF_EFFECTS_LVL;
+        float music = DEF_MUSIC_LVL;
         Music currentMusic, lobbyMusic, survivalMusic, duelMusic;
         Sound currentSound, slash;
 
@@ -19,9 +23,9 @@ class SoundManager {
         SoundManager& operator=(const SoundManager&) = delete;
         static SoundManager* getInstance();
 
-        void setGlobal(float);
-        void setSFX(float);
-        void setMusic(float);
+        // void setGlobal(float);
+        // void setSFX(float);
+        // void setMusic(float);
 
         void incrementGlobalVolume();
         void incrementMusicVolume();

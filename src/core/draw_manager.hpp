@@ -89,14 +89,14 @@ class DrawManager {
         // N.B.: every draw calls should refer to render width & height
 
         // draw a range bar with params:
-        // - progress in a range of [0, 100]
+        // - progress in a range of [0.0f, 1.0f]
         // - height of the range bar (always horizontally)
-        void drawRangeBar(int progress, int height);
+        void drawRangeBar(float progress, int height);
         // draw a range bar with params:
-        // - progress in a range of [0, 100]
+        // - progress in a range of [0.0f, 1.0f]
         // - height of the range bar (always horizontally)
         // - displayedValue: value to be displayed at the left of the range bar
-        void drawRangeBarEx(int progress, int height, float displayedValue);
+        void drawRangeBarEx(float progress, int height, float displayedValue);
         // raylib::DrawText() with DrawManager font
         void drawText(const char *text, int x, int y, int fontSize, Color col);
         // drawText() but decorated
@@ -121,10 +121,10 @@ class DrawManager {
 
         void update();
 
-        PlayerSkin* initSurvivorTextures(GameMaps= GameMaps::URBAN);
+        void initSurvivorTextures(GameMaps map, PlayerSkin** playerSkin, std::array<EnemySkin*, enemyTypeStr.size()>* enemiesSkin);
         void destroySurvivorTextures();
 
-        PlayerSkin* initTrainingTextures();
+        void initTrainingTextures(PlayerSkin** playerSkin, std::array<EnemySkin*, enemyTypeStr.size()>* enemiesSkin);
         void destroyTrainingTextures();
 
         // get skin texture / info
@@ -152,6 +152,7 @@ class DrawManager {
 
     private:
         const char *TEXTURES_FOLDER = "./textures/",
+            *MAP_FOLDER = "./textures/maps/",
             *PLAYERSKIN_FOLDER = "./textures/skins/player/",
             *ENEMYSKIN_FOLDER = "./textures/skins/enemy/",
             *DONUT_SKIN_FOLDER = "./textures/skins/enemy/donut/",
@@ -177,9 +178,6 @@ class DrawManager {
         Texture2D mapTexture, lobbyBgTexture;
 
         GameMaps loaded_map;
-
-        // mark what modality was initialized (avoid check for every get)
-        InitializedModality initializedMod = InitializedModality::NONE;
 
         // load all player skins info (once on init)
         bool loadPlayerSkinsInfo();

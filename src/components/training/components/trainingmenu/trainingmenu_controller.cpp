@@ -220,7 +220,7 @@ TrainingState TrainingMenu::handleTrainingSubMode() {
                         break;
                     case PlayerModSelection::HP:
                         game_manager->players[0].setHealth(
-                            game_manager->players[0].getHealth()-Player::DELTA_MUL
+                            game_manager->players[0].getHealth()-Player::DELTA_HEALTH
                         );
                         break;
                     case PlayerModSelection::MOVEMENT_SPEED:

@@ -3,7 +3,7 @@
 WorkInProgress::WorkInProgress() {
     sys = System::getInstance();
     drawer = DrawManager::getInstance();
-    backgroundImage = LoadTexture("./textures/kirikobg2.png");
+    backgroundImage = LoadTexture("./textures/backgrounds/lobby.png");
 }
 
 WorkInProgress::~WorkInProgress() {

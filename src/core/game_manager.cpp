@@ -11,6 +11,8 @@ GameManager::GameManager() {
     drawer = DrawManager::getInstance();
     mode = std::make_unique<Lobby>();
 
+    enemiesSkin.fill(nullptr);
+
     cameras.push_back({{ 0, 0 }, { 0, 0 }, 0.0f, 1.0f });
     cameras.push_back({{ 0, 0 }, { 0, 0 }, 0.0f, 1.0f });
 }
@@ -150,19 +152,27 @@ void GameManager::updateGameDuel() {
 
 void GameManager::initTraining() {
     // load player 1 with default params
-    players.push_back(Player(drawer->initTrainingTextures()));
+    PlayerSkin* p1Skin = nullptr;
+
+    drawer->initTrainingTextures(&p1Skin, &enemiesSkin);
+    players.push_back(Player(p1Skin));
     cameraFollowPlayer(0);
+
     // TODO: init enemies, ...
 }
 
 void GameManager::uninitTraining() {
     this->drawer->destroyTrainingTextures();
+    enemiesSkin.fill(nullptr);
     players.clear();
 }
 
 void GameManager::initSurvival() {
     // load player 1 with default params
-    players.push_back(Player(drawer->initSurvivorTextures()));
+    PlayerSkin* p1Skin = nullptr;
+
+    drawer->initSurvivorTextures(GameMaps::URBAN, &p1Skin, &enemiesSkin);
+    players.push_back(Player(p1Skin));
     cameraFollowPlayer(0);
 
     // TODO: init enemies, ...
@@ -170,5 +180,6 @@ void GameManager::initSurvival() {
 
 void GameManager::uninitSurvival() {
     drawer->destroySurvivorTextures();
+    enemiesSkin.fill(nullptr);
     players.clear();
 }

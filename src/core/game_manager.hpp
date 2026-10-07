@@ -24,15 +24,20 @@ class GameManager {
         // float eSpeedMultiplier = 1, pSpeedMultiplier = 1;// ?
         float deltaTime;
 
+        // needed on enemy spawn (constructor need EnemySkin*)
+        std::array<EnemySkin*, DrawManager::enemyTypeStr.size()> enemiesSkin;
+
         GameManager();
     public:
         ~GameManager();
         GameManager(const GameManager&) = delete;
         GameManager& operator=(const GameManager&) = delete;
         static GameManager* getInstance();
+
         std::unique_ptr<Modality> mode;
         std::vector<Player> players;
         std::vector<Camera2D> cameras;
+
         void resetCamera(int cameraNumber);
         void cameraFollowPlayer(int number);
         float getDeltaTime();
